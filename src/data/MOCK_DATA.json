@@ -1,0 +1,362 @@
+[
+    {
+        "index": "0473046",
+        "courseTitle": "History",
+        "creditHour": 2.4,
+        "status": "completed",
+        "Code": "mandatory",
+        "academicYear": "2020",
+        "semester": "First"
+    },
+    {
+        "index": "30260G0",
+        "courseTitle": "Mathematics",
+        "creditHour": 4.65,
+        "status": "on-progress",
+        "Code": "core",
+        "academicYear": "2022",
+        "semester": "First"
+    },
+    {
+        "index": "03SQ4ZZ",
+        "courseTitle": "Mathematics",
+        "creditHour": 4.29,
+        "status": "on-progress",
+        "Code": "mandatory",
+        "academicYear": "2021",
+        "semester": "Second"
+    },
+    {
+        "index": "00XK0ZH",
+        "courseTitle": "English",
+        "creditHour": 4.17,
+        "status": "pending",
+        "Code": "mandatory",
+        "academicYear": "2020",
+        "semester": "First"
+    },
+    {
+        "index": "0NU74JZ",
+        "courseTitle": "Art",
+        "creditHour": 1.86,
+        "status": "completed",
+        "Code": "core",
+        "academicYear": "2020",
+        "semester": "Second"
+    },
+    {
+        "index": "037P356",
+        "courseTitle": "Mathematics",
+        "creditHour": 4.5,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2024",
+        "semester": "First"
+    },
+    {
+        "index": "0QPRX5Z",
+        "courseTitle": "History",
+        "creditHour": 4.98,
+        "status": "pending",
+        "Code": "mandatory",
+        "academicYear": "2024",
+        "semester": "First"
+    },
+    {
+        "index": "F14Z5KZ",
+        "courseTitle": "Art",
+        "creditHour": 3.62,
+        "status": "pending",
+        "Code": "elective",
+        "academicYear": "2023",
+        "semester": "First"
+    },
+    {
+        "index": "03N54ZZ",
+        "courseTitle": "History",
+        "creditHour": 3.9,
+        "status": "completed",
+        "Code": "core",
+        "academicYear": "2023",
+        "semester": "First"
+    },
+    {
+        "index": "0N9X00Z",
+        "courseTitle": "Science",
+        "creditHour": 3.0,
+        "status": "completed",
+        "Code": "mandatory",
+        "academicYear": "2020",
+        "semester": "Second"
+    },
+    {
+        "index": "0PU247Z",
+        "courseTitle": "Mathematics",
+        "creditHour": 3.75,
+        "status": "pending",
+        "Code": "elective",
+        "academicYear": "2021",
+        "semester": "First"
+    },
+    {
+        "index": "0373446",
+        "courseTitle": "Science",
+        "creditHour": 4.48,
+        "status": "completed",
+        "Code": "core",
+        "academicYear": "2020",
+        "semester": "Second"
+    },
+    {
+        "index": "0C90XZX",
+        "courseTitle": "Mathematics",
+        "creditHour": 3.56,
+        "status": "completed",
+        "Code": "mandatory",
+        "academicYear": "2022",
+        "semester": "Second"
+    },
+    {
+        "index": "05U84JZ",
+        "courseTitle": "Science",
+        "creditHour": 2.39,
+        "status": "completed",
+        "Code": "mandatory",
+        "academicYear": "2020",
+        "semester": "First"
+    },
+    {
+        "index": "03VF4DZ",
+        "courseTitle": "Science",
+        "creditHour": 4.9,
+        "status": "on-progress",
+        "Code": "core",
+        "academicYear": "2024",
+        "semester": "First"
+    },
+    {
+        "index": "0SRT0JZ",
+        "courseTitle": "English",
+        "creditHour": 3.92,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2024",
+        "semester": "Second"
+    },
+    {
+        "index": "F01K0YZ",
+        "courseTitle": "Mathematics",
+        "creditHour": 2.77,
+        "status": "pending",
+        "Code": "mandatory",
+        "academicYear": "2024",
+        "semester": "First"
+    },
+    {
+        "index": "0SSD05Z",
+        "courseTitle": "Mathematics",
+        "creditHour": 1.95,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2023",
+        "semester": "First"
+    },
+    {
+        "index": "0LUP0JZ",
+        "courseTitle": "History",
+        "creditHour": 3.71,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2023",
+        "semester": "Second"
+    },
+    {
+        "index": "DU1097Z",
+        "courseTitle": "Art",
+        "creditHour": 4.49,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2023",
+        "semester": "First"
+    },
+    {
+        "index": "047S4Z6",
+        "courseTitle": "English",
+        "creditHour": 2.43,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2019",
+        "semester": "First"
+    },
+    {
+        "index": "05VG4CZ",
+        "courseTitle": "English",
+        "creditHour": 2.87,
+        "status": "pending",
+        "Code": "mandatory",
+        "academicYear": "2019",
+        "semester": "Second"
+    },
+    {
+        "index": "0RWV04Z",
+        "courseTitle": "English",
+        "creditHour": 1.55,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2019",
+        "semester": "First"
+    },
+    {
+        "index": "0PWDXKZ",
+        "courseTitle": "Art",
+        "creditHour": 4.61,
+        "status": "pending",
+        "Code": "elective",
+        "academicYear": "2019",
+        "semester": "First"
+    },
+    {
+        "index": "0RW030Z",
+        "courseTitle": "Science",
+        "creditHour": 2.07,
+        "status": "completed",
+        "Code": "elective",
+        "academicYear": "2019",
+        "semester": "Second"
+    },
+    {
+        "index": "04UF0JZ",
+        "courseTitle": "Science",
+        "creditHour": 1.22,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2018",
+        "semester": "First"
+    },
+    {
+        "index": "0RG00Z0",
+        "courseTitle": "History",
+        "creditHour": 1.09,
+        "status": "on-progress",
+        "Code": "core",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "0RPT45Z",
+        "courseTitle": "Art",
+        "creditHour": 4.2,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "0PW34JZ",
+        "courseTitle": "Science",
+        "creditHour": 2.84,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2018",
+        "semester": "First"
+    },
+    {
+        "index": "0QRP07Z",
+        "courseTitle": "Science",
+        "creditHour": 4.17,
+        "status": "completed",
+        "Code": "elective",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "00SL3ZZ",
+        "courseTitle": "History",
+        "creditHour": 2.2,
+        "status": "pending",
+        "Code": "mandatory",
+        "academicYear": "2020",
+        "semester": "First"
+    },
+    {
+        "index": "0SSC3ZZ",
+        "courseTitle": "Science",
+        "creditHour": 2.1,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "0WBLXZX",
+        "courseTitle": "Science",
+        "creditHour": 5.0,
+        "status": "pending",
+        "Code": "elective",
+        "academicYear": "2020",
+        "semester": "First"
+    },
+    {
+        "index": "039V3ZX",
+        "courseTitle": "English",
+        "creditHour": 3.37,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "055Q0ZZ",
+        "courseTitle": "Art",
+        "creditHour": 1.13,
+        "status": "pending",
+        "Code": "elective",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "04104Z7",
+        "courseTitle": "History",
+        "creditHour": 3.03,
+        "status": "completed",
+        "Code": "mandatory",
+        "academicYear": "2023",
+        "semester": "First"
+    },
+    {
+        "index": "03C94Z6",
+        "courseTitle": "Science",
+        "creditHour": 2.83,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "0NHT44Z",
+        "courseTitle": "Science",
+        "creditHour": 2.32,
+        "status": "on-progress",
+        "Code": "elective",
+        "academicYear": "2021",
+        "semester": "First"
+    },
+    {
+        "index": "04VW3ZZ",
+        "courseTitle": "Mathematics",
+        "creditHour": 1.33,
+        "status": "completed",
+        "Code": "core",
+        "academicYear": "2018",
+        "semester": "Second"
+    },
+    {
+        "index": "0X0747Z",
+        "courseTitle": "Art",
+        "creditHour": 3.65,
+        "status": "pending",
+        "Code": "core",
+        "academicYear": "2021",
+        "semester": "First"
+    }
+]
