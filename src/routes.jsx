@@ -6,8 +6,9 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications, Grades } from "@/pages/dashboard";
+import { Home, Profile, Tables, Notifications, Grades, AddStudent } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
+// import SimpleForm from "./pages/dashboard/studentForm";
 
 
 
@@ -48,6 +49,12 @@ export const routes = [
         name: "notifications",
         path: "/notifications",
         element: <Notifications />,
+      },
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "addstudent",
+        path: "/addstudent",
+        element: <AddStudent />,
       },
     ],
   },
