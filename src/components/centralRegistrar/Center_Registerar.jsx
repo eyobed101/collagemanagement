@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
-// import ChartTeacher from "../../graph/teacherGraph/Chart";
+ import ChartTeacher from "../../graph/teacherGraph/Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp} from "@fortawesome/free-solid-svg-icons";
@@ -136,21 +136,21 @@ const CenterRegistrar = () => {
   };
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
-        <SiderGenerator navigate={navigate}/>
+        {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
       <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">Center Registrar Management System</h1>
     </div>
-    <div class="flex gap-10 p-10 ml-[15%]">
+    <div class="flex gap-30 p-10 ml-[18%]">
     <Space direction="horizontal" size={16}>
     {noUsers.map(item => (
          <Card
          key={item.id}
-         size="small"
+         size="medium"
          title={item.name}
          headStyle={{fontSize:16 , fontWeight: 'bold' , color: 'black'}}
        //   extra={<a href="#">More</a>}
          style={{
-           width: 250,
+           width: "100%",
          }}
        >
          <p className='font-bold text-base text-gray-500'> {item.number} people</p>
@@ -214,7 +214,7 @@ const CenterRegistrar = () => {
                 <h4 className="text-sm text-[red]" style={{marginLeft:-4}}>20%</h4>
                 </div>
                 <h4 className="text-base text-[#344054] font-normal  mb-5">Decreased on graduate Students</h4>
-            {/* <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} /> */}
+            <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} />
           </Card>
         </Grid>
         <Grid item xs={12} sm={12} md={8}>

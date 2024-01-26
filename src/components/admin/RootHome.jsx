@@ -369,7 +369,7 @@ return (
                 </div>
                 <h4 className="text-base text-[#344054] font-normal mb-5">Students that has been registered for the past year</h4>
             <div className="flex" >
-                  {/* <ChartStudent title="" aspect={4 /1} datas = {datavalue} /> */}
+                  <ChartStudent title="" aspect={4 /1} datas = {datavalue} />
                   </div>
 
           </Card>

@@ -1,0 +1,384 @@
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.course-avater {
+    display: flex;
+    align-items: center;
+
+    width: 50%;
+}
+
+.course-avater img {
+    border: 1px solid black;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.course-avater h3 {
+    color: gray;
+}
+
+.header-extra {
+    width: 50%;
+    border-left: 2px solid lightgray;
+    padding-left: 25px;
+}
+
+.header-extra h3 {
+    color: rgb(56, 54, 54);
+}
+
+.header-extra h4 {
+    color: gray;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #e66937 !important;
+    font-weight: 500;
+}
+
+.ant-tabs-tab:hover {
+    color: #e66937 !important;
+
+}
+
+.ant-tabs-ink-bar {
+    position: absolute;
+    background: #e66937;
+    pointer-events: none;
+}
+
+.tab-content {
+    margin-top: 15px;
+}
+
+.tab-content Button {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #e66937;
+}
+
+.btn-confirm {
+    float: right;
+    margin-top: -3.5rem;
+}
+
+.tab-content Button:hover {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #e66937;
+    box-shadow: 0px 0px 6px #e66937;
+
+}
+
+.course-description {
+    padding: 15px;
+    background-color: rgb(247, 247, 247);
+    border-radius: 5px;
+}
+
+.asssign-teacher {
+    margin: 20px 0px;
+}
+
+.schedule {
+    width: 50%;
+}
+
+.schedule h4 {
+    margin-bottom: 20px;
+}
+
+.schedule h2 {
+    color: #e66937;
+}
+
+.card-schedule {
+    background-color: rgb(247, 247, 247);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.schedule-header {
+    display: flex;
+    width: 100%;
+    background-color: white;
+}
+
+.schedule-header div:nth-child(1) {
+    width: 40%;
+    padding-left: 10px;
+    border: 2px solid lightgray;
+}
+
+.schedule-header div:nth-child(2) {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 60%;
+    border: 2px solid lightgray;
+
+}
+
+.schedule-header p {
+    margin: 5px 0px;
+}
+
+.card-schedule .ant-input {
+    height: 3rem;
+    padding: 0px 11px !important;
+    border-left: none;
+    border-right: none;
+}
+
+.card-schedule .ant-picker {
+    padding: 0px 11px;
+    height: 3rem;
+    border-right: none;
+    border-left: none;
+}
+
+.course-information {
+    padding: 15px;
+    background-color: rgb(247, 247, 247);
+    border-radius: 5px;
+}
+
+.course-information h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.course-content {
+    display: flex;
+}
+
+.course-category {
+    width: 30%;
+    padding: 15px 20px;
+}
+
+.up-course-description {
+    width: 70%;
+    margin-left: 15px;
+}
+
+.course-category div:nth-child(2) {
+    display: flex;
+}
+
+.course-category div:nth-child(2) div {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+
+.up-card-schedule {
+    background-color: rgb(247, 247, 247);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.up-card-schedule .ant-select-selector {
+    height: 3rem !important;
+    align-items: center;
+}
+
+.up-card-schedule .ant-picker {
+    padding: 0px 11px;
+    height: 3rem;
+    border-left: none;
+}
+
+.assign-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+}
+
+.asssign-teacher .ant-table-cell {
+    width: 10% !important;
+}
+
+.btn-dlt {
+    left: 90%;
+    color: white !important;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-sub {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.list-filter :nth-child(1) {
+    margin-right: 1rem;
+}
+
+.course-search {
+    display: flex;
+}
+
+.course-search div:nth-child(1) {
+    margin-right: 1rem;
+}
+
+.course-search div:nth-child(2) {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #e66937;
+    padding: 5px 10px;
+    align-content: center;
+}
+
+
+.course-search div:nth-child(2):hover {
+    box-shadow: 0px 0px 5px #e66937;
+    color: #e66937;
+}
+
+.course-search div:nth-child(2) a:hover {
+    color: #e66937;
+
+}
+
+.create-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.create-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.create-header Button {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #e66937;
+}
+
+
+.create-header Button:hover {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #e66937;
+    box-shadow: 0px 0px 6px #e66937;
+}
+
+.create-info {
+    border: 2px solid rgb(226, 226, 226);
+    padding: 15px;
+    background-color: rgb(247, 247, 247);
+    border-radius: 5px;
+}
+
+.create-description {
+    margin-bottom: 15px;
+}
+
+.create-description h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.create-description h3 {
+    margin-bottom: 10px;
+}
+
+.info-selection {
+    display: flex;
+}
+
+.col {
+    width: 50%;
+}
+
+.info-selection .col .class,
+.info-selection .col .teacher {
+    width: 50%;
+
+}
+
+.info-selection .col .subject {
+    margin-bottom: 10px;
+}
+
+.create-schedule {
+    width: 50%;
+    margin-top: 25px;
+}
+
+.create-schedule h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.create-schedule h2 {
+    color: #e66937;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.create-schedule Button {
+    display: flex;
+    justify-content: right;
+    align-items: right;
+}
+
+.btn-cancle {
+    left: 95%;
+    color: #e66937 !important;
+}
+
+.btn-cancle:hover {
+    color: white !important;
+}
+
+.ant-input:focus,
+.ant-input:hover,
+.ant-select-selector:hover,
+.ant-select-selector:focus,
+.ant-select-selector:active,
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector,
+.ant-picker:hover,
+.ant-picker:active {
+    border-color: #e66937 !important;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px rgba(233, 170, 87, 0.2) !important;
+}
+
+.ant-btn:hover {
+    border-color: #e66937 !important;
+    color: #e66937 !important;
+}
+
+.ant-table table { font-size: 14px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: 500;
+    line-height: 20px;
+
+}
+
+.ant-table table thead { font-size: 16px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: bold;
+    line-height: 24px;
+
+}

@@ -1,0 +1,444 @@
+.btn-confirm:hover {
+    background-color:#f0f0f0 ;
+
+ }
+
+.st-profile-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-width: 2px;
+}
+
+.profile-info h3 {
+    color: #e66937 !important;
+}
+
+.teacher-avater {
+    display: flex;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.teacher-avater img {
+    border: 1px solid black;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.teacher-avater h3 {
+    color: gray;
+}
+
+.header-extra-th {
+    /* border-left: 2px solid lightgray; */
+    padding-left: 25px;
+}
+
+.header-extra-th div:nth-child(1) {
+    margin-bottom: 10px;
+}
+
+.header-extra-th div {
+    display: flex;
+    justify-content: right;
+}
+
+.header-extra-th h3 {
+    color: rgb(56, 54, 54);
+    padding-right: 5px;
+
+}
+
+.header-extra-th h4 {
+    color: gray;
+    padding-left: 5px;
+    border-left: 2px solid lightgray;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #e66937 !important;
+    font-weight: 500;
+}
+
+.ant-tabs-tab:hover {
+    color: #e66937 !important;
+
+}
+
+.ant-tabs-ink-bar {
+    position: absolute;
+    background: #e66937;
+    pointer-events: none;
+}
+
+.tab-content {
+    margin-top: 15px;
+}
+
+.tab-content Button {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #333;
+}
+
+.btn-confirm {
+    float: right;
+    margin-top: -3.5rem;
+    background-color: #E7752B;
+}
+
+/* .tab-content Button:hover {
+    border: 2px solid #e66937;
+    border-radius: 5px;
+    color: #FFF;
+    box-shadow: 0px 0px 6px #e66937;
+} */
+
+.teacher-static {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 25px;
+}
+
+.teacher-static div {
+    width: 7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.teacher-static div h1 {
+    font-weight: bolder;
+    font-size: 32px;
+}
+
+.teacher-profile {
+    display: flex;
+}
+
+.personal-info {
+    width: 50%;
+    padding: 15px 30px;
+    border: 2px solid rgb(226, 226, 226);
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.info-content {
+    display: flex;
+}
+
+.personal-info h1 {
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.col {
+    width: 50%;
+}
+
+.personal-info .col div {
+    margin-bottom: 25px;
+}
+
+.personal-info .col h3 {
+    color: gray;
+}
+
+.career-profile {
+    margin-left: 10px;
+    width: 50%;
+    padding: 15px 30px;
+    border: 2px solid rgb(226, 226, 226);
+    border-radius: 5px;
+}
+
+.career-profile h1 {
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.career-profile div {
+    margin-bottom: 25px;
+}
+
+.career-profile h3 {
+    color: gray;
+}
+
+.edit-teacher {
+    padding: 15px;
+}
+
+.edit-teacher h1 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.update-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgb(228, 228, 228);
+    border-radius: 10px;
+    background-color: #ececec;
+    padding: 30px 50px;
+}
+
+.add-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.add-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.add-header button {
+    border: 2px solid #e66937;
+    background-color: #e66937;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+.add-header button:hover {
+    box-shadow: 0px 0px 5px #e66937;
+    background-color: transparent;
+    color: #e66937;
+}
+
+.add-teacher .avater-img .img-btn button:nth-child(1) {
+    border: 2px solid #e66937;
+    background-color: #e66937;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 10px;
+}
+
+.add-teacher .avater-img .img-btn button:nth-child(1):hover {
+    background-color: transparent;
+    color: #e66937;
+    box-shadow: 0px 0px 5px #e66937;
+}
+
+.add-teacher .avater-img .img-btn button:nth-child(2) {
+    border: 2px solid #e66937;
+    background-color: transparent;
+    color: #e66937;
+    padding: 4px 10px;
+    border-radius: 10px;
+}
+
+.add-teacher .avater-img .img-btn button:nth-child(2):hover {
+
+    background-color: #e66937;
+    color: white;
+    box-shadow: 0px 0px 5px #e66937;
+}
+
+.add-teacher {
+    border: 2px solid rgb(228, 228, 228);
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    padding: 10px 50px;
+
+}
+
+.avater-img {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.avater-img .file-content {
+    margin-top: 3rem;
+
+}
+
+.add-form {
+    display: flex;
+}
+
+.update-card .col,
+.add-form .col {
+    padding: 25px;
+}
+
+.update-card .col div,
+.add-form .col div {
+    margin-bottom: 10px;
+}
+
+.avater-img :nth-child(1),
+.avater-img :nth-child(2) {
+    padding: 10px 5px;
+}
+
+.img-btn :nth-child(1),
+.img-btn :nth-child(2) {
+    padding: 2px 5px
+}
+
+.img-btn :nth-child(1) {
+    margin-right: 10px;
+}
+
+.avater-img img {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+}
+
+.avater-img h2 {
+    font-weight: 600;
+}
+
+.tch-cr-list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.teacher-course-list h1 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.tch-cr-list {
+    margin-top: 15px;
+}
+
+.tch-cr-list div:nth-child(1) {
+    margin-right: 10px;
+}
+
+.tch-cr-list div:last-child {
+    margin-left: 10px;
+}
+
+.ant-input:focus,
+.ant-input:hover,
+.ant-select-selector:hover,
+.ant-select-selector:focus,
+.ant-select-selector:active,
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector,
+.ant-picker:hover,
+.ant-picker:active {
+    border-color: #e66937 !important;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px rgba(233, 170, 87, 0.2) !important;
+}
+
+
+.st-at-tags {
+    display: flex;
+    float: right;
+    margin-top: -50px;
+    color: #31b6eb;
+}
+
+.st-at-tags div .ant-tag:nth-child(1) {
+    margin-right: 0 !important;
+}
+
+.site-calendar-card {
+    width: 100%;
+    /* margin: 15px; */
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+}
+
+.calender-card {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: auto auto auto auto;
+
+}
+
+.st-at h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+
+.events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: absolute;
+    top: -4px;
+}
+
+.events .ant-badge-status {
+    width: 100%;
+    overflow: hidden;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.notes-month {
+    font-size: 28px;
+    text-align: center;
+}
+
+.notes-month section {
+    font-size: 28px;
+}
+
+@media screen and (max-width:1025px) {
+    .calender-card {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media screen and (max-width:769px) {
+    .calender-card {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media screen and (max-width:426px) {
+    .calender-card {
+        grid-template-columns: auto;
+    }
+}
+
+.main::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.main {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.ant-table table { font-size: 14px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: 500;
+    line-height: 20px;
+
+}
+
+.ant-table table thead { font-size: 16px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: bold;
+    line-height: 24px;
+
+}

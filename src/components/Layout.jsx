@@ -74,6 +74,7 @@ import StudentCopyVerification from "./campusRegistrar/StudentCopy";
 import Curriculum from "./campusRegistrar/Curriculum";
 import TuitionStatistics from "./campusRegistrar/Tutition";
 import CourseOffering from "./campusRegistrar/CourseOffering";
+import CampusAdmin from "./Campus_Head/Campus_Admin"
 const { Header, Content, Sider } = Layout;
 const drawerWidth = 240;
 
@@ -707,7 +708,7 @@ const Layouts = () => {
               <Route path="Superadmin" element={<SuperAdmin />} />
               <Route path="/register_user" element={<Register />} /> */}
               <Route path="/root_admin" element={<RootAdmin />} />
-              {/* <Route path="/campus_admin" element={<CampusAdmin />} /> */}
+              <Route path="/campus_admin" element={<CampusAdmin />} /> 
               <Route path="/center_register" element={<CenterRegistrar />} />
               <Route path="/graduate_list" element={<GraduatesList />} />
               <Route path="/Payment_status" element={<PaymentStatus />} />
@@ -718,9 +719,11 @@ const Layouts = () => {
               <Route path="/grade_approval" element={<GradeApproval />} />
               <Route path="/graduate_approval" element={<GraduatesApproval />} />
               <Route path="/curriculum" element={<Curriculum />} />
-              {/* <Route path="/student_copy" element={<StudentCopyVerification/>} /> */}
+               <Route path="/student_copy" element={<StudentCopyVerification/>} /> 
               <Route path="/tuition" element={<TuitionStatistics />} />
               <Route path="/course_offering" element={<CourseOffering />} />
+              <Route path="/view-student" element={<ViewCenterStudent />} />
+
 
 
 
