@@ -5,10 +5,61 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { userLogin } from "../../redux/user";
 
 
 export function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [isLoggingIn, setLoggingIn] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [otp, setOTP] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const current = useSelector((state) => state.user.value);
+  const [buttons, setButtons] = useState(false);
+  const [value, setValue] = useState(0);
+
+  const onFinish = () => {
+    console.log("data");
+    setLoading(true);
+    let data = {
+      email: email,
+      password: password,
+    };
+    console.log("data is", data);
+    if (data.email === 'onetest@gmail.com') {
+      // Handle specific case
+    }
+    dispatch(userLogin(data))
+      .then((res) => {
+        console.log("test", res);
+        if (data.email === 'onetest@gmail.com') {
+          // Handle specific case
+        }
+        if (res.error) {
+          // Handle error
+          console.error("Failed to login");
+        }
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  useEffect(() => {
+    if (current) {
+      navigate("/");
+    }
+  }, [current, navigate]);
+
   return (
     <section className="m-8 flex gap-4">
       <div className="w-full lg:w-3/5 mt-24">
@@ -28,6 +79,8 @@ export function SignIn() {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Password
@@ -40,6 +93,8 @@ export function SignIn() {
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <Checkbox
@@ -60,7 +115,7 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          <Button onClick={() => onFinish()} className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
 

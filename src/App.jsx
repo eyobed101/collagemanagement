@@ -1,13 +1,23 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Auth } from "@/layouts";
+// import { store } from "./src/Redux/store";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import store from "./redux/store";
+import Routing from "./routing";
+import { persistStore } from "redux-persist";
+
+// import "antd/dist/antd.css";
+import "./App.css";
+// import "./App.less";
 
 function App() {
+  const persist = persistStore(store);
+
   return (
-    <Routes>
-      <Route path="/dashboard/*" element={<Dashboard />} />
-      <Route path="/auth/*" element={<Auth />} />
-      <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
-    </Routes>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persist}>
+        <Routing />
+      </PersistGate>
+    </Provider>
   );
 }
 
