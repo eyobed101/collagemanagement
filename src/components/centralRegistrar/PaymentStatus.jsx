@@ -143,10 +143,10 @@ const studentsData = [
 const PaymentStatus = () => {
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
-    {/* <SiderGenerator /> */}
+    {/* <SiderGenerator />
 <div className="list-header mb-2 ml-100">
   <h1 className="text-2xl  font-[600] font-jakarta">Graduate List</h1>
-</div>
+</div> */}
       <ClearanceList studentsData={studentsData} />
     </div>
   );

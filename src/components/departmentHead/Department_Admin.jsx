@@ -33,7 +33,7 @@ const DepartmentAdmin = () => {
   return (
     <div>
           <nav style={{ padding: '20px', backgroundColor: '#eee',justifyContent:'start' , display:'flex', flexDirection:'row' }}>
-     <img style={{paddingLeft:'10px',paddingRight:'20px'}} src={require('../../../assets/logo1.png')} className="w-20" 
+     <img style={{paddingLeft:'10px',paddingRight:'20px'}} src={('../../../assets/logo1.png')} className="w-20" 
     //   onClick={()=> handlehome()}  
      />
           <button style={{paddingLeft:'10px',paddingRight:'30px' }}

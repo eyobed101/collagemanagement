@@ -350,7 +350,7 @@ const [open, setOpen] = React.useState(
                 </IconButton>
                 <img
                 style={{marginLeft:10}}
-                  src={require("../../../assets/logo1.png")}
+                  src={("../../../assets/logo1.png")}
                   className="w-[58px] h-[37px] z-1"
                 />
               </div>
@@ -514,7 +514,7 @@ const [open, setOpen] = React.useState(
 
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
-        <SiderGenerator />
+        {/* <SiderGenerator /> */}
     <div className="list-header mb-2 ml-100">
       <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">Lecturer Managment System</h1>
     </div>

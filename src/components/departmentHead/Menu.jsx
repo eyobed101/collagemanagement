@@ -9,11 +9,9 @@ import { useNavigate } from "react-router-dom";
 import Icon from "react-eva-icons";
 import { Layout, Menu } from "antd";
 
-import CenterRegistrar from "./Center_Registerar";
-import GradingSystem from "./GradeList";
-import GraduatesList from "./GraduateList";
-import PaymentStatus from "./PaymentStatus";
-import ViewCenterStudent from "./ViewStudent";
+import DepartmentAdmin from "./Department_Admin";
+import DepartmentCourse from "./Deparment_Course";
+import DepartmentHead from "./Department_Head";
 
 import {
   Configurator,
@@ -38,13 +36,12 @@ const icon = {
   className: "w-5 h-5 text-inherit",
 };
 
-const SiderGenerator = () => {
+const DepartSiderGenerator = () => {
   const [openKeys, setOpenKeys] = useState([]);
-  const [isCenterRegister, setIsCenterRegister] = useState(true);
-  const [isPay, setIsPay] = useState(false);
-  const [isGradeList, setIsGradeList] = useState(false);
-  const [isView, setIsView] = useState(false);
-  const [isGradulateList, setIsGraduateList] = useState(false);
+  const [isDepartmentHead, setIsDepartmentHead] = useState(true);
+  const [isDepartmentCourse, setIsDepartmentCourse] = useState(false);
+  const [isDepartmentAdmin, setIsDepartmentAdmin] = useState(false);
+  
 
   const drawerWidth = 240;
   const navigate = useNavigate();
@@ -52,43 +49,23 @@ const SiderGenerator = () => {
 
   
 
-  const handleCentralRegistrar = () => {
-    setIsPay(false);
-    setIsGraduateList(false);
-    setIsView(false);
-    setIsGradeList(false);
-    setIsCenterRegister(true);
-  };
-  const handlePay = () => {
-    setIsPay(true);
-    setIsGraduateList(false);
-    setIsView(false);
-    setIsGradeList(false);
-    setIsCenterRegister(false);
-  };
-  const handleView = () => {
-    setIsPay(false);
-    setIsGraduateList(false);
-    setIsView(true);
-    setIsGradeList(false);
-    setIsCenterRegister(false);
-  };
-  const handleGradeList = () => {
-    setIsPay(false);
-    setIsGraduateList(false);
-    setIsView(false);
-    setIsGradeList(true);
-    setIsCenterRegister(false);
-  };
+  const handleCDepartmentCourse = () => {
+    setIsDepartmentAdmin(false);
+    setIsDepartmentCourse(true);
+    setIsDepartmentHead(false);
 
-  const handleGraduateList = () => {
-    setIsPay(false);
-    setIsGraduateList(true);
-    setIsView(false);
-    setIsGradeList(false);
-    setIsCenterRegister(false);
   };
-
+  const handleDepartmentHead= () => {
+    setIsDepartmentAdmin(false);
+    setIsDepartmentCourse(false);
+    setIsDepartmentHead(true);
+  };
+  const handleDepartmentAdmin = () => {
+    setIsDepartmentAdmin(true);
+    setIsDepartmentCourse(false);
+    setIsDepartmentHead(false);
+  };
+  
   const handlelogout = () => {
     dispatch(userAction.logout());
   };
@@ -97,32 +74,22 @@ const SiderGenerator = () => {
 
   const routes = [
     {
-      title: "Center Registral",
+      title: "epartiment",
       pages: [
         {
           icon: <HomeIcon {...icon} />,
-          name: "Central Registrar",
-          onClick: handleCentralRegistrar,
+          name: "Departimen Admin",
+          onClick: handleDepartmentAdmin,
         },
         {
           icon: <HomeIcon {...icon} />,
-          name: "Payment Status",
-          onClick: handlePay,
+          name: "Departiment Head",
+          onClick: handleDepartmentHead,
         },
         {
           icon: <BuildingLibraryIcon {...icon} />,
-          name: "View",
-          onClick: handleView,
-        },
-        {
-          icon: <FaSchool {...icon} />,
-          name: "Grading System",
-          onClick: handleGradeList,
-        },
-        {
-          icon: <FaGraduationCap {...icon} />,
-          name: "Graduate list",
-          onClick: handleGraduateList,
+          name: "Depatiment Course",
+          onClick: handleCDepartmentCourse,
         },
         {
           icon: <MdLogout {...icon} />,
@@ -159,11 +126,9 @@ const SiderGenerator = () => {
           <Cog6ToothIcon className="h-5 w-5" />
         </IconButton>
         <div>
-          {isCenterRegister ? <CenterRegistrar /> : null}
-          {isPay ? <PaymentStatus /> : null}
-          {isGradeList ? <GradingSystem /> : null}
-          {isGradulateList ? <GraduatesList /> : null}
-          {isView ? <ViewCenterStudent /> : null}
+          {isDepartmentAdmin ? <DepartmentAdmin /> : null}
+          {isDepartmentHead ? <DepartmentHead /> : null}
+          {isDepartmentCourse ? <DepartmentCourse /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />
@@ -174,4 +139,4 @@ const SiderGenerator = () => {
   );
 };
 
-export default SiderGenerator;
+export default DepartSiderGenerator;

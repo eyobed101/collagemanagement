@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Form, Select, Button, Table, Space,Input } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import SiderGenerator from './Menu';
+// import SiderGenerator from './Menu';
 
 const { Option } = Select;
 
@@ -165,7 +165,7 @@ const Curriculum = () => {
 
   return (
     <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
-          <SiderGenerator navigate={navigate}/>
+          {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-sub mb-10 ml-[20%]">
    <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
         Curriculum and Course List

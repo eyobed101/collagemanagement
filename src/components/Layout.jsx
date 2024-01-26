@@ -60,9 +60,10 @@ import { Layout, Menu } from "antd";
 import RootAdmin from "./admin/Root_Admin";
 // import CampusAdmin from "./Campus_Head/Campus_Admin";
 import ViewCenterStudent from "./centralRegistrar/ViewStudent";
-import CenterRegistrar from "./centralRegistrar/Center_Registerar";
+// import CenterRegistrar from "./centralRegistrar/Center_Registerar";
 import Lecturer from "./lecturer/lecture";
 import DepartmentHead from "./departmentHead/Department_Head";
+import SiderGenerator from "./centralRegistrar/Menu"
 import DepartmentAdmin from "./departmentHead/Department_Admin";
 import GraduatesList from "./centralRegistrar/GraduateList";
 import PaymentStatus from "./centralRegistrar/PaymentStatus";
@@ -74,6 +75,10 @@ import StudentCopyVerification from "./campusRegistrar/StudentCopy";
 import Curriculum from "./campusRegistrar/Curriculum";
 import TuitionStatistics from "./campusRegistrar/Tutition";
 import CourseOffering from "./campusRegistrar/CourseOffering";
+import CampusSiderGenerator from "./campusRegistrar/Menu";
+import DepartSiderGenerator from "./departmentHead/Menu";
+import StudentSiderGenerator from "./student/Menu";
+import LucturerSiderGenerator from "./lecturer/Menu";
 const { Header, Content, Sider } = Layout;
 const drawerWidth = 240;
 
@@ -529,90 +534,90 @@ const Layouts = () => {
   ];
   const rootSubmenuKeys = ["sub1", "sub2", "sub4"];
 
-  const SiderGenerator = () => {
-    const [openKeys, setOpenKeys] = useState([]);
-    const onOpenChange = (keys) => {
-      const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
-      if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-        setOpenKeys(keys);
-      } else {
-        setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-      }
-    };
-    console.log("OpenKeys"  , profile)
-    if (profile == true) {
-      const currentURL = window.location.pathname;
-      return (
-        <Drawer variant="permanent" open={open}>
-          {/* <DrawerHeader /> */}
-          <div className="mt-6 ml-6 mb-2">
-            {open ? (
-              <div className="flex flex-row justify-start ml-1">
-                <IconButton
-                  onClick={handleDrawerClose}
-                  sx={{
-                    marginRight: 0,
-                    marginLeft: 0,
-                  }}
-                >
-                  <Icon
-                    name="menu-arrow-outline"
-                    fill="#667085"
-                    size="large" // small, medium, large, xlarge
-                    animation={{
-                      type: "pulse", // zoom, pulse, shake, flip
-                      hover: true,
-                      infinite: false,
-                    }}
-                  />
-                </IconButton>
-                <img
-                style={{marginLeft:10}}
-                  src={require("../assets/logo1.png")}
-                  className="w-[58px] h-[37px] z-1"
-                />
-              </div>
-            ) : (
-              <div className="flex flex-row justify-start -ml-2">
-                <IconButton
-                  color="default"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{
-                    marginRight: 0,
-                    marginLeft: 0,
-                    ...(open && { display: "none" }),
-                  }}
-                >
-                  <Icon
-                    name="menu-outline"
-                    fill="#667085"
-                    size="large" // small, medium, large, xlarge
-                    animation={{
-                      type: "pulse", // zoom, pulse, shake, flip
-                      hover: true,
-                      infinite: false,
-                    }}
-                  />
-                </IconButton>
-              </div>
-            )}
-          </div>
-          <Menu
-            mode="inline"
-            openKeys={openKeys}
-            onOpenChange={onOpenChange}
-            style={{
-              width: 240,
-              marginLeft: 10,
-            }}
-            items={items}
-          />
-        </Drawer>
-      );
-    }
-  };
+  // const SiderGenerator = () => {
+  //   const [openKeys, setOpenKeys] = useState([]);
+  //   const onOpenChange = (keys) => {
+  //     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+  //     if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+  //       setOpenKeys(keys);
+  //     } else {
+  //       setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+  //     }
+  //   };
+  //   console.log("OpenKeys"  , profile)
+  //   if (profile == true) {
+  //     const currentURL = window.location.pathname;
+  //     return (
+  //       <Drawer variant="permanent" open={open}>
+  //         {/* <DrawerHeader /> */}
+  //         <div className="mt-6 ml-6 mb-2">
+  //           {open ? (
+  //             <div className="flex flex-row justify-start ml-1">
+  //               <IconButton
+  //                 onClick={handleDrawerClose}
+  //                 sx={{
+  //                   marginRight: 0,
+  //                   marginLeft: 0,
+  //                 }}
+  //               >
+  //                 <Icon
+  //                   name="menu-arrow-outline"
+  //                   fill="#667085"
+  //                   size="large" // small, medium, large, xlarge
+  //                   animation={{
+  //                     type: "pulse", // zoom, pulse, shake, flip
+  //                     hover: true,
+  //                     infinite: false,
+  //                   }}
+  //                 />
+  //               </IconButton>
+  //               <img
+  //               style={{marginLeft:10}}
+  //                 src={require("../assets/logo1.png")}
+  //                 className="w-[58px] h-[37px] z-1"
+  //               />
+  //             </div>
+  //           ) : (
+  //             <div className="flex flex-row justify-start -ml-2">
+  //               <IconButton
+  //                 color="default"
+  //                 aria-label="open drawer"
+  //                 onClick={handleDrawerOpen}
+  //                 edge="start"
+  //                 sx={{
+  //                   marginRight: 0,
+  //                   marginLeft: 0,
+  //                   ...(open && { display: "none" }),
+  //                 }}
+  //               >
+  //                 <Icon
+  //                   name="menu-outline"
+  //                   fill="#667085"
+  //                   size="large" // small, medium, large, xlarge
+  //                   animation={{
+  //                     type: "pulse", // zoom, pulse, shake, flip
+  //                     hover: true,
+  //                     infinite: false,
+  //                   }}
+  //                 />
+  //               </IconButton>
+  //             </div>
+  //           )}
+  //         </div>
+  //         <Menu
+  //           mode="inline"
+  //           openKeys={openKeys}
+  //           onOpenChange={onOpenChange}
+  //           style={{
+  //             width: 240,
+  //             marginLeft: 10,
+  //           }}
+  //           items={items}
+  //         />
+  //       </Drawer>
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
      if(user.email == "onetest@gmail.com"){
@@ -708,13 +713,14 @@ const Layouts = () => {
               <Route path="/register_user" element={<Register />} /> */}
               <Route path="/root_admin" element={<RootAdmin />} />
               {/* <Route path="/campus_admin" element={<CampusAdmin />} /> */}
-              <Route path="/center_register" element={<CenterRegistrar />} />
+              <Route path="/center_register" element={<SiderGenerator />} />
+              <Route path="/student_home" element={<StudentSiderGenerator />} />
               <Route path="/graduate_list" element={<GraduatesList />} />
               <Route path="/Payment_status" element={<PaymentStatus />} />
-              <Route path="/lecture" element={<lecturer />} />
-              <Route path="/department_admin" element={<DepartmentAdmin />} />
+              <Route path="/lecture" element={<LucturerSiderGenerator />} />
+              <Route path="/department_admin" element={<DepartSiderGenerator />} />
               <Route path="/grading_system" element={<GradingSystem />} />
-              <Route path="/campus_registrar" element={<CampusRegistrar />} />
+              <Route path="/campus_registrar" element={<CampusSiderGenerator />} />
               <Route path="/grade_approval" element={<GradeApproval />} />
               <Route path="/graduate_approval" element={<GraduatesApproval />} />
               <Route path="/curriculum" element={<Curriculum />} />

@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import SiderGenerator from './Menu';
+// import SiderGenerator from './Menu';
 
 
 const TuitionStatistics = () => {
@@ -40,7 +40,7 @@ const TuitionStatistics = () => {
 
   return (
     <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
-    <SiderGenerator navigate={navigate}/>
+    {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-sub mb-10 ml-[20%]">
     <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
         Tuition Statistics

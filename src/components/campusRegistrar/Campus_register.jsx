@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Space, Table, Button, Col, DatePicker, Drawer, Form, Input, Row, Select ,Card } from "antd";
 import { useNavigate } from "react-router-dom";
-import SiderGenerator from './Menu';
+// import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
 // import ChartTeacher from "../../graph/teacherGraph/Chart";

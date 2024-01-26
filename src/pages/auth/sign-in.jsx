@@ -58,7 +58,7 @@ export function SignIn() {
     if (current) {
       navigate("/");
     }
-  }, [current, navigate]);
+  }, []);
 
   return (
     <section className="m-8 flex gap-4">

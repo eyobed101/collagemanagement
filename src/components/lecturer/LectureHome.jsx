@@ -10,7 +10,7 @@ import {
   where,
   query,
 } from "firebase/firestore";
-import { firestoreDb, storage } from "../../../firebase";
+import { firestoreDb, storage } from "../../firebase";
 import uuid from "react-uuid";
 import TextArea from "antd/lib/input/TextArea";
 import { faAdd, faEdit } from "@fortawesome/free-solid-svg-icons";

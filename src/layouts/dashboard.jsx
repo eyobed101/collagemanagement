@@ -32,7 +32,7 @@ export function Dashboard() {
           ripple={false}
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
-          <Cog6ToothIcon className="h-5 w-5" />
+          {/* <Cog6ToothIcon className="h-5 w-5" /> */}
         </IconButton>
         <Routes>
           {routes.map(
