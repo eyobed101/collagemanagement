@@ -1,0 +1,10 @@
+#staff.chart {
+    flex: 4;
+    padding: 10px;
+    color: gray ;
+    margin: -10px;
+}
+    
+#staff.chart #staff.chartGrid {
+      stroke: rgb(78, 77, 77);
+    }

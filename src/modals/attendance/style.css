@@ -1,0 +1,29 @@
+.at-filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+
+.at-filters div:nth-child(2) {
+    margin-right: 10px;
+}
+
+.view-header {
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 28px;
+}
+.ant-table table { font-size: 14px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: 500;
+    line-height: 20px;
+
+}
+
+.ant-table table thead { font-size: 16px; 
+    font-family: 'plus jakarta Sans';
+    font-weight: bold;
+    line-height: 24px;
+
+}

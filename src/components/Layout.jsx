@@ -79,6 +79,7 @@ import CampusSiderGenerator from "./campusRegistrar/Menu";
 import DepartSiderGenerator from "./departmentHead/Menu";
 import StudentSiderGenerator from "./student/Menu";
 import LucturerSiderGenerator from "./lecturer/Menu";
+import CampusAdmin from "./Campus_Head/Campus_Admin"
 const { Header, Content, Sider } = Layout;
 const drawerWidth = 240;
 
@@ -715,6 +716,8 @@ const Layouts = () => {
               {/* <Route path="/campus_admin" element={<CampusAdmin />} /> */}
               <Route path="/center_register" element={<SiderGenerator />} />
               <Route path="/student_home" element={<StudentSiderGenerator />} />
+              <Route path="/campus_admin" element={<CampusAdmin />} /> 
+              {/* <Route path="/center_register" element={<CenterRegistrar />} /> */}
               <Route path="/graduate_list" element={<GraduatesList />} />
               <Route path="/Payment_status" element={<PaymentStatus />} />
               <Route path="/lecture" element={<LucturerSiderGenerator />} />
@@ -724,9 +727,11 @@ const Layouts = () => {
               <Route path="/grade_approval" element={<GradeApproval />} />
               <Route path="/graduate_approval" element={<GraduatesApproval />} />
               <Route path="/curriculum" element={<Curriculum />} />
-              {/* <Route path="/student_copy" element={<StudentCopyVerification/>} /> */}
+               <Route path="/student_copy" element={<StudentCopyVerification/>} /> 
               <Route path="/tuition" element={<TuitionStatistics />} />
               <Route path="/course_offering" element={<CourseOffering />} />
+              <Route path="/view-student" element={<ViewCenterStudent />} />
+
 
 
 

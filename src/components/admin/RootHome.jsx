@@ -343,22 +343,18 @@ const RootHome = () => {
           <Card bordered={false} className="w-[100%] mb-10">
             <div className="flex flex-row justify-start align-bottom items-center"></div>
             <div className="flex flex-row justify-start align-bottom items-center mt-1">
-              <h1 className="text-3xl text-[#344054] ">Registered Users</h1>
-              <h4 className="text-base text-[#0B1354]">/ {attendStudents} </h4>
-              <FontAwesomeIcon
-                className="pr-2  mb-2 ml-5 text-[#0ceb20]"
-                icon={faArrowUp}
-              />
-              <h4 className="text-sm text-[#0ceb20]" style={{ marginLeft: -4 }}>
-                20 %
-              </h4>
-            </div>
-            <h4 className="text-base text-[#344054] font-normal mb-5">
-              Students that has been registered for the past year
-            </h4>
-            <div className="flex">
-              {/* <ChartStudent title="" aspect={4 /1} datas = {datavalue} /> */}
-            </div>
+            <h1 className="text-3xl text-[#344054] ">
+           Registered Users</h1>
+            <h4 className="text-base text-[#0B1354]">/ {attendStudents}   </h4>
+                <FontAwesomeIcon className="pr-2  mb-2 ml-5 text-[#0ceb20]" icon={faArrowUp} />
+                <h4 className="text-sm text-[#0ceb20]" style={{marginLeft:-4}}> 
+               20 %</h4>
+                </div>
+                <h4 className="text-base text-[#344054] font-normal mb-5">Students that has been registered for the past year</h4>
+            <div className="flex" >
+                  <ChartStudent title="" aspect={4 /1} datas = {datavalue} />
+                  </div>
+
           </Card>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
