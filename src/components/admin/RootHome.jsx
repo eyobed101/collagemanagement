@@ -8,6 +8,7 @@ import { DatePicker } from "antd";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import Icon from "react-eva-icons";
+import ChartStudent from "@/graph/studentGraph/Chart";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
