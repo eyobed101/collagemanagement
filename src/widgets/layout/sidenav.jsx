@@ -32,12 +32,12 @@ export function Sidenav({ brandImg, brandName, routes }) {
     <aside
       className={`${sidenavTypes[sidenavType]} ${
         openSidenav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-24px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
       <div className={`relative`}>
         <Link
           to="/"
-          className="py-6 px-8 text-center"
+          className="py-2 px-8 text-center"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -49,7 +49,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
             alt="Brand Logo"
             width={70}
             height={70}
-            style={{ marginBottom: "20px" }}
+            style={{ marginBottom: "5px" }}
           />
           <Typography
             variant="h6"
@@ -73,7 +73,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
         {routes.map(({ title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
-              <li className="mx-3.5 mt-4 mb-2">
+              <li className="mx-3.5 mt-2 mb-2">
                 <Typography
                   variant="small"
                   color={sidenavType === "dark" ? "white" : "blue-gray"}
@@ -94,7 +94,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       ? "white"
                       : "blue-gray"
                   }
-                  className={`flex items-center gap-4 px-4 capitalize  ${
+                  className={`flex items-center gap-4 px3 capitalize  ${
                     pageIndex === activeIndex ? "active" : ""
                   }`}
                   fullWidth

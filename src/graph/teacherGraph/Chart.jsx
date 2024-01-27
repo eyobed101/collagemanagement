@@ -9,7 +9,6 @@ import {
 } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp} from "@fortawesome/free-solid-svg-icons";
-import Icon from 'react-eva-icons';
 import { grey } from "@mui/material/colors";
 
 const data = [
@@ -35,11 +34,7 @@ const ChartTeacher = ({ aspect, title }) => {
         <div style={{flexDirection:'row' ,display:"flex" ,justifyContent:'space-between',marginBottom:-20 , marginTop:5}}>
         <div style={{display:"flex" ,marginTop:5,}}>
           <div>
-        <Icon 
-         name="radio-button-off-outline"
-         fill={"#15C9CE"}
-         size="small"
-        />
+     
         </div>
         <p className="label" style={{ marginLeft:5, }}>{`${payload[0].value}`}</p>
         </div>

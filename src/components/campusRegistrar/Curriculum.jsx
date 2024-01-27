@@ -166,15 +166,17 @@ const Curriculum = () => {
   return (
     <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
           {/* <SiderGenerator navigate={navigate}/> */}
-    <div className="list-sub mb-10 ml-[20%]">
+    <div className="list-sub mb-10 ml-[2%]">
    <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
         Curriculum and Course List
       </p>
-      <Button type="primary" onClick={showCurriculumModal}>
+      <Button type="primary" style={{ background: "blue", }} onClick={showCurriculumModal}>
         New Curriculum
       </Button>
 
-      <Modal title="Create New Curriculum" visible={isCurriculumModalVisible} onOk={handleCurriculumOk} onCancel={handleCancel}>
+      <Modal title="Create New Curriculum" visible={isCurriculumModalVisible}
+      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      onOk={handleCurriculumOk} onCancel={handleCancel}>
         <Form form={form} onFinish={handleCurriculumOk} layout="vertical">
           <Form.Item label="Year" name="year" rules={[{ required: true, message: 'Please select a year' }]}>
             <Select>
@@ -207,7 +209,10 @@ const Curriculum = () => {
         </Form>
       </Modal>
 
-      <Modal title="Add Courses to Curriculum" visible={isCourseModalVisible} onOk={handleCourseOk} onCancel={handleCancel}>
+      <Modal title="Add Courses to Curriculum" visible={isCourseModalVisible} 
+      onOk={handleCourseOk} onCancel={handleCancel}
+      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      >
         <Form form={form} onFinish={handleCourseOk} layout="vertical">
           <Form.Item label="Curriculum Name" name="curriculumName">
             <Input value={currculumName} placeholder={currculumName} disabled />
@@ -232,6 +237,8 @@ const Curriculum = () => {
       visible={isEditCurriculumModalVisible}
       onOk={handleEditCurriculumOk}
       onCancel={() => setIsEditCurriculumModalVisible(false)}
+      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+
     >
       <Form form={form} layout="vertical">
         <Form.Item name="year" label="Academic Year">
@@ -267,6 +274,8 @@ const Curriculum = () => {
       visible={isEditCourseModalVisible}
       onOk={handleEditCourseOk}
       onCancel={() => setIsEditCourseModalVisible(false)}
+      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+
     >
       <Form form={form} layout="vertical">
         <Form.Item name="courseName" label="Course Name">

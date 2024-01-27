@@ -4,6 +4,25 @@ import CampusHome from './CampusHome';
 import CampusDash from './Campus_Dashboard';
 import { useSelector, useDispatch } from "react-redux";
 import { userAction } from "../../redux/user";
+import {
+  Configurator,
+  DashboardNavbar,
+  Footer,
+  Sidenav,
+} from "@/widgets/layout";
+import {
+  BuildingLibraryIcon,
+  HomeIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
+import { IconButton } from "@mui/material";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { setSidenavType } from "@/context";
+import { LogoutOutlined } from "@mui/icons-material";
+
+const icon = {
+  className: "w-5 h-5 text-inherit",
+};
 
 
 function CampusAdmin() {
@@ -35,25 +54,52 @@ function CampusAdmin() {
   const handlelogout =() =>{
     dispatch(userAction.logout());
   }
-  return (
-    <div>
-      {/* <NavBar /> */}
-      <nav style={{ padding: '20px', backgroundColor: '#eee',justifyContent:'start' , display:'flex', flexDirection:'row' }}>
-      <img style={{paddingLeft:'10px',paddingRight:'20px'}} src={'../../../assets/logo1.png'} className="w-20" 
-      onClick={()=> handlehome()}  
-     />
-       <button style={{paddingLeft:'10px',paddingRight:'30px' }}
-          onClick={()=> handlehome()}
-          > <p style={{fontSize:16, fontWeight:'bold'}}>Home </p></button>
 
-          <button style={{paddingLeft:'20px',paddingRight:'30px' }}
-           onClick={() => handleUser()}
-          ><p style={{fontSize:16, fontWeight:'bold'}}>Create User </p></button>
-  
-          <button style={{textAlign:'right'}}
-          onClick={() => handlelogout()}
-          > <p style={{fontSize:16, fontWeight:'bold'}}>Logout </p></button>
-    </nav>
+  const routes = [
+    {
+      title: "Campus Administrator",
+      pages: [
+        { icon: <HomeIcon {...icon} />, name: "Home", onClick: handlehome },
+   
+        {
+          icon: <UserCircleIcon {...icon} />,
+          name: "Create User",
+          onClick: handleUser,
+        },
+        {
+          icon: <LogoutOutlined {...icon} />,
+          name: "Log out",
+          onClick: handlelogout,
+        },
+      ],
+    },
+    // Add more navigation sections as needed
+  ];
+  return (
+    <div className="min-h-screen bg-blue-gray-50/50">
+    <Sidenav
+      routes={routes}
+      brandImg={
+        setSidenavType === "dark"
+          ? "/img/logo-ct.png"
+          : "/img/logo-ct-dark.png"
+      }
+    />
+      <div className="p-4 xl:ml-80">
+        {/* <NavBar /> */}
+        <DashboardNavbar />
+        <Configurator />
+        {/* <IconButton
+          size="lg"
+          color="white"
+          className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
+          ripple={false}
+          onClick={() => setOpenConfigurator(dispatch, true)}
+        >
+          <Cog6ToothIcon className="h-5 w-5" />
+        </IconButton> */}
+        <div>
+    
       <div style={{ padding: '20px' }}>
        {isUser?  <CreateUser  onSubmit={handleCampusSubmit} /> :<div> </div>}             
       <div>
@@ -64,6 +110,11 @@ function CampusAdmin() {
           <pre>{JSON.stringify(user, null, 2)}</pre> */}
         </div>
       </div>
+      <div className="text-blue-gray-600">
+          <Footer />
+        </div>
+    </div>
+    </div>
     </div>
   );
 }

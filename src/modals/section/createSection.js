@@ -66,6 +66,7 @@ function CreateSection() {
                 visible={open}
                 title="Add Section"
                 onOk={handleOk}
+                okButtonProps={{ style: { backgroundColor: 'blue' } }} 
                 onCancel={handleCancel}
                 footer={[
                     <Button key="back" onClick={handleCancel}>

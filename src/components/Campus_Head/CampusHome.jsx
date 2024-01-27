@@ -132,6 +132,7 @@ return (
       <Modal  
         title="Edit User"
         visible={isModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
@@ -160,6 +161,7 @@ return (
       <Modal
         title="Delete User"
         visible={isDeleteModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
       >

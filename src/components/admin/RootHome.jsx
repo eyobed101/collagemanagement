@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Space, Table, Tag, Card, Select } from "antd";
+import React, { useState , useEffect} from "react";
+import { Space, Table, Tag, Card, Select ,Modal , Input ,Button } from "antd";
 import Grid from "@mui/material/Grid";
 
 // import ChartStudent from "../../graph/studentGraph/Chart";
@@ -7,105 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DatePicker } from "antd";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import Icon from "react-eva-icons";
+// import Icon from "react-eva-icons";
 import ChartStudent from "@/graph/studentGraph/Chart";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => (
-      <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
-    ),
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Edit </a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    email: "john@admas.com",
-    role: "Campus head",
-  },
-  {
-    key: "2",
-    name: "kebede ayele",
-    email: "kebede@admas.com",
-    role: "Campus head",
-  },
-  {
-    key: "3",
-    name: "Tomas nahom",
-    email: "tomas@admas.com",
-    role: "Center registrar head",
-  },
-];
 
-const columns1 = [
-  {
-    title: "Campus Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => (
-      <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
-    ),
-  },
-  {
-    title: "Campus Location",
-    dataIndex: "location",
-    key: "location",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Edit</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
-const data1 = [
-  {
-    key: "1",
-    name: "Addis Ababa center",
-    location: "Addis Ababa Stadium",
-  },
-  {
-    key: "2",
-    name: "Jima center",
-    location: "Jimma Stadium",
-  },
-  {
-    key: "3",
-    name: "Addis Ababa Lamberet center",
-    location: "Addis Ababa Lamberet Kebele 12 center",
-  },
-];
 const RootHome = () => {
   var isDaily = "white";
   const [isMale, setIsMale] = useState("none");
@@ -113,6 +20,249 @@ const RootHome = () => {
   const [isFemale, setIsFemale] = useState("none");
   const [isAll, setIsAll] = useState("none");
   const [attendStudents, setAttendStudents] = useState();
+  const [datas, setData] = useState([]);
+  const [datas1, setData1] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modifiedUserData, setModifiedUserData] = useState({});
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser1, setSelectedUser1] = useState(null);
+  const [isModalVisible1, setIsModalVisible1] = useState(false);
+  const [modifiedUserData1, setModifiedUserData1] = useState({});
+  const [isDeleteModalVisible1, setIsDeleteModalVisible1] = useState(false);
+
+
+
+  useEffect(() => {
+    // Fetch or set your user data here
+    // For demonstration purposes, I'm using static data
+    const data = [
+           {
+          key: "1",
+          name: "John Brown",
+          email: "john@admas.com",
+          role: "Campus head",
+          center: "campus1"
+        },
+        {
+          key: "2",
+          name: "kebede ayele",
+          email: "kebede@admas.com",
+          role: "Campus head",
+          center: "campus3"
+        },
+        {
+          key: "3",
+          name: "Tomas nahom",
+          email: "tomas@admas.com",
+          role: "Center registrar head",
+          center: "campus2"
+        },
+    ];
+
+    setData(data);
+  }, []);
+
+  useEffect(() => {
+    // Fetch or set your user data here
+    // For demonstration purposes, I'm using static data
+    const data1 = [
+      {
+        key: "1",
+        id:"campus1",
+        name: "Addis Ababa center",
+        location: "Addis Ababa Stadium",
+      },
+      {
+        key: "2",
+        id:"campus2",
+        name: "Jima center",
+        location: "Jimma Stadium",
+      },
+      {
+        key: "3",
+        id:"campus2",
+        name: "Addis Ababa Lamberet center",
+        location: "Addis Ababa Lamberet Kebele 12 center",
+      },
+    ];
+
+    setData1(data1);
+  }, []);
+
+
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => (
+        <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
+      ),
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Center",
+      dataIndex: "center",
+      key: "center",
+    },
+  {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <>
+          <Button type="link" onClick={() => handleEditUser(record)}>
+            Edit
+          </Button>
+          <Button type="link" onClick={() => handleDeleteUser(record)}>
+            Delete
+          </Button>
+        </>
+      ),
+    },
+  ];
+ 
+
+   
+ 
+  
+  const columns1 = [
+    {
+      title: "Campus Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => (
+        <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
+      ),
+    },
+    {
+      title: "Campus ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Campus Location",
+      dataIndex: "location",
+      key: "location",
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <>
+          <Button type="link" onClick={() => handleEditUser1(record)}>
+            Edit
+          </Button>
+          <Button type="link" onClick={() => handleDeleteUser1(record)}>
+            Delete
+          </Button>
+        </>
+      ),
+    },
+  ];
+  
+  
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setModifiedUserData({ ...user });
+    setIsModalVisible(true);
+  };
+
+  const handleDeleteUser = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalVisible(true);
+  };
+
+  
+  const handleEditUser1 = (user) => {
+    setSelectedUser1(user);
+    setModifiedUserData1({ ...user });
+    setIsModalVisible1(true);
+  };
+
+  const handleDeleteUser1 = (user) => {
+    setSelectedUser1(user);
+    setIsDeleteModalVisible1(true);
+  };
+
+  const handleModalOk = () => {
+    // Handle your logic to update the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = datas.map((user) =>
+      user.key === selectedUser.key ? { ...user, ...modifiedUserData } : user
+    );
+    setData(updatedData);
+    setIsModalVisible(false);
+    setSelectedUser(null);
+    setModifiedUserData({});
+  };
+  
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setSelectedUser(null);
+    setModifiedUserData({});
+  };
+
+  const handleDeleteModalOk = () => {
+    // Handle your logic to delete the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = datas.filter((user) => user.key !== selectedUser.key);
+    setData(updatedData);
+    setIsDeleteModalVisible(false);
+    setSelectedUser(null);
+  };
+
+  const handleDeleteModalCancel = () => {
+    setIsDeleteModalVisible(false);
+    setSelectedUser(null);
+  };
+
+  const handleModalOk1 = () => {
+    // Handle your logic to update the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = datas1.map((user) =>
+      user.key === selectedUser1.key ? { ...user, ...modifiedUserData } : user
+    );
+    setData1(updatedData);
+    setIsModalVisible1(false);
+    setSelectedUser1(null);
+    setModifiedUserData1({});
+  };
+  
+  const handleModalCancel1 = () => {
+    setIsModalVisible1(false);
+    setSelectedUser1(null);
+    setModifiedUserData1({});
+  };
+
+  const handleDeleteModalOk1 = () => {
+    // Handle your logic to delete the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = datas1.filter((user) => user.key !== selectedUser1.key);
+    setData1(updatedData);
+    setIsDeleteModalVisible1(false);
+    setSelectedUser1(null);
+  };
+
+  const handleDeleteModalCancel1 = () => {
+    setIsDeleteModalVisible1(false);
+    setSelectedUser1(null);
+  };
+
+  
+
+
   const Dates = [
     {
       id: 1,
@@ -123,7 +273,7 @@ const RootHome = () => {
               display: "block",
             }}
           >
-            <Icon name="checkmark-outline" fill={isDaily} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={isDaily} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Daily</span>
         </div>
@@ -139,7 +289,7 @@ const RootHome = () => {
               display: "block",
             }}
           >
-            <Icon name="checkmark-outline" fill={isDaily} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={isDaily} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Weekly</span>
         </div>
@@ -155,7 +305,7 @@ const RootHome = () => {
               display: "block",
             }}
           >
-            <Icon name="checkmark-outline" fill={isDaily} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={isDaily} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Monthly</span>
         </div>
@@ -171,7 +321,7 @@ const RootHome = () => {
               display: "block",
             }}
           >
-            <Icon name="checkmark-outline" fill={"#15C9CE"} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={"#15C9CE"} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Annually</span>
         </div>
@@ -190,7 +340,7 @@ const RootHome = () => {
               display: isMale,
             }}
           >
-            <Icon name="checkmark-outline" fill={"DC5FC9"} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={"DC5FC9"} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Male</span>
         </div>
@@ -207,7 +357,7 @@ const RootHome = () => {
               display: isFemale,
             }}
           >
-            <Icon name="checkmark-outline" fill={"DC5FC9"} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={"DC5FC9"} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>Female</span>
         </div>
@@ -224,7 +374,7 @@ const RootHome = () => {
               display: isAll,
             }}
           >
-            <Icon name="checkmark-outline" fill={"#15C9CE"} size="medium" />
+            {/* <Icon name="checkmark-outline" fill={"#15C9CE"} size="medium" /> */}
           </div>
           <span style={{ marginLeft: 10 }}>All Genders</span>
         </div>
@@ -243,9 +393,9 @@ const RootHome = () => {
       //   backgroundColor: "#FFF",
       //   width: "100%",
       // }}
-      className="mt-12 mb-8 flex flex-col gap-12"
+      className="  flex flex-col gap-12"
     >
-      <p className="!font-jakarta text-left text-[#000000] text-[20px] font-bold align-middle  mb-8 ml-5">
+      <p className="!font-jakarta text-left text-[#000000] text-[20px] font-bold align-middle  mb-2 ml-5">
         Root Admin Dashboard
       </p>
       <div className=" ml-4">
@@ -358,7 +508,7 @@ const RootHome = () => {
 
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={12}>
           <Card bordered={false} className="w-[100%] min-h-[419px]">
             <div className="flex flex-row justify-start align-bottom items-center">
               {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
@@ -369,14 +519,14 @@ const RootHome = () => {
             </div>
             <Table
               columns={columns}
-              dataSource={data}
+              dataSource={datas}
               style={{ marginTop: 20 }}
               pagination={{ position: ["bottomCenter"] }}
             />
             ;
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={12}>
           <Card bordered={false} className="w-[100%] min-h-[419px]">
             <div>
               <div className="flex flex-row justify-start align-bottom items-center">
@@ -388,7 +538,7 @@ const RootHome = () => {
               </div>
               <Table
                 columns={columns1}
-                dataSource={data1}
+                dataSource={datas1}
                 style={{ marginTop: 20 }}
                 pagination={{ position: ["bottomCenter"] }}
               />
@@ -407,6 +557,88 @@ const RootHome = () => {
           </Card>
         </Grid>
       </Grid>
+      <Modal  
+        title="Edit User"
+        visible={isModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <label>Name:</label>
+        <Input
+          value={modifiedUserData.name}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, name: e.target.value })}
+        />
+        <label>Email:</label>
+        <Input
+          value={modifiedUserData.email}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, email: e.target.value })}
+        />
+        <label>Role:</label>
+        <Input
+          value={modifiedUserData.role}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, role: e.target.value })}
+        />
+         {/* <label>Password:</label>
+        <Input
+          value={modifiedUserData.password}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, password: e.target.value })}
+        /> */}
+         <label>Center:</label>
+        <Input
+          value={modifiedUserData.center}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, center: e.target.value })}
+        />
+      </Modal>
+
+      <Modal
+        title="Delete User"
+        visible={isDeleteModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+      >
+        <p>Are you sure you want to delete {selectedUser?.name}?</p>
+      </Modal>
+
+      <Modal  
+        title="Edit Center"
+        visible={isModalVisible1}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        onOk={handleModalOk1}
+        onCancel={handleModalCancel1}
+      >
+        <label>Name:</label>
+        <Input
+          value={modifiedUserData1.name}
+          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, name: e.target.value })}
+        />
+        <label>ID :</label>
+        <Input
+          value={modifiedUserData1.id}
+          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, id: e.target.value })}
+        />
+        <label>Location:</label>
+        <Input
+          value={modifiedUserData1.location}
+          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, location: e.target.value })}
+        />
+         <label>Password:</label>
+        <Input
+          value={modifiedUserData.password}
+          onChange={(e) => setModifiedUserData({ ...modifiedUserData, password: e.target.value })}
+        />
+      </Modal>
+
+      <Modal
+        title="Delete Campus"
+        visible={isDeleteModalVisible1}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        onOk={handleDeleteModalOk1}
+        onCancel={handleDeleteModalCancel1}
+      >
+        <p>Are you sure you want to delete {selectedUser1?.name}?</p>
+      </Modal>
     </div>
   );
 };

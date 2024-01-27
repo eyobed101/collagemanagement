@@ -295,6 +295,7 @@ const DepartmentHead = () => {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
         footer={[
           <Button key="back" onClick={handleCancel}>
             Close

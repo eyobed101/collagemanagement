@@ -47,12 +47,13 @@ const Curriculum = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" style={{ backgroundColor: "blue" }}  onClick={showModal}>
         View Curriculum
       </Button>
       <Modal
         title="Curriculum"
         visible={isModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
         onOk={handleOk}
         onCancel={handleCancel}
         width={800} // Adjust the width as needed

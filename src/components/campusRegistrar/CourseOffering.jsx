@@ -112,7 +112,7 @@ const CourseOffering = () => {
         Course Offering
       </p>
       <div>
-        <div className="list-filter ml-[15%]">
+        <div className="list-filter ml-[2%]">
     <Select 
         bordered={false}
         className="!rounded-[6px] border-[#EAECF0] border-[2px]"
@@ -151,12 +151,14 @@ const CourseOffering = () => {
         </Select>
   </div>
       </div>
-      <div className="list-sub mb-10 ml-[20%]">
+      <div className="list-sub mb-10 ml-[2%]">
       <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
        Selected Course 
       </p>
         <Table columns={columns} dataSource={selectedCourses} />
-        <Modal title="Select Course" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal title="Select Course" visible={isModalVisible} 
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        onOk={handleOk} onCancel={handleCancel}>
           <div>
           <label>Select Course:</label>
           <Select onChange={handleCourseChange} value=""

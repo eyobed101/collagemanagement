@@ -16,7 +16,7 @@ import "../../modals/attendance/style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp} from "@fortawesome/free-solid-svg-icons";
-import Icon from 'react-eva-icons'
+// import Icon from 'react-eva-icons'
 import CampusHome from "./CampusHome";
 // import "../../Auth/stylle.css"
 //  import Select ,{components} from 'react-select'
@@ -306,10 +306,10 @@ var rangtimes =  undefined
       <div style={{
         display: "block"
       }}>
-      <Icon name = "checkmark-outline" 
+      {/* <Icon name = "checkmark-outline" 
       fill={isDaily}
       size="medium"
-      />
+      /> */}
       </div>
       <span style={{marginLeft:10 }}>Daily</span>
       </div>,
@@ -324,10 +324,10 @@ var rangtimes =  undefined
       <div style={{
         display: "block"
       }}>
-      <Icon name = "checkmark-outline" 
+      {/* <Icon name = "checkmark-outline" 
       fill={isDaily}
       size="medium"
-      />
+      /> */}
       </div>
       <span style={{marginLeft:10 }}>Weekly</span>
       </div>,
@@ -342,10 +342,10 @@ var rangtimes =  undefined
       <div style={{
         display: "block"
       }}>
-      <Icon name = "checkmark-outline" 
+      {/* <Icon name = "checkmark-outline" 
        fill={isDaily}
       size="medium"
-      />
+      /> */}
       </div>
       <span style={{marginLeft:10 }}>Monthly</span>
       </div>,
@@ -360,10 +360,10 @@ var rangtimes =  undefined
       <div style={{
         display: "block"
       }}>
-      <Icon name = "checkmark-outline" 
+      {/* <Icon name = "checkmark-outline" 
        fill={"#15C9CE"}
       size="medium"
-      />
+      /> */}
       </div>
       <span style={{marginLeft:10 }}>Annually</span>
       </div>,
@@ -403,10 +403,10 @@ var rangtimes =  undefined
         <div style={{
           display: isMale
         }}>
-        <Icon name = "checkmark-outline" 
+        {/* <Icon name = "checkmark-outline" 
          fill={"DC5FC9"}
         size="medium"
-        />
+        /> */}
         </div>
         <span style={{marginLeft:10 }}>Male</span>
         </div>,
@@ -423,10 +423,10 @@ var rangtimes =  undefined
         <div style={{
           display: isFemale
         }}>
-        <Icon name = "checkmark-outline"
+        {/* <Icon name = "checkmark-outline"
          fill={"DC5FC9"}
         size="medium"
-        />
+        /> */}
         </div>
         <span style={{marginLeft:10 }}>Female</span>
         </div>,
@@ -442,10 +442,10 @@ var rangtimes =  undefined
         <div style={{
           display: isAll
         }}>
-        <Icon name = "checkmark-outline" 
+        {/* <Icon name = "checkmark-outline" 
         fill={"#15C9CE"}
         size="medium"
-        />
+        /> */}
         </div>
         <span style={{marginLeft:10 }}>All Genders</span>
         </div>,

@@ -11,7 +11,6 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp} from "@fortawesome/free-solid-svg-icons";
-import Icon from 'react-eva-icons';
 
 const data = [
   { name: "Sept", Total: 800 },
@@ -36,11 +35,11 @@ const ChartStudent = ({ aspect, title }) => {
         <div className="custom-tooltip bg-white ml-10 mt-10" style={{borderRadius :15 ,boxShadow:"0px 0px 5px lightgray" , margin:10,paddingTop:5,paddingRight:5, paddingLeft:5,color:'gray' }}>
         <div style={{flexDirection:'row' ,display:"flex" ,justifyContent:'space-between',marginBottom:-25}}>
         <div style={{display:"flex" ,marginTop:5}}>
-        <Icon 
+        {/* <Icon 
          name="radio-button-off-outline"
          fill={"#15C9CE"}
          size="small"
-        />
+        /> */}
         <p className="label" style={{ marginLeft:5, marginTop:-5 }}>{`${payload[0].value}`}</p>
         </div>
         <div style={{flexDirection:'row' ,display:"flex", marginTop:5}}>

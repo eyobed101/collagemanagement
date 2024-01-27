@@ -6,7 +6,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
-import Icon from "react-eva-icons";
+// import Icon from "react-eva-icons";
 import { Layout, Menu } from "antd";
 
 import CenterRegistrar from "./Center_Registerar";
@@ -109,12 +109,7 @@ const SiderGenerator = () => {
           name: "Payment Status",
           onClick: handlePay,
         },
-        {
-          icon: <BuildingLibraryIcon {...icon} />,
-          name: "View",
-          onClick: handleView,
-        },
-        {
+            {
           icon: <FaSchool {...icon} />,
           name: "Grading System",
           onClick: handleGradeList,
@@ -149,7 +144,7 @@ const SiderGenerator = () => {
         {/* <NavBar /> */}
         <DashboardNavbar />
         <Configurator />
-        <IconButton
+        {/* <IconButton
           size="lg"
           color="white"
           className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
@@ -157,7 +152,7 @@ const SiderGenerator = () => {
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
           <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
+        </IconButton> */}
         <div>
           {isCenterRegister ? <CenterRegistrar /> : null}
           {isPay ? <PaymentStatus /> : null}

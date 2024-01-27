@@ -14,7 +14,9 @@ function UserForm({ onSubmit }) {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [campus, setCampus] = useState('');
+
   const [password, setPassword] = useState('');
+
   const handleSubmit = () => {
     const newUser = {
       name,

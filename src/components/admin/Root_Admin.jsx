@@ -99,7 +99,7 @@ function RootAdmin() {
         {/* <NavBar /> */}
         <DashboardNavbar />
         <Configurator />
-        <IconButton
+        {/* <IconButton
           size="lg"
           color="white"
           className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
@@ -107,7 +107,7 @@ function RootAdmin() {
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
           <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
+        </IconButton> */}
         <div>
           {/* <Sidenav brandName="Admas University" routes={routes} /> */}
           <div style={{ padding: "20px" }}>

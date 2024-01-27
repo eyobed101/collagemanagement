@@ -10,7 +10,11 @@
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
-    color: white;
+    color: grey;
     margin-bottom: 5vh;
     text-align: center;
+}
+
+.ant-btn-primary {
+    background-color: Grey;
 }

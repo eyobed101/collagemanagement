@@ -19,7 +19,7 @@ const OpenCurriculumButton = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary"  style={{ backgroundColor: "blue" }} onClick={showModal}>
         Open Curriculum
       </Button>
       <Modal
@@ -27,6 +27,8 @@ const OpenCurriculumButton = () => {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+
       >
         {/* Add curriculum details or component here */}
         <p>This is where you display details about the curriculum.</p>

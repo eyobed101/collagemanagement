@@ -173,9 +173,9 @@ const CenterRegistrar = () => {
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">Center Registrar Management System</h1>
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Center Registrar Management System</h1>
     </div>
-    <div class="flex gap-30 p-10 ml-[18%]">
+    <div class="flex gap-30 p-10 ml-[2%]">
     <Space direction="horizontal" size={16}>
     {noUsers.map(item => (
          <Card
@@ -199,23 +199,9 @@ const CenterRegistrar = () => {
   </Space>
   
    </div>
-    <div className="list-sub mb-10 ml-[20%]">
-      <div className="list-filter">
-        <Select
-          bordered={false}
-          className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-          placeholder="--Select Campus ---"
-          style={{ width: 120 }}
-          onChange={handleCampusChange}
-        >
-          {campuses?.map((item, i) => (
-            <Option key={item.id} value={item.id} lable={item.name}>
-              {item.name}
-            </Option>
-          ))}
-        </Select>
-      </div>
-      <div className="list-sub mb-10 ml-[20%]">
+    <div className="list-sub mb-10 ml-[2%]">
+      
+      <div className="list-sub mb-10 ml-[0%] mt-[2%]">
         <div className="list-filter">
           <Select
             bordered={false}
@@ -247,7 +233,7 @@ const CenterRegistrar = () => {
           )}
       </div>
  </div>
- <div className="list-sub mb-10 ml-[20%]">
+ <div className="list-sub mb-10 ml-[1%]">
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
  <Grid item xs={12} sm={12} md={4}>
           <Card
@@ -298,64 +284,7 @@ const CenterRegistrar = () => {
         </Grid> 
         </div>
       </div>
-      <div className="list-sub mb-10 ml-[20%]">
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
-          <Grid item xs={12} sm={12} md={4}>
-            <Card bordered={false} className="w-[100%] min-h-[419px]">
-              <div className="flex flex-row justify-start align-bottom items-center">
-                {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-                <h1 className="text-base text-[#344054] font-normal">
-                  Graduate students
-                </h1>
-              </div>
-              <div className="flex flex-row justify-start align-bottom items-center">
-                <h1 className="text-3xl text-[#344054]">10</h1>
-                <h4 className="text-base text-[#344054]">/ 50 </h4>
-                <FontAwesomeIcon
-                  className="pr-2  mb-2 ml-5 text-[red]"
-                  icon={faArrowDown}
-                />
-                <h4 className="text-sm text-[red]" style={{ marginLeft: -4 }}>
-                  20%
-                </h4>
-              </div>
-              <h4 className="text-base text-[#344054] font-normal  mb-5">
-                Decreased on graduate Students
-              </h4>
-              {/* <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} /> */}
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={8}>
-            <Card bordered={false} className="w-[100%] min-h-[419px]">
-              <div>
-                <div>
-                  {/* Display student records based on selected campus and year */}
-                  {/* {selectedCampus && selectedYear && ( */}
-                  <div className="">
-                    <h2 className="text-xl  font-[600] font-jakarta ">
-                      Student Records for {selectedYear}{" "}
-                    </h2>
-                    <Table
-                      onRow={(record, rowIndex) => {
-                        return {
-                          onClick: (event) => handleView(record), // click row
-                        };
-                      }}
-                      style={{ marginTop: 20 }}
-                      columns={columns}
-                      dataSource={getFilteredStudentRecords(
-                        selectedCampus,
-                        selectedYear
-                      )}
-                      pagination={{ position: ["bottomCenter"] }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Grid>
-        </Grid>
-      </div>
+    
     </div>
   );
 };

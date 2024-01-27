@@ -32,15 +32,12 @@ const PrivateScreen = ({ children, role }) => {
 
 export default function Routing() {
   return (
-    // <BrowserRouter>
       <Routes>
         <Route element={<PrivateScreen />}>
           <Route path="/*" element={<Layout />} />
         </Route>
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<SignUp />} />
-        {/* <Route path="/welcome" element={<Welcome />} /> */}
       </Routes>
-    // </BrowserRouter>
   );
 }

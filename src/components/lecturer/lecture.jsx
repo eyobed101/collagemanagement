@@ -6,7 +6,7 @@ import { userAction } from "../../redux/user";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
 import { styled, useTheme } from "@mui/material/styles";
-import Icon from "react-eva-icons";
+// import Icon from "react-eva-icons";
 import { Layout, Menu } from "antd";
 import { faAdd, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -177,7 +177,7 @@ const [open, setOpen] = React.useState(
 
   const handleCampusChange = async(value) => {
     setSelectedCampus(value);
-    setSelectedYear(null); // Reset selected year when campus changes
+    // setSelectedYear(null); // Reset selected year when campus changes
   };
 
   const handlelogout =() =>{
@@ -212,199 +212,27 @@ const [open, setOpen] = React.useState(
     console.log('Checking payment status...');
   };
 
-  
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  function getItem(label, key, icon, children, type) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    };
-  }
-  const openedMixin = (theme) => ({
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: "hidden",
-    position: windowSize.innerWidth <= 425 ? "fixed" : "",
-    zIndex: 1000,
-  });
 
-  const closedMixin = (theme) => ({
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: "hidden",
-    width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
-    },
-  });
-
-  const SiderGenerator = () => {
-    const [openKeys, setOpenKeys] = useState([]);
-    const Drawer = styled(MuiDrawer, {
-        shouldForwardProp: (prop) => prop !== "open",
-      })(({ theme, open }) => ({
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: "nowrap",
-        boxSizing: "border-box",
-        ...(open && {
-          ...openedMixin(theme),
-          "& .MuiDrawer-paper": openedMixin(theme),
-        }),
-        ...(!open && {
-          ...closedMixin(theme),
-          "& .MuiDrawer-paper": closedMixin(theme),
-        }),
-      }));
-
-    const items = [
-            getItem(
-              <a
-                // onClick={() => navigate("/department-view")}
-                className="text-[#344054] font-[500] font-jakarta text-[16px] text-left mt-5 ml-5"
-              >
-               Payment Status
-              </a>,
-   
-            ),
-            getItem(
-              <a
-                // onClick={() => navigate("/TermList")}
-                className="text-[#344054] font-[500] font-jakarta text-[16px] text-left mt-5 ml-5"
-              >
-                Grading System
-              </a>,
-        
-            ),
-            getItem(
-              <a
-                // onClick={() => navigate("/CourseRegistrationPending-view")}
-                className="text-[#344054] font-[500] font-jakarta text-[16px] text-left mt-5 ml-5"
-              >
-                View
-              </a>,
-            
-            ),
-            getItem(
-                <a
-                  // onClick={() => navigate("/CourseRegistrationPending-view")}
-                  className="text-[#344054] font-[500] font-jakarta text-[16px] text-left mt-5 ml-5"
-                >
-                  Graduate list
-                </a>,
-             
-              ),
-              getItem(
-                <a
-                   onClick={() => handlelogout()}
-                  className="text-[#344054] font-[500] font-jakarta text-[16px] text-left mt-5 ml-5"
-                >
-                  Logout
-                </a>,
-             
-              ),
-      ];
-    const onOpenChange = (keys) => {
-      const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-      
-    };
-      const currentURL = window.location.pathname;
-      return (
-        <Drawer variant="permanent" open={open}>
-          {/* <DrawerHeader /> */}
-          <div className="mt-6 ml-6 mb-2">
-            {open ? (
-              <div className="flex flex-row justify-start ml-1">
-                <IconButton
-                  onClick={handleDrawerClose}
-                  sx={{
-                    marginRight: 0,
-                    marginLeft: 0,
-                  }}
-                >
-                  <Icon
-                    name="menu-arrow-outline"
-                    fill="#667085"
-                    size="large" // small, medium, large, xlarge
-                    animation={{
-                      type: "pulse", // zoom, pulse, shake, flip
-                      hover: true,
-                      infinite: false,
-                    }}
-                  />
-                </IconButton>
-                <img
-                style={{marginLeft:10}}
-                  src={("../../../assets/logo1.png")}
-                  className="w-[58px] h-[37px] z-1"
-                />
-              </div>
-            ) : (
-              <div className="flex flex-row justify-start -ml-2">
-                <IconButton
-                  color="default"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{
-                    marginRight: 0,
-                    marginLeft: 0,
-                    ...(open && { display: "none" }),
-                  }}
-                >
-                  <Icon
-                    name="menu-outline"
-                    fill="#667085"
-                    size="large" // small, medium, large, xlarge
-                    animation={{
-                      type: "pulse", // zoom, pulse, shake, flip
-                      hover: true,
-                      infinite: false,
-                    }}
-                  />
-                </IconButton>
-              </div>
-            )}
-          </div>
-          <Menu
-            mode="inline"
-            openKeys={openKeys}
-            onOpenChange={onOpenChange}
-            style={{
-              width: 240,
-              marginLeft: 10,
-            }}
-            items={items}
-          />
-        </Drawer>
-      );
-    
-  };
-
-  const getFilteredStudentRecords = (campus, year ,term , section) => {
+  const getFilteredStudentRecords = (term, year ,campus , section) => {
     console.log(campus ,year ,term ,section);
     console.log("test " ,studentRecords[1].filter((student) => student.department == campus && student.acadamicYear == year))
-    if (studentRecords[term]) {
-    //   setSelectedname(studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section ));
-      return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
-    } else {
-      return [];
-    }
+      if(term ,year , campus , section) {
+        return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
+      }
+      else if (term , year , campus){
+        return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year );
+      }
+    
+      else if(term ,year){
+        return studentRecords[term].filter((student) =>  student.acadamicYear == year  );
+      }
+      else if (term) {
+        return studentRecords[term];
+      }
+      else{
+        return studentRecords[1];
+      }
   };
   
   const [selectedCourse , setSelectedCourse] = useState(null);
@@ -425,8 +253,8 @@ const [open, setOpen] = React.useState(
   };
 
   const handleOk = async () => {
+    console.log ("Grade value   ", newGrade)
           setOpens(false);    
-          console.log ("Grade value   ", newGrade)
   };
 
   const handleCancel = () => {
@@ -444,6 +272,7 @@ const [open, setOpen] = React.useState(
           open = {opens}
           title="Add Grade"
           onOk={handleOk}
+          okButtonProps={{ style: { backgroundColor: 'blue' } }} 
           onCancel={handleCancel}
           footer={[
             <Button key="back" onClick={handleCancel}>
@@ -467,7 +296,7 @@ const [open, setOpen] = React.useState(
             placeholder="--Select Acadamic Year of the Student---"
             onChange={handleSchoolname}
           >
-            {(getFilteredStudentRecords(selectedCampus ,selectedYear, selectedTerm ,selectedSection))?.map((item, i) => (
+            {(getFilteredStudentRecords(selectedTerm ,selectedYear, selectedCampus ,selectedSection))?.map((item, i) => (
               <Option key={item.key} value={item.name} lable={item.name}>
                 {item.name}
               </Option>
@@ -516,25 +345,26 @@ const [open, setOpen] = React.useState(
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
     <div className="list-header mb-2 ml-100">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">Lecturer Managment System</h1>
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Lecturer Managment System</h1>
     </div>
-    <div className="list-sub mb-10 ml-[20%]">
+    <div className="list-sub mb-10 ml-[2%] ">
      {handleGrade()}
       <div className="list-filter">
-        <Select
-          bordered={false}
-          className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-          placeholder="--Select Department of the Student ---"
-          style={{ width: 240 }}
-          onChange={handleCampusChange}
-        >
-          {campuses?.map((item, i) => (
-            <Option key={item.id} value={item.name} lable={item.name}>
-              {item.name}
-            </Option>
-          ))}
-        </Select>
-        {selectedCampus && (
+      <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            style={{ width: 220 }}
+            placeholder="--Select Term of the Student---"
+            onChange={handleTermChange}
+          >
+            {Term?.map((item, i) => (
+              <Option key={item.key} value={item.id} lable={item.term}>
+                {item.term}
+              </Option>
+            ))}
+          </Select>
+
+        {selectedTerm && (
         <Select
             bordered={false}
             className="!rounded-[6px] border-[#EAECF0] border-[2px]"
@@ -550,17 +380,17 @@ const [open, setOpen] = React.useState(
           </Select>
           )}
 
-         {selectedCampus && selectedYear && ( 
-        <Select
+         {selectedTerm && selectedYear && ( 
+            <Select
             bordered={false}
             className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-            style={{ width: 220 }}
-            placeholder="--Select Term of the Student---"
-            onChange={handleTermChange}
+            placeholder="--Select Department of the Student ---"
+            style={{ width: 240 }}
+            onChange={handleCampusChange}
           >
-            {Term?.map((item, i) => (
-              <Option key={item.key} value={item.id} lable={item.term}>
-                {item.term}
+            {campuses?.map((item, i) => (
+              <Option key={item.id} value={item.name} lable={item.name}>
+                {item.name}
               </Option>
             ))}
           </Select>
@@ -612,7 +442,7 @@ const [open, setOpen] = React.useState(
       </div>
  </div>
 
-      <div className='ml-[20%]'>
+      <div className='ml-[2%]'>
         {/* Display student records based on selected campus and year */}
         {/* {selectedCampus && selectedYear && ( */}
           <div className="" >
@@ -626,7 +456,7 @@ const [open, setOpen] = React.useState(
         }}
         style={{ marginTop: 20 }}
         columns={columns}
-        dataSource={getFilteredStudentRecords(selectedCampus, selectedYear, selectedTerm ,selectedSection)}
+        dataSource={getFilteredStudentRecords(selectedTerm ,selectedYear,selectedCampus,  selectedSection)}
         pagination={{ position: ["bottomCenter"] }}
       />
           </div>

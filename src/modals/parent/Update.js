@@ -150,6 +150,7 @@ function Update({ openUpdate, handleUpdateCancel, data, updateComplete, setUpdat
                     visible={openUpdate}
                     title="Update Student Profile"
                     onOk={handleUpdate}
+                    okButtonProps={{ style: { backgroundColor: 'blue' } }} 
                     width={756}
                     onCancel={handleUpdateCancel}
                     footer={[

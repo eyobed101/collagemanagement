@@ -14,6 +14,12 @@ const DepartmentCourse = () => {
   const [selectedYear , setSelectedYear] = useState('');
   const [selectedTerm , setSelectedTerm] = useState('');
   const [selectedSection , setSelectedSection] = useState('');
+
+  const [data, setData] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [isModalVisible1, setIsModalVisible1] = useState(false);
+  const [modifiedSubjectData, setModifiedSubjectData] = useState({});
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
  
   const generateUniqueId = () => {
     return Math.floor(Math.random() * 100000);
@@ -188,16 +194,64 @@ const DepartmentCourse = () => {
     { title: 'Acadamic Year', dataIndex: 'academicYear', key: 'academicYear' },
     { title: 'Term', dataIndex: 'term', key: 'term' },
     {
-        title: 'Action',
-        key: 'action',
-        render: (_, record) => (
-          <Space size="middle">
-            <a>Edit {record.name}</a>
-            <a>Delete</a>
-          </Space>
-        ),
-      },
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <>
+          <Button type="link" onClick={() => handleEditUser(record)}>
+            Edit
+          </Button>
+          <Button type="link" onClick={() => handleDeleteUser(record)}>
+            Delete
+          </Button>
+        </>
+      ),
+    },
   ];
+
+  const handleEditUser = (user) => {
+    setSelectedSubject(user);
+    setModifiedSubjectData({ ...user });
+    setIsModalVisible1(true);
+  };
+
+  const handleDeleteUser = (user) => {
+    setSelectedSubject(user);
+    setIsDeleteModalVisible(true);
+  };
+
+  
+  const handleModalOk = () => {
+    // Handle your logic to update the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = filteredCourse.map((user) =>
+      user.key === selectedSubject.key ? { ...user, ...modifiedSubjectData } : user
+    );
+    setFilteredCourse(updatedData);
+    setIsModalVisible1(false);
+    setSelectedSubject(null);
+    setModifiedSubjectData({});
+  };
+  
+  const handleModalCancel = () => {
+    setIsModalVisible1(false);
+    setSelectedSubject(null);
+    setModifiedSubjectData({});
+  };
+
+  const handleDeleteModalOk = () => {
+    // Handle your logic to delete the user data
+    // For demonstration purposes, I'm updating the data in state
+    const updatedData = filteredCourse.filter((user) => user.key !== selectedSubject.key);
+    setFilteredCourse(updatedData);
+    setIsDeleteModalVisible(false);
+    setSelectedSubject(null);
+  };
+
+  const handleDeleteModalCancel = () => {
+    setIsDeleteModalVisible(false);
+    setSelectedSubject(null);
+  };
 
   const handlelogout =() =>{
     dispatch(userAction.logout());
@@ -320,6 +374,7 @@ const DepartmentCourse = () => {
       <Modal
         title="Course Breakdown"
         visible={isModalVisible}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
@@ -330,6 +385,32 @@ const DepartmentCourse = () => {
       >
         <Table columns={gradeColumns} dataSource={filteredCourse} />
         <Tag color="blue">Pending Approval</Tag>
+      </Modal>
+
+      <Modal  
+        title="Edit Subject"
+        visible={isModalVisible1}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+
+      >
+        <label>Course Name:</label>
+        <Input
+          value={modifiedSubjectData.name}
+          onChange={(e) => setModifiedSubjectData({ ...modifiedSubjectData, name: e.target.value })}
+        />
+         </Modal>
+
+      <Modal
+        title="Delete Subject"
+        visible={isDeleteModalVisible}
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+
+      >
+        <p>Are you sure you want to delete {selectedSubject?.name}?</p>
       </Modal>
     </div>
   );

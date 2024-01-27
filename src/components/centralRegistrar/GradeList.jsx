@@ -162,13 +162,14 @@ const GradingSystem = () => {
       <div>
         <h3>Add Grade Range:</h3>
         <div>
-        <Button type="primary" onClick={() => showModal()}>
+        <Button type="primary" style={{ backgroundColor: "blue" }}  onClick={() => showModal()}>
           Add Grade System
         </Button>
         <Modal
           visible={isModalVisible}
           title="Add Grading System"
           onOk={handleOk}
+          okButtonProps={{ style: { backgroundColor: 'blue' } }} 
           onCancel={handleCancel}
           footer={[
             <Button key="back" onClick={handleCancel}>

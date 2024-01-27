@@ -133,9 +133,9 @@ const CampusRegistrar = () => {
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">Campus Registrar Management System</h1>
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Campus Registrar Management System</h1>
     </div>
-    <div class="flex gap-10 p-10 ml-[15%]">
+    <div class="flex gap-10 p-10 ml-[0%]">
     <Space direction="horizontal" size={16}>
     {noUsers.map(item => (
          <Card
@@ -145,7 +145,7 @@ const CampusRegistrar = () => {
          headStyle={{fontSize:16 , fontWeight: 'bold' , color: 'black'}}
        //   extra={<a href="#">More</a>}
          style={{
-           width: 250,
+           width: 200
          }}
        >
          <p className='font-bold text-base text-gray-500'> {item.number} people</p>
@@ -159,7 +159,7 @@ const CampusRegistrar = () => {
   </Space>
   
    </div>
-    <div className="list-sub mb-10 ml-[20%]">
+    <div className="list-sub mb-10 ml-[2%]">
       <div className="list-filter">
         <Select
           bordered={false}
@@ -191,7 +191,7 @@ const CampusRegistrar = () => {
           )}
       </div>
  </div>
- <div className="list-sub mb-10 ml-[20%]">
+ <div className="list-sub mb-10 ml-[2%]">
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
  <Grid item xs={12} sm={12} md={4}>
           <Card

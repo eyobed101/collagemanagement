@@ -143,11 +143,11 @@ const GraduatesList = ({}) => {
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
       {/* <SiderGenerator navigate ={navigate}/> */}
       <div className="list-header mb-2 ml-100">
-        <h1 className="text-2xl  font-[600] font-jakarta ml-[20%]">
+        <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">
           Graduate List
         </h1>
       </div>
-      <div className="list-sub mb-10 ml-[20%]">
+      <div className="list-sub mb-10 ml-[2%]">
         <div className="list-filter">
           <Select
             bordered={false}
@@ -179,7 +179,7 @@ const GraduatesList = ({}) => {
           )}
         </div>
       </div>
-      <div className="ml-[20%]">
+      <div className="ml-[2%]">
         <Table
           onRow={(record, rowIndex) => {
             return {

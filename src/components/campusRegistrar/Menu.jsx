@@ -6,7 +6,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
-import Icon from "react-eva-icons";
+// import Icon from "react-eva-icons";
 import { Layout, Menu } from "antd";
 
 import CampusRegistrar from "./Campus_register";
@@ -42,7 +42,7 @@ const icon = {
 
 const CampusSiderGenerator = () => {
   const [openKeys, setOpenKeys] = useState([]);
-  const [isCourseOffering, setIsCourseOffering] = useState(true);
+  const [isCourseOffering, setIsCourseOffering] = useState(false);
   const [isCampusRegistrar, setIsCampusRegistrar] = useState(true);
   const [isGraduateApproval, setIsGraduateApproval] = useState(false);
   const [isGradeApproval, setIsGradeApproval] = useState(false);
@@ -320,7 +320,7 @@ const CampusSiderGenerator = () => {
         {/* <NavBar /> */}
         <DashboardNavbar />
         <Configurator />
-        <IconButton
+        {/* <IconButton
           size="lg"
           color="white"
           className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
@@ -328,7 +328,7 @@ const CampusSiderGenerator = () => {
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
           <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
+        </IconButton> */}
         <div>
           {isCampusRegistrar ? <CampusRegistrar /> : null}
           {isCourseOffering ? <CourseOffering /> : null}

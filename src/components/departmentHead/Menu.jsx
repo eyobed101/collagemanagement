@@ -6,7 +6,6 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
-import Icon from "react-eva-icons";
 import { Layout, Menu } from "antd";
 
 import DepartmentAdmin from "./Department_Admin";
@@ -116,7 +115,7 @@ const DepartSiderGenerator = () => {
         {/* <NavBar /> */}
         <DashboardNavbar />
         <Configurator />
-        <IconButton
+        {/* <IconButton
           size="lg"
           color="white"
           className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
@@ -124,7 +123,7 @@ const DepartSiderGenerator = () => {
           onClick={() => setOpenConfigurator(dispatch, true)}
         >
           <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
+        </IconButton> */}
         <div>
           {isDepartmentAdmin ? <DepartmentAdmin /> : null}
           {isDepartmentHead ? <DepartmentHead /> : null}

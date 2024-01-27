@@ -10,6 +10,7 @@ function CampusForm({ onSubmit }) {
   const [campusName, setCampusName] = useState('');
   const [campusLocation, setCampusLocation] = useState('');
 
+
   const handleSubmit = () => {
     const newCampus = {
       name: campusName,
