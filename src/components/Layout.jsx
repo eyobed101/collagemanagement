@@ -80,6 +80,7 @@ import DepartSiderGenerator from "./departmentHead/Menu";
 import StudentSiderGenerator from "./student/Menu";
 import LucturerSiderGenerator from "./lecturer/Menu";
 import CampusAdmin from "./Campus_Head/Campus_Admin"
+import RegistrarOfficerSiderGenerator from "./registrarOfficer/Menu";
 const { Header, Content, Sider } = Layout;
 const drawerWidth = 240;
 
@@ -713,6 +714,7 @@ const Layouts = () => {
               <Route path="Superadmin" element={<SuperAdmin />} />
               <Route path="/register_user" element={<Register />} /> */}
               <Route path="/root_admin" element={<RootAdmin />} />
+              <Route path="/register_office" element={<RegistrarOfficerSiderGenerator />} />
               {/* <Route path="/campus_admin" element={<CampusAdmin />} /> */}
               <Route path="/center_register" element={<SiderGenerator />} />
               <Route path="/student_home" element={<StudentSiderGenerator />} />
