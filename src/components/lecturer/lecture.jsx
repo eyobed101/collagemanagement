@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Space, Table, Button, Col, DatePicker, Drawer, Form, Input, Row, Select ,Modal } from "antd";
+import { Space, Table, Button, InputNumber,Col, DatePicker, Drawer, Form, Input, Row, Select ,Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userAction } from "../../redux/user";
@@ -56,8 +56,11 @@ const courserecords ={
         { id: 4,  name: "English",acadamicYear :2011,  department :'informationscience'},
         { id: 13,  name: "Chemistry",acadamicYear :2010,  department :'Electricalscience'},
         { id: 14,  name: "Physics",acadamicYear :2010,  department :'Electricalscience'},
+        { id: 26,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
         { id: 15,  name: "Dynamics" ,acadamicYear :2010,  department :'Electricalscience'},
         { id: 16,  name: "Power",acadamicYear :2010,  department :'Electricalscience'},
+        { id: 35, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
+
     ],
     2: [
         { id: 5, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
@@ -72,46 +75,7 @@ const courserecords ={
         { id: 12,  name: "Antroplogy", acadamicYear :2009,  department :'Management'},
     ]
 }
-const studentRecords = {
-  1: [
-    { id: 101, name: 'Student 1', cgpa :'3.8', acadamicYear :2011, section :1 , department :'computerscience' , curricula:"tot13" },
-    { id: 102, name: 'Student 2', cgpa :'2.8', acadamicYear :2010,  section :1 ,department :'Electricalscience' ,curricula:"tot13" },
-    { id: 103, name: 'Student 3', cgpa :'3.8', acadamicYear :2009,  section :1 ,department :'Management' ,curricula:"tot13" },
-    { id: 104, name: 'Student 4', cgpa :'2.8', acadamicYear :2010,  section :2 ,department :'Accounting' ,curricula:"tot13" }, 
-    { id: 105, name: 'Student 5', cgpa :'3.8', acadamicYear :2011,  section :2 ,department :'computerscience' ,curricula:"tot13" },
-    { id: 106, name: 'Student 6', cgpa :'2.8', acadamicYear :2010,  section :3 ,department :'Management' ,curricula:"tot13" }, 
-    { id: 107, name: 'Student 7', cgpa :'3.8', acadamicYear :2009,  section :2 ,department :'Information Science' ,curricula:"tot13" },
-    { id: 108, name: 'Student 8', cgpa :'2.8', acadamicYear :2008,  section :3 ,department :'Electricalscience' ,curricula:"tot13" },  
-    // Add more students for Campus 1
-  ],
-  2: [
-    { id: 201, name: 'Student 9', cgpa :'3.5', acadamicYear :2011,section :3,  department :'informationscience' ,curricula:"tot13" },
-    { id: 202, name: 'Student 10', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
-    { id: 203, name: 'Student 11', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
-    { id: 204, name: 'Student 12', cgpa :'2.8', acadamicYear :2008,section :1 , department :'Electricalscience' ,curricula:"tot13" }, 
-    { id: 205, name: 'Student 13', cgpa :'3.8', acadamicYear :2011,section :4 , department :'computerscience' ,curricula:"tot13" },
-    { id: 206, name: 'Student 14', cgpa :'2.8', acadamicYear :2007,section :4 , department :'Management' ,curricula:"tot13" }, 
-    { id: 207, name: 'Student 15', cgpa :'3.8', acadamicYear :2004,section :1 , department :'Accounting' ,curricula:"tot13" },
-    { id: 208, name: 'Student 16', cgpa :'2.8', acadamicYear :2009,section :1 , department :'Electricalscience' ,curricula:"tot13" }, 
-    { id: 209, name: 'Student 17', cgpa :'3.8', acadamicYear :2011, section :2 ,department :'Information Science' ,curricula:"tot13" },
-    { id: 210, name: 'Student 18', cgpa :'2.8', acadamicYear :2010, section :3 ,department :'Electricalscience' ,curricula:"tot13" }, 
-    // Add more students for Campus 2
-  ],
-  3: [
-    { id: 301, name: 'Student 19', cgpa :'3.5', acadamicYear :2011,section :3 ,  department :'informationscience' ,curricula:"tot13" },
-    { id: 302, name: 'Student 20', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
-    { id: 303, name: 'Student 21', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
-    { id: 304, name: 'Student 22', cgpa :'2.8', acadamicYear :2007,section :1 , department :'Electricalscience' ,curricula:"tot13" }, 
-    { id: 305, name: 'Student 23', cgpa :'3.8', acadamicYear :2011,section :4 , department :'computerscience' ,curricula:"tot13" },
-    { id: 306, name: 'Student 24', cgpa :'2.8', acadamicYear :2010,section :4 , department :'Management' ,curricula:"tot13" }, 
-    { id: 307, name: 'Student 25', cgpa :'3.8', acadamicYear :2011,section :1 , department :'Accounting' ,curricula:"tot13" },
-    { id: 308, name: 'Student 26', cgpa :'2.8', acadamicYear :2007,section :1 , department :'Electricalscience' ,curricula:"tot13" }, 
-    { id: 309, name: 'Student 27', cgpa :'3.8', acadamicYear :2008, section :2 ,department :'Information Science' ,curricula:"tot13" },
-    { id: 310, name: 'Student 28', cgpa :'2.8', acadamicYear :2010, section :3 ,department :'Accounting',curricula:"tot13" }, 
-    // Add more students for Campus 2
-  ],
-  // Add more campuses as needed
-};
+
 
 const columns = [
     {
@@ -145,29 +109,111 @@ const columns = [
       key: "department",
     },
     {
-        title: <p className="font-jakarta  font-[600]">Curriculum</p>,
-        dataIndex: "curricula",
-        key: "curricula",
+        title: <p className="font-jakarta  font-[600]">Course</p>,
+        dataIndex: "course",
+        key: "course",
       },
+      {
+        title: 'Assessment',
+        dataIndex: 'grade',
+        key: 'grade',
+        render: (text, record) => (
+          <EditableGradeCell
+            value={text}
+            onChange={(value) => handleGradeChange(value, record.key)}
+          />
+        ),
+      },
+      { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
   ];
 
+  const handleGradeChange = (value, key) => {
+    setStudentRecords((prevRecords) => {
+      const updatedRecords = { ...prevRecords };
+      updatedRecords[1] = updatedRecords[1].map((student) =>
+        student.id === key ? { ...student, grade: value, letterGrade: convertToLetterGrade(value) } : student
+      );
+      return updatedRecords;
+    });
+  };
+
+  // Function to convert numerical grade to letter grade
+  const convertToLetterGrade = (numericalGrade) => {
+    if (numericalGrade >= 85) {
+      return 'A';
+    } else if (numericalGrade >= 80) {
+      return 'A-';
+    } else if (numericalGrade >= 70) {
+      return 'B';
+    } else {
+      // Handle other cases as needed
+      return '';
+    }
+  };
+
+  const EditableGradeCell = ({ value, onChange }) => {
+ 
+    return (
+      <Form.Item>
+        <InputNumber value={value} onChange={onChange} />
+      </Form.Item>
+    );
+  };
+ 
 
 const Lecturer = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedTerm, setSelectedTerm] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState(Term[0].term);
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedname, setSelectedname] = useState([]);
+  const [selectedCourse , setSelectedCourse] = useState(null);
+
+
+  const studentRecords = {
+    1: [
+      { id: 101, name: 'Student 1', cgpa :'3.8', acadamicYear :2011, section :1 , department :'computerscience' , course: selectedCourse , grade :78 },
+      { id: 102, name: 'Student 2', cgpa :'2.8', acadamicYear :2010,  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :78  },
+      { id: 103, name: 'Student 3', cgpa :'3.8', acadamicYear :2009,  section :1 ,department :'Management' , course: selectedCourse , grade :78  },
+      { id: 104, name: 'Student 4', cgpa :'2.8', acadamicYear :2010,  section :2 ,department :'Accounting' , course: selectedCourse , grade :78  }, 
+      { id: 105, name: 'Student 5', cgpa :'3.8', acadamicYear :2011,  section :2 ,department :'computerscience' , course: selectedCourse , grade :78  },
+      { id: 106, name: 'Student 6', cgpa :'2.8', acadamicYear :2010,  section :3 ,department :'Management' ,  course: selectedCourse , grade :78 }, 
+      { id: 107, name: 'Student 7', cgpa :'3.8', acadamicYear :2009,  section :2 ,department :'Information Science' , course: selectedCourse , grade :78  },
+      { id: 108, name: 'Student 8', cgpa :'2.8', acadamicYear :2008,  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :78  },  
+      // Add more students for Campus 1
+    ],
+    2: [
+      { id: 201, name: 'Student 9', cgpa :'3.5', acadamicYear :2011,section :3,  department :'informationscience' ,curricula:"tot13" },
+      { id: 202, name: 'Student 10', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
+      { id: 203, name: 'Student 11', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
+      
+      // Add more students for Campus 2
+    ],
+    3: [
+      { id: 301, name: 'Student 19', cgpa :'3.5', acadamicYear :2011,section :3 ,  department :'informationscience' ,curricula:"tot13" },
+      { id: 302, name: 'Student 20', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
+      { id: 303, name: 'Student 21', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
+      
+      // Add more students for Campus 2
+    ],
+   
+    // Add more campuses as needed
+  };  
+
+
+
+ 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
     return { innerWidth, innerHeight };
   }
   const [windowSize, setWindowSize] = useState(getWindowSize());
-const [open, setOpen] = React.useState(
-    windowSize.innerWidth <= 425 ? false : true
-  );
+  React.useEffect(() => {
+    // Actions to perform after state update
+    console.log("selectedCourse updated:", selectedCourse);
+  }, [selectedCourse]);
 
 
   const handleView = (data) => {
@@ -198,44 +244,35 @@ const [open, setOpen] = React.useState(
     setSelectedSection(value);
   };
   const handleCourseChange = async (value) => {
+    console.log("test is ",value);
     setSelectedCourse(value);
   };
 
-  const generateGraduateList = () => {
-    // Implement logic to generate graduate list based on selected campus and year
-    console.log('Generating graduate list...');
-    handlelogout()
-  };
 
-  const checkPaymentStatus = () => {
-    // Implement logic to check payment status for selected campus
-    console.log('Checking payment status...');
-  };
-
-
-
-  const getFilteredStudentRecords = (term, year ,campus , section) => {
+  const getFilteredStudentRecords = (term, year ,campus , section , course) => {
     console.log(campus ,year ,term ,section);
     console.log("test " ,studentRecords[1].filter((student) => student.department == campus && student.acadamicYear == year))
-      if(term ,year , campus , section) {
-        return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
-      }
-      else if (term , year , campus){
-        return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year );
-      }
+    if(term ,year , campus , section , course) {
+      return studentRecords[1].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section && student.course == course);
+    }  
+    //  else if(term ,year , campus , section) {
+    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
+    //   }
+    //   else if (term , year , campus){
+    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year );
+    //   }
     
-      else if(term ,year){
-        return studentRecords[term].filter((student) =>  student.acadamicYear == year  );
-      }
-      else if (term) {
-        return studentRecords[term];
-      }
+    //   else if(term ,year){
+    //     return studentRecords[term].filter((student) =>  student.acadamicYear == year  );
+    //   }
+    //   else if (term) {
+    //     return studentRecords[term];
+    //   }
       else{
-        return studentRecords[1];
+        return null;
       }
   };
   
-  const [selectedCourse , setSelectedCourse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [opens, setOpens] = useState(false);
   const [newGrade, setNewGrade] = useState({
@@ -350,20 +387,8 @@ const [open, setOpen] = React.useState(
     <div className="list-sub mb-10 ml-[2%] ">
      {handleGrade()}
       <div className="list-filter">
-      <Select
-            bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-            style={{ width: 220 }}
-            placeholder="--Select Term of the Student---"
-            onChange={handleTermChange}
-          >
-            {Term?.map((item, i) => (
-              <Option key={item.key} value={item.id} lable={item.term}>
-                {item.term}
-              </Option>
-            ))}
-          </Select>
-
+      
+        <h1>Active Term :   {selectedTerm}</h1> 
         {selectedTerm && (
         <Select
             bordered={false}
@@ -417,16 +442,17 @@ const [open, setOpen] = React.useState(
             className="!rounded-[6px] border-[#EAECF0] border-[2px]"
             style={{ width: 220 }}
             placeholder="--Select Course To Grade---"
+            value={selectedCourse}
             onChange={handleCourseChange}
           >
-            {courserecords[selectedTerm]?.map((item, i) => (
+            {courserecords[1]?.map((item, i) => (
               <Option key={item.key} value={item.name} lable={item.name}>
                 {item.name}
               </Option>
             ))}
           </Select>
           )}
-          {selectedCampus && selectedYear && selectedTerm && selectedSection && (
+          {/* {selectedCampus && selectedYear && selectedTerm && selectedSection && (
              <Button
         style={{
           borderRadius: "8px",
@@ -438,7 +464,7 @@ const [open, setOpen] = React.useState(
       >
         Add Grade
       </Button>
-        )}
+        )} */}
       </div>
  </div>
 
@@ -449,14 +475,14 @@ const [open, setOpen] = React.useState(
         
           <h2 className="text-xl  font-[600] font-jakarta ">Student Records for {selectedYear} </h2>
             <Table
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => showModal(record), // click row
-          };
-        }}
+        // onRow={(record, rowIndex) => {
+        //   return {
+        //     onClick: (event) => showModal(record), // click row
+        //   };
+        // }}
         style={{ marginTop: 20 }}
         columns={columns}
-        dataSource={getFilteredStudentRecords(selectedTerm ,selectedYear,selectedCampus,  selectedSection)}
+        dataSource={getFilteredStudentRecords(selectedTerm ,selectedYear,selectedCampus,  selectedSection ,selectedCourse)}
         pagination={{ position: ["bottomCenter"] }}
       />
           </div>

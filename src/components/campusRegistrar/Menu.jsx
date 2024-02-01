@@ -193,7 +193,7 @@ const CampusSiderGenerator = () => {
     {
       title: "Campus Registral",
       pages: [
-        {
+      {
           icon: <HomeIcon {...icon} />,
           name: "Campus Registrar",
           onClick: handleCampusRegistrar,

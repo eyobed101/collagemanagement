@@ -12,9 +12,13 @@ const CourseOffering = () => {
     { id: 3, name: 'Course C' },
   ];
 
-  const terms = ['Fall', 'Spring', 'Summer'];
+  const terms = ['1', '2', '3'];
+  const section = ['1', '2', '3'];
+  const program = ['computer science', 'information science', 'electrical engineering', 'accounting', 'management'];
 
   const [selectedTerm, setSelectedTerm] = useState(terms[0]);
+  const [selectedSection, setSelectedSection] = useState(section[0]);
+  const [selectedProgram, setSelectedprogram] = useState(program[0]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
@@ -42,6 +46,14 @@ const CourseOffering = () => {
     setSelectedTerm(value);
   };
 
+  const handleSectionChange = (value) => {
+    setSelectedSection(value);
+  };
+
+  const handleProgramChange = (value) => {
+    setSelectedprogram(value);
+  };
+
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
@@ -53,12 +65,11 @@ const CourseOffering = () => {
     if (editingIndex !== null) {
       setSelectedCourses((prevCourses) =>
         prevCourses.map((c, index) =>
-          index === editingIndex ? { ...course, term: selectedTerm, year: selectedYear } : c
-        )
+          index === editingIndex ? { ...course, term: selectedTerm, year: selectedYear , section:selectedSection , program:selectedProgram } : c )
       );
       setEditingIndex(null);
     } else {
-      setSelectedCourses((prevCourses) => [...prevCourses, { ...course, term: selectedTerm, year: selectedYear }]);
+      setSelectedCourses((prevCourses) => [...prevCourses, { ...course, term: selectedTerm, year: selectedYear, section:selectedSection , program:selectedProgram  }]);
     }
     setIsModalVisible(false);
 
@@ -92,6 +103,16 @@ const CourseOffering = () => {
       title: 'Year',
       dataIndex: 'year',
       key: 'year',
+    },
+    {
+      title: 'Section',
+      dataIndex: 'section',
+      key: 'section',
+    },
+    {
+      title: 'Program',
+      dataIndex: 'program',
+      key: 'program',
     },
     {
       title: 'Action',
@@ -200,6 +221,40 @@ const CourseOffering = () => {
         style={{ width: "100%" }}
     value={selectedTerm} onChange={handleTermChange}>
           {terms.map((term) => (
+            <Option key={term} value={term}>
+              {term}
+            </Option>
+          ))}
+        </Select>
+        </div>
+        <div style={{marginBottom:20}}/>
+        <div>
+          <label>Select Section:</label>  
+
+           <Select 
+        bordered={false}
+        className="!rounded-[6px] border-[#EAECF0] border-[2px] mt-10"
+        placeholder="--Select Term ---"
+        style={{ width: "100%" }}
+    value={selectedSection} onChange={handleSectionChange}>
+          {section.map((term) => (
+            <Option key={term} value={term}>
+              {term}
+            </Option>
+          ))}
+        </Select>
+        </div>
+        <div style={{marginBottom:20}}/>
+        <div>
+          <label>Select Program:</label>  
+
+           <Select 
+        bordered={false}
+        className="!rounded-[6px] border-[#EAECF0] border-[2px] mt-10"
+        placeholder="--Select Term ---"
+        style={{ width: "100%" }}
+    value={selectedProgram} onChange={handleProgramChange}>
+          {program.map((term) => (
             <Option key={term} value={term}>
               {term}
             </Option>
