@@ -116,7 +116,7 @@ const ClearanceList = ({ studentsData }) => {
         title="Clearance Confirmation"
         visible={isModalVisible}
         onOk={handleOk}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
         onCancel={handleCancel}
       >

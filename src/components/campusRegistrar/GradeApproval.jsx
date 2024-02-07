@@ -98,7 +98,7 @@ const GradeApproval = () => {
         visible={isApprovalModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
       >
         <p>Are you sure you want to approve the grade for {selectedRecord?.student}?</p>

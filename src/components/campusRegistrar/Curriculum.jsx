@@ -170,12 +170,12 @@ const Curriculum = () => {
    <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
         Curriculum and Course List
       </p>
-      <Button type="primary" style={{ background: "blue", }} onClick={showCurriculumModal}>
+      <Button type="primary" style={{ background: "#4279A6", }} onClick={showCurriculumModal}>
         New Curriculum
       </Button>
 
       <Modal title="Create New Curriculum" visible={isCurriculumModalVisible}
-      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       onOk={handleCurriculumOk} onCancel={handleCancel}>
         <Form form={form} onFinish={handleCurriculumOk} layout="vertical">
           <Form.Item label="Year" name="year" rules={[{ required: true, message: 'Please select a year' }]}>
@@ -211,7 +211,7 @@ const Curriculum = () => {
 
       <Modal title="Add Courses to Curriculum" visible={isCourseModalVisible} 
       onOk={handleCourseOk} onCancel={handleCancel}
-      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={handleCourseOk} layout="vertical">
           <Form.Item label="Curriculum Name" name="curriculumName">
@@ -237,7 +237,7 @@ const Curriculum = () => {
       visible={isEditCurriculumModalVisible}
       onOk={handleEditCurriculumOk}
       onCancel={() => setIsEditCurriculumModalVisible(false)}
-      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
     >
       <Form form={form} layout="vertical">
@@ -274,7 +274,7 @@ const Curriculum = () => {
       visible={isEditCourseModalVisible}
       onOk={handleEditCourseOk}
       onCancel={() => setIsEditCourseModalVisible(false)}
-      okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
     >
       <Form form={form} layout="vertical">

@@ -116,7 +116,7 @@ const LucturerSiderGenerator = () => {
           {isLucturer ? <Lecturer /> : null}
           {isSubject ? <CreateSubject /> : null}
         </div>
-        <div className="text-blue-gray-600">
+        <div className="text-[#4279A6]">
           <Footer />
         </div>
       </div>

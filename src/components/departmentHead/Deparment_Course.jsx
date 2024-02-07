@@ -374,7 +374,7 @@ const DepartmentCourse = () => {
       <Modal
         title="Course Breakdown"
         visible={isModalVisible}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
@@ -384,7 +384,7 @@ const DepartmentCourse = () => {
         ]}
       >
         <Table columns={gradeColumns} dataSource={filteredCourse} />
-        <Tag color="blue">Pending Approval</Tag>
+        <Tag color="">Pending Approval</Tag>
       </Modal>
 
       <Modal  
@@ -392,7 +392,7 @@ const DepartmentCourse = () => {
         visible={isModalVisible1}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
       >
         <label>Course Name:</label>
@@ -407,7 +407,7 @@ const DepartmentCourse = () => {
         visible={isDeleteModalVisible}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
       >
         <p>Are you sure you want to delete {selectedSubject?.name}?</p>

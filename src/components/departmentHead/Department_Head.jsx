@@ -295,7 +295,7 @@ const DepartmentHead = () => {
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         footer={[
           <Button key="back" onClick={handleCancel}>
             Close
@@ -303,7 +303,7 @@ const DepartmentHead = () => {
         ]}
       >
         <Table columns={gradeColumns} dataSource={filteredGrades} />
-        <Tag color="blue">Pending Approval</Tag>
+        <Tag color="#4279A6">Pending Approval</Tag>
       </Modal>
     </div>
   );

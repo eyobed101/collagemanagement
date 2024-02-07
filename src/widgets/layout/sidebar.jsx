@@ -22,7 +22,7 @@ export function Sidebar({ brandImg, brandName, routes }) {
     <aside
       className={`${sidenavTypes[sidenavType]} ${
         openSidenav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-[#4279A6]`}
     >
       <div
         className={`relative`}
@@ -31,7 +31,7 @@ export function Sidebar({ brandImg, brandName, routes }) {
         <img src={brandImg} alt="Brand Logo"  width={70} height={70} style={{marginBottom:"20px"}}/>
           <Typography
             variant="h6"
-            color={sidenavType === "dark" ? "white" : "blue-gray"}
+            color={sidenavType === "dark" ? "white" : "#4279A6"}
           >
             {brandName}
           </Typography>
@@ -54,8 +54,8 @@ export function Sidebar({ brandImg, brandName, routes }) {
               <li className="mx-3.5 mt-4 mb-2">
                 <Typography
                   variant="small"
-                  color={sidenavType === "dark" ? "white" : "blue-gray"}
-                  className="font-black uppercase opacity-75"
+                  color={sidenavType === "dark" ? "white" : "#4279A6"}
+                  className=" font-black uppercase opacity-75"
                 >
                   {title}
                 </Typography>
@@ -72,7 +72,7 @@ export function Sidebar({ brandImg, brandName, routes }) {
                           ? sidenavColor
                           : sidenavType === "dark"
                           ? "white"
-                          : "blue-gray"
+                          : "#4279A6"
                       }
                       className="flex items-center gap-4 px-4 capitalize"
                       fullWidth

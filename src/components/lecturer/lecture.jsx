@@ -120,7 +120,7 @@ const columns = [
         render: (text, record) => (
           <EditableGradeCell
             value={text}
-            onChange={(value) => handleGradeChange(value, record.key)}
+            onChange={(value) => handleGradeChange(value, record)}
           />
         ),
       },
@@ -128,13 +128,16 @@ const columns = [
   ];
 
   const handleGradeChange = (value, key) => {
-    setStudentRecords((prevRecords) => {
-      const updatedRecords = { ...prevRecords };
-      updatedRecords[1] = updatedRecords[1].map((student) =>
-        student.id === key ? { ...student, grade: value, letterGrade: convertToLetterGrade(value) } : student
-      );
-      return updatedRecords;
-    });
+    console.log('sss',key)
+
+    return 
+    // setStudentRecords((prevRecords) => {
+    //   const updatedRecords = { ...prevRecords };
+    //   updatedRecords[1] = updatedRecords[1].map((student) =>
+    //     student.id === key ? { ...student, grade: value, letterGrade: convertToLetterGrade(value) } : student
+    //   );
+    //   return updatedRecords;
+    // });
   };
 
   // Function to convert numerical grade to letter grade
@@ -309,7 +312,7 @@ const Lecturer = () => {
           open = {opens}
           title="Add Grade"
           onOk={handleOk}
-          okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+          okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
           onCancel={handleCancel}
           footer={[
             <Button key="back" onClick={handleCancel}>
@@ -328,7 +331,7 @@ const Lecturer = () => {
               <Form.Item label="Name">        
         <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
             style={{ width: '100%' }}
             placeholder="--Select Acadamic Year of the Student---"
             onChange={handleSchoolname}
@@ -408,7 +411,7 @@ const Lecturer = () => {
          {selectedTerm && selectedYear && ( 
             <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
             placeholder="--Select Department of the Student ---"
             style={{ width: 240 }}
             onChange={handleCampusChange}
@@ -424,7 +427,7 @@ const Lecturer = () => {
            {selectedCampus && selectedYear && selectedTerm && (
         <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
             style={{ width: 220 }}
             placeholder="--Select Section of the Student---"
             onChange={handleSectionChange}
@@ -439,7 +442,7 @@ const Lecturer = () => {
             {selectedCampus && selectedYear && selectedTerm && (
         <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
             style={{ width: 220 }}
             placeholder="--Select Course To Grade---"
             value={selectedCourse}
@@ -480,7 +483,7 @@ const Lecturer = () => {
         //     onClick: (event) => showModal(record), // click row
         //   };
         // }}
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 20 , color: '#4279A6'}}
         columns={columns}
         dataSource={getFilteredStudentRecords(selectedTerm ,selectedYear,selectedCampus,  selectedSection ,selectedCourse)}
         pagination={{ position: ["bottomCenter"] }}
