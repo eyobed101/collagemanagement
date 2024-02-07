@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { userAction } from "../../redux/user";
-import IconButton from "@mui/material/IconButton";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-
-// import Icon from "react-eva-icons";
-import { Layout, Menu } from "antd";
-
 import CampusRegistrar from "./Campus_register";
 import CourseOffering from "./CourseOffering";
 import GradeApproval from "./GradeApproval";
@@ -17,6 +10,8 @@ import Curriculum from "./Curriculum";
 import TuitionStatistics from "./Tutition";
 import AddTerm from "./AddTerm";
 import AddDepartment from "./AddDept";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 import {
   Configurator,
@@ -30,12 +25,12 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
 // import { IconButton } from "@mui/material";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { LogoutOutlined } from "@mui/icons-material";
+import { Add, AddIcCallOutlined, Approval, HowToReg, ListAlt, LogoutOutlined, MoneyOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
-import { FaGraduationCap, FaSchool } from "react-icons/fa";
+import { FaGraduationCap, FaRegAddressBook, FaSchool } from "react-icons/fa";
 import StudentCopyVerification from "./StudentCopy";
 import { checkPropTypes } from "prop-types";
 import AddSection from "./AddSection";
@@ -58,9 +53,56 @@ const CampusSiderGenerator = () => {
   const [isAddDepart, setIsAddDepart] = useState(false);
   const [isAddSection, setIsAddSection] = useState(false);
   const [isAddCourse, setIsAddCourse] = useState(false);
+  const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
 
+  const handleMenuOpen = (index) => {
+    setOpenSubMenuIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
 
+  const handleMenuClose = () => {
+    setOpenSubMenuIndex(null);
+  };
 
+  const renderSubMenu = (subMenuItems, index) => {
+    return (
+      <Menu
+        anchorEl={document.getElementById(`submenu-${index}`)}
+        open={openSubMenuIndex === index}
+        onClose={handleMenuClose}
+             getContentAnchorEl={null} // Prevents default behavior of trying to find the anchor in the DOM
+      >
+        {subMenuItems.map((subMenuItem, subIndex) => (
+          <MenuItem
+            key={subIndex}
+            onClick={() => {
+              subMenuItem.onClick();
+              handleMenuClose();
+            }}
+          >
+            {subMenuItem.icon}
+            {subMenuItem.name}
+          </MenuItem>
+        ))}
+      </Menu>
+    );
+  };
+
+  const renderMenuItems = (pages) => {
+    return pages.map((page, index) => (
+      <div key={index}>
+        <div
+          onMouseEnter={() => page.subMenu && handleMenuOpen(index)}
+          onMouseLeave={handleMenuClose}
+        >
+          <MenuItem onClick={page.onClick}  id={`submenu-${index}`}>
+            {page.icon}
+            {page.name}
+          </MenuItem>
+          {page.subMenu && renderSubMenu(page.subMenu, index)}
+        </div>
+      </div>
+    ));
+  };
 
 
   const drawerWidth = 240;
@@ -87,7 +129,13 @@ const CampusSiderGenerator = () => {
     setIsGraduateApproval(false);
     setIsCourseOffering(false);
     setIsCampusRegistrar(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
+
+ 
 
   const handleTerm = () => {
     setIsStudentCopy(false);
@@ -95,6 +143,7 @@ const CampusSiderGenerator = () => {
     setIsAddTerm(true);
     setIsAddDepart(false);
     setIsAddSection(false);
+    setIsAddCourse(false);
     setIsTutution(false);
     setIsGradeApproval(false);
     setIsGraduateApproval(false);
@@ -108,6 +157,7 @@ const CampusSiderGenerator = () => {
     setIsAddDepart(true);
     setIsAddTerm(false);
     setIsAddSection(false);
+    setIsAddCourse(false);
     setIsTutution(false);
     setIsGradeApproval(false);
     setIsGraduateApproval(false);
@@ -121,6 +171,7 @@ const CampusSiderGenerator = () => {
     setIsAddSection(true);
     setIsAddDepart(false);
     setIsAddTerm(false);
+    setIsAddCourse(false);
     setIsTutution(false);
     setIsGradeApproval(false);
     setIsGraduateApproval(false);
@@ -136,6 +187,10 @@ const CampusSiderGenerator = () => {
     setIsGradeApproval(false);
     setIsGraduateApproval(false);
     setIsCourseOffering(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
   const handleTuition = () => {
     setIsStudentCopy(false);
@@ -145,6 +200,10 @@ const CampusSiderGenerator = () => {
     setIsGraduateApproval(false);
     setIsCourseOffering(false);
     setIsCampusRegistrar(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
   const handleStudentCopy = () => {
     setIsStudentCopy(true);
@@ -154,6 +213,10 @@ const CampusSiderGenerator = () => {
     setIsGraduateApproval(false);
     setIsCourseOffering(false);
     setIsCampusRegistrar(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
 
   const handleGraduateApproval = () => {
@@ -164,6 +227,10 @@ const CampusSiderGenerator = () => {
     setIsGraduateApproval(true);
     setIsCourseOffering(false);
     setIsCampusRegistrar(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
 
   const handleGradeApproval = () => {
@@ -174,6 +241,10 @@ const CampusSiderGenerator = () => {
     setIsGraduateApproval(false);
     setIsCourseOffering(false);
     setIsCampusRegistrar(false);
+    setIsAddCourse(false)
+    setIsAddDepart(false)
+    setIsAddSection(false)
+    setIsAddTerm(false)
   };
 
   const handleCourseOffering = () => {
@@ -187,6 +258,7 @@ const CampusSiderGenerator = () => {
     setIsAddSection(false);
     setIsAddDepart(false);
     setIsAddTerm(false);
+    setIsAddCourse(false);
   };
 
   const handleCourse = () => {
@@ -203,128 +275,99 @@ const CampusSiderGenerator = () => {
     setIsAddCourse(true)
   };
 
-  // const handleDrawerOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const handleDrawerClose = () => {
-  //   setOpen(false);
-  // };
-  // function getItem(label, key, icon, children, type) {
-  //   return {
-  //     key,
-  //     icon,
-  //     children,
-  //     label,
-  //     type,
-  //   };
-  // }
-  // const openedMixin = (theme) => ({
-  //   width: drawerWidth,
-  //   transition: theme.transitions.create("width", {
-  //     easing: theme.transitions.easing.sharp,
-  //     duration: theme.transitions.duration.enteringScreen,
-  //   }),
-  //   overflowX: "hidden",
-  //   position: windowSize.innerWidth <= 425 ? "fixed" : "",
-  //   zIndex: 1000,
-  // });
-
-  // const closedMixin = (theme) => ({
-  //   transition: theme.transitions.create("width", {
-  //     easing: theme.transitions.easing.sharp,
-  //     duration: theme.transitions.duration.leavingScreen,
-  //   }),
-  //   overflowX: "hidden",
-  //   width: `calc(${theme.spacing(7)} + 1px)`,
-  //   [theme.breakpoints.up("sm")]: {
-  //     width: `calc(${theme.spacing(8)} + 1px)`,
-  //   },
-  // });
-
-  // const Drawer = styled(MuiDrawer, {
-  //   shouldForwardProp: (prop) => prop !== "open",
-  // })(({ theme, open }) => ({
-  //   width: drawerWidth,
-  //   flexShrink: 0,
-  //   whiteSpace: "nowrap",
-  //   boxSizing: "border-box",
-  //   ...(open && {
-  //     ...openedMixin(theme),
-  //     "& .MuiDrawer-paper": openedMixin(theme),
-  //   }),
-  //   ...(!open && {
-  //     ...closedMixin(theme),
-  //     "& .MuiDrawer-paper": closedMixin(theme),
-  //   }),
-  // }));
-
+ 
   const routes = [
     {
       title: "Campus Registral",
       pages: [
-             {
+        {
           icon: <HomeIcon {...icon} />,
           name: "Campus Registrar",
           onClick: handleCampusRegistrar,
         },
         {
-          icon: <HomeIcon {...icon} />,
-          name: "Add Term",
-          onClick: handleTerm,
+          icon: <BookOpenIcon {...icon} />,
+          name: "Terms & Sections",
+          subMenu: [
+            {
+              icon: <HomeIcon {...icon} />,
+              name: "Add Term",
+              onClick: handleTerm,
+            },
+            {
+              icon: <HomeIcon {...icon} />,
+              name: "Add Department",
+              onClick: handleDept,
+            },
+            {
+              icon: <HomeIcon {...icon} />,
+              name: "Add Section",
+              onClick: handleSection,
+            }
+          ],
+
         },
+      
+      
         {
           icon: <HomeIcon {...icon} />,
-          name: "Add Department",
-          onClick: handleDept,
-        },
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Add Section",
-          onClick: handleSection,
-        },
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Add Course",
-          onClick: handleCourse,
-        },
-        // {
-        //   icon: <HomeIcon {...icon} />,
-        //   name: "Approval",
-        //   subMenu: [
-        //     {
-        //       icon: <FaGraduationCap {...icon} />,
-        //       name: "Graduate Approval",
-        //       onClick: handleGraduateApproval,
-        //     },
-        //     {
-        //       icon: <FaGraduationCap {...icon} />,
-        //       name: "Grade Approval",
-        //       onClick: handleGradeApproval,
-        //     },
-        //     // Add more sub-menu items as needed
-        //   ],
-        // },
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Course Offering",
-          onClick: handleCourseOffering,
-        },
-        
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Currculum",
-          onClick: handleCurrculum,
-        },
-        {
-          icon: <BuildingLibraryIcon {...icon} />,
-          name: "Tuition",
-          onClick: handleTuition,
+          name: "Course",
+          subMenu: [
+            {
+              icon: <ListAlt {...icon} />,
+              name: "Add Course",
+              onClick: handleCourse,
+            },
+     
+            {
+              icon: <HowToReg {...icon} />,
+              name: "Course Offering",
+              onClick: handleCourseOffering,
+            }
+     
+          ],
         },
         {
           icon: <FaSchool {...icon} />,
           name: "Student Copy",
           onClick: handleStudentCopy,
+        },
+  
+        {
+          icon: <Approval {...icon} />,
+          name: "Approval",
+          subMenu: [
+            {
+              icon: <FaGraduationCap {...icon} />,
+              name: "Graduate Approval",
+              onClick: handleGraduateApproval,
+            },
+            {
+              icon: <FaRegAddressBook {...icon} />,
+              name: "Grade Approval",
+              onClick: handleGradeApproval,
+            },
+            
+                ],
+
+        },
+
+        {
+          icon: <BuildingLibraryIcon {...icon} />,
+          name: "Curriculum & Tuition",
+          subMenu: [
+            {
+              icon: <HomeIcon {...icon} />,
+              name: "Currculum",
+              onClick: handleCurrculum,
+            },
+            {
+              icon: <MoneyOutlined {...icon} />,
+              name: "Tuition",
+              onClick: handleTuition,
+            },
+                ],
+
         },
      
         {
@@ -332,6 +375,11 @@ const CampusSiderGenerator = () => {
           name: "Log out",
           onClick: handlelogout,
         },
+        
+    
+    
+     
+      
       ],
     },
     // Add more navigation sections as needed
