@@ -7,7 +7,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import NestedMenuItem from "./nestedMenu";
 
 // import Icon from "react-eva-icons";
 // import { Layout, Menu } from "antd";
@@ -16,6 +15,7 @@ import AddStudent from "./addStudent";
 import StudentCourseRegistration from "./manageStudent";
 import AddDropManagement from "./addDropManagement";
 import GradeEntry from "./gradeEntry";
+import CourseOffering from "./CourseOffering"
 
 import {
   Configurator,
@@ -31,10 +31,10 @@ import {
 // import { IconButton } from "@mui/material";
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined } from "@mui/icons-material";
+import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
-import { FaGraduationCap, FaSchool } from "react-icons/fa";
+import { FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
 import { Avatar, List } from "@mui/material";
 
 const icon = {
@@ -155,7 +155,7 @@ const RegistrarOfficerSiderGenerator = () => {
             {
               icon: <HowToReg {...icon} />,
               name: "Student Course Registration",
-              // onClick: () => console.log("Student Course Registration clicked"),
+              onClick: handleCourseRegistration,
             },
             {
               icon: <Add {...icon} />,
@@ -163,13 +163,14 @@ const RegistrarOfficerSiderGenerator = () => {
               onClick: handleAddDrop,
             },
           ],
-          onClick: handleCourseRegistration,
 
         },
         {
-          icon: <FaGraduationCap {...icon} />,
-          name: "Student Management",
+          icon: <FaPaperclip {...icon} />,
+          name: "Reports",
           onClick: handleAddDrop,
+
+          
         },
         {
           icon: <FaGraduationCap {...icon} />,
@@ -212,7 +213,7 @@ const RegistrarOfficerSiderGenerator = () => {
         <div>
           {isAddStudent ? <AddStudent /> : null}
           {isAddDrop ? <AddDropManagement /> : null}
-          {isCourseRegistration ? <StudentCourseRegistration /> : null}
+          {isCourseRegistration ? <CourseOffering /> : null}
           {isGradeEntry ? <GradeEntry /> : null}
         </div>
         <div className="text-blue-gray-600">
