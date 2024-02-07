@@ -94,16 +94,6 @@ const columns = [
       dataIndex: "id",
     },
     {
-      title: <p className="font-jakarta  font-[600]">Grade</p>,
-      dataIndex: "cgpa",
-      key: "cgpa"
-    },
-    {
-      title: <p className="font-jakarta  font-[600]">Academic Year</p>,
-      dataIndex: "acadamicYear",
-      key: "acadamicYear",
-    },
-    {
       title: <p className="font-jakarta  font-[600]">Department</p>,
       dataIndex: "department",
       key: "department",
@@ -124,7 +114,7 @@ const columns = [
           />
         ),
       },
-      { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
+      // { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
   ];
 
   const handleGradeChange = (value, key) => {
@@ -141,24 +131,23 @@ const columns = [
   };
 
   // Function to convert numerical grade to letter grade
-  const convertToLetterGrade = (numericalGrade) => {
-    if (numericalGrade >= 85) {
-      return 'A';
-    } else if (numericalGrade >= 80) {
-      return 'A-';
-    } else if (numericalGrade >= 70) {
-      return 'B';
-    } else {
-      // Handle other cases as needed
-      return '';
-    }
-  };
+
 
   const EditableGradeCell = ({ value, onChange }) => {
  
     return (
-      <Form.Item>
-        <InputNumber value={value} onChange={onChange} />
+      <Form.Item  name="grade" label="Grade" >
+          <Select value={value} onChange={onChange} >
+            <Option value="A+">A+</Option>
+            <Option value="A">A</Option>
+            <Option value="B+">B+</Option>
+            <Option value="B">B</Option>
+            <Option value="C+">C+</Option>
+            <Option value="C">C</Option>
+            <Option value="D">D</Option>
+            <Option value="F">F</Option>
+          </Select>
+        {/* <InputNumber value={value} onChange={onChange} /> */}
       </Form.Item>
     );
   };
@@ -177,14 +166,14 @@ const Lecturer = () => {
 
   const studentRecords = {
     1: [
-      { id: 101, name: 'Student 1', cgpa :'3.8', acadamicYear :2011, section :1 , department :'computerscience' , course: selectedCourse , grade :78 },
-      { id: 102, name: 'Student 2', cgpa :'2.8', acadamicYear :2010,  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :78  },
-      { id: 103, name: 'Student 3', cgpa :'3.8', acadamicYear :2009,  section :1 ,department :'Management' , course: selectedCourse , grade :78  },
-      { id: 104, name: 'Student 4', cgpa :'2.8', acadamicYear :2010,  section :2 ,department :'Accounting' , course: selectedCourse , grade :78  }, 
-      { id: 105, name: 'Student 5', cgpa :'3.8', acadamicYear :2011,  section :2 ,department :'computerscience' , course: selectedCourse , grade :78  },
-      { id: 106, name: 'Student 6', cgpa :'2.8', acadamicYear :2010,  section :3 ,department :'Management' ,  course: selectedCourse , grade :78 }, 
-      { id: 107, name: 'Student 7', cgpa :'3.8', acadamicYear :2009,  section :2 ,department :'Information Science' , course: selectedCourse , grade :78  },
-      { id: 108, name: 'Student 8', cgpa :'2.8', acadamicYear :2008,  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :78  },  
+      { id: 101, name: 'Student 1', section :1 , department :'computerscience' , course: selectedCourse , grade :'A+' },
+      { id: 102, name: 'Student 2',  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :'A-'   },
+      { id: 103, name: 'Student 3',  section :1 ,department :'Management' , course: selectedCourse , grade :'B+'   },
+      { id: 104, name: 'Student 4',   section :2 ,department :'Accounting' , course: selectedCourse , grade :'B+'   }, 
+      { id: 105, name: 'Student 5',  section :2 ,department :'computerscience' , course: selectedCourse , grade :'A-'   },
+      { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'B'  }, 
+      { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'A'   },
+      { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'C'  },  
       // Add more students for Campus 1
     ],
     2: [
@@ -252,11 +241,11 @@ const Lecturer = () => {
   };
 
 
-  const getFilteredStudentRecords = (term, year ,campus , section , course) => {
-    console.log(campus ,year ,term ,section);
-    console.log("test " ,studentRecords[1].filter((student) => student.department == campus && student.acadamicYear == year))
-    if(term ,year , campus , section , course) {
-      return studentRecords[1].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section && student.course == course);
+  const getFilteredStudentRecords = (term ,campus , section , course) => {
+    console.log(campus ,term ,section);
+    console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
+    if(term , campus , section , course) {
+      return studentRecords[1].filter((student) => student.department == campus  && student.section == section && student.course == course);
     }  
     //  else if(term ,year , campus , section) {
     //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
@@ -388,27 +377,13 @@ const Lecturer = () => {
       <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Lecturer Managment System</h1>
     </div>
     <div className="list-sub mb-10 ml-[2%] ">
-     {handleGrade()}
+     {/* {handleGrade()} */}
       <div className="list-filter">
       
-        <h1>Active Term :   {selectedTerm}</h1> 
-        {selectedTerm && (
-        <Select
-            bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-            style={{ width: 220 }}
-            placeholder="--Select Acadamic Year of the Student---"
-            onChange={handleYearChange}
-          >
-            {Acadamic?.map((item, i) => (
-              <Option key={item.key} value={item.year} lable={item.year}>
-                {item.year}
-              </Option>
-            ))}
-          </Select>
-          )}
+        <h1>Active Term :  Term {selectedTerm}</h1> 
+      
 
-         {selectedTerm && selectedYear && ( 
+         {selectedTerm  && ( 
             <Select
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
@@ -424,7 +399,7 @@ const Lecturer = () => {
           </Select>
           )}
 
-           {selectedCampus && selectedYear && selectedTerm && (
+           {selectedCampus  && selectedTerm && (
         <Select
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
@@ -439,7 +414,7 @@ const Lecturer = () => {
             ))}
           </Select>
           )}
-            {selectedCampus && selectedYear && selectedTerm && (
+            {selectedCampus  && selectedTerm && (
         <Select
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
@@ -475,19 +450,27 @@ const Lecturer = () => {
         {/* Display student records based on selected campus and year */}
         {/* {selectedCampus && selectedYear && ( */}
           <div className="" >
-        
-          <h2 className="text-xl  font-[600] font-jakarta ">Student Records for {selectedYear} </h2>
+        <div style={{flex:1 , flexDirection:'row' , justifyContent:'space-between' ,display:'flex'}}>
+          <h4 className="text-base  font-[600] font-jakarta ">Student Records for  Term {selectedTerm} </h4>
+          <h4 className="text-base  font-[600] font-jakarta ">Course That Grade will be given  {selectedCourse} </h4>
+          <h4 className="text-base  font-[600] font-jakarta ">Section Of The Students {selectedSection} </h4>
+
+          </div>
             <Table
-        // onRow={(record, rowIndex) => {
+                    // onRow={(record, rowIndex) => {
         //   return {
         //     onClick: (event) => showModal(record), // click row
         //   };
         // }}
-        style={{ marginTop: 20 , color: '#4279A6'}}
+        style={{ marginTop: 20 , color: '#4279A6' }}
         columns={columns}
-        dataSource={getFilteredStudentRecords(selectedTerm ,selectedYear,selectedCampus,  selectedSection ,selectedCourse)}
+        dataSource={getFilteredStudentRecords(selectedTerm ,selectedCampus,  selectedSection ,selectedCourse)}
         pagination={{ position: ["bottomCenter"] }}
       />
+
+<Button  type="primary" style={{ marginBottom: 16 , backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }} >
+        Submit
+      </Button>
           </div>
         {/* )} */}
       </div>
