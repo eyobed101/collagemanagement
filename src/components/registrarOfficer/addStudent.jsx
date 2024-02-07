@@ -1,14 +1,37 @@
 import React, { useState } from "react";
+
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
 export function AddStudent() {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [coursePreferences, setCoursePreferences] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [identificationCopy, setIdentificationCopy] = useState(null);
   const [academicTranscripts, setAcademicTranscripts] = useState(null);
   // const [startDate, setStartDate] = useState(new Date());
+
+  const [checkedItems, setCheckedItems] = useState({
+    grade_8_ministry: false,
+    grades_9_10_transcript: false,
+    grade_10_national_exam: false,
+    grades_11_12_transcript: false,
+    grade_12_national_exam: false,
+  });
+
+  const [currentTab, setCurrentTab] = useState(0);
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setCheckedItems((prevCheckedItems) => ({
+      ...prevCheckedItems,
+      [name]: checked,
+    }));
+  };
 
   const handlePassportPhotoChange = (event) => {
     setPassportPhoto(event.target.files[0]);
@@ -34,6 +57,16 @@ export function AddStudent() {
     setSelectedCourses(updatedCourses);
   };
 
+  const handleNext = (e) => {
+    e.preventDefault();
+    setCurrentTab((prevTab) => Math.min(prevTab + 1, 3));
+  };
+
+  const handlePrevious = (e) => {
+    e.preventDefault();
+    setCurrentTab((prevTab) => Math.max(prevTab - 1, 0));
+  };
+
   // Sample array of courses
   const availableCourses = ["Course A", "Course B", "Course C", "Course D"];
 
@@ -45,408 +78,667 @@ export function AddStudent() {
             <form action="#" method="POST">
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
-                  {/* <h2>Personal Information</h2> */}
-                  <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="first_name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        First name
-                      </label>
-                      <input
-                        type="text"
-                        name="first_name"
-                        id="first_name"
-                        autocomplete="given-name"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="middle_name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Middle name
-                      </label>
-                      <input
-                        type="text"
-                        name="middle_name"
-                        id="middle_name"
-                        autocomplete="given-name"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                  <Tabs
+                    selectedIndex={currentTab}
+                    onSelect={(index) => setCurrentTab(index)}
+                  >
+                    <TabList
+                      style={{
+                        width: "100%",
+                        borderBottom: "2px solid #ccc",
+                        
+                      }}
+                    >
+                      {[
+                        "Personal Information",
+                        "Contact Address",
+                        "Education Background",
+                        "Department Preferences",
+                      ].map((tabLabel, index) => (
+                        <Tab
+                          key={index}
+                          style={{
+                            color: index === currentTab ? "#FFF" : "#000",
+                            border: '1px solid black',
+                            fontSize: "15px",
+                            padding: "15px",
+                            margin:"4px",
+                            flex: 1,
+                            textAlign: "center",
+                            borderRadius:"5px",
+                            fontWeight: 500,
+                            backgroundColor:
+                              index === currentTab ? "#4279A6" : "transparent",
+                          }}
+                        >
+                          {tabLabel}
+                        </Tab>
+                      ))}
+                    </TabList>
+                    {/* <div class="grid grid-cols-6 gap-6"> */}
+                    <TabPanel>
+                      <div class="grid grid-cols-6 mt-10">
+                        <div class="col-span-6 sm:col-span-3">
+                          <label
+                            // for="full_name"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Full Name
+                          </label>
+                          <div className="flex flex-wrap">
+                            <input
+                              type="text"
+                              name="first_name"
+                              id="first_name"
+                              placeholder="First Name"
+                              autocomplete="given-name"
+                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            />
+                            <input
+                              type="text"
+                              name="middle_name"
+                              id="middle_name"
+                              placeholder="Middle Name"
+                              autocomplete="given-name"
+                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-400 rounded-md"
+                            />
+                            <input
+                              type="text"
+                              name="last_name"
+                              id="last_name"
+                              placeholder="Last Name"
+                              autocomplete="family-name"
+                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            />
+                          </div>
+                        </div>
 
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="last_name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Last name
-                      </label>
-                      <input
-                        type="text"
-                        name="last_name"
-                        id="last_name"
-                        autocomplete="family-name"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <div className="flex flex-wrap justify-between">
+                            <div className="flex flex-col px-4">
+                              <label className="block text-sm font-medium text-gray-700">
+                                Sex
+                              </label>
+                              <select
+                                id="sex"
+                                name="sex"
+                                value={selectedGender}
+                                onChange={(e) =>
+                                  setSelectedGender(e.target.value)
+                                }
+                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              >
+                                <option class="rounded-sm" value="">
+                                  Select Gender
+                                </option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                              </select>
+                            </div>
+                            <div className="flex flex-col px-4">
+                              <label
+                                for="date_of_birth"
+                                class="block text-sm font-medium text-gray-700"
+                              >
+                                Date of Birth
+                              </label>
+                              <input
+                                type="date"
+                                name="date_of_birth"
+                                id="date_of_birth"
+                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              />
+                            </div>
+                            <div className="flex flex-col px-4">
+                              <label
+                                for="place_of_birth"
+                                class="block text-sm font-medium text-gray-700"
+                              >
+                                Place of Birth
+                              </label>
+                              <input
+                                type="text"
+                                name="place_of_birth"
+                                id="place_of_birth"
+                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              />
+                            </div>
+                          </div>
+                        </div>
 
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="date_of_birth"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Date of Birth
-                      </label>
-                      <input
-                        type="date"
-                        name="date_of_birth"
-                        id="date_of_birth"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div class="col-span-6 md:col-span-3">
+                          <div className="flex flex-wrap justify-between">
+                            <div className="flex flex-col py-4 w-[50%]">
+                              <label
+                                for="country"
+                                class="block text-sm font-medium text-gray-700"
+                              >
+                                Nationality
+                              </label>
+                              <select
+                                id="country"
+                                name="country"
+                                autocomplete="country"
+                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              >
+                                <option>Ethiopian</option>
+                                <option>American</option>
+                                <option>Canada</option>
+                                <option>Mexico</option>
+                              </select>
+                            </div>
+                            <div className="flex flex-col py-4 w-[50%]">
+                              <label
+                                for="marital_status"
+                                class="block text-sm font-medium text-gray-700"
+                              >
+                                Marital Status
+                              </label>
+                              <select
+                                id="marital_status"
+                                name="marital_status"
+                                autocomplete="marital_status"
+                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              >
+                                <option>SINGLE</option>
+                                <option>Married</option>
+                                <option>Widowed</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </TabPanel>
 
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="place_of_birth"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Place of Birth
-                      </label>
-                      <input
-                        type="text"
-                        name="place_of_birth"
-                        id="place_of_birth"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                    <TabPanel>
+                      <div class="grid grid-cols-6 gap-6 mt-10">
+                        <div class="col-span-6 md:col-span-3">
+                          <label
+                            for="zone"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Zone / Woreda
+                          </label>
+                          <input
+                            type="text"
+                            name="zone"
+                            id="zone"
+                            autocomplete="street-address"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
 
-                    <div class="col-span-6 sm:col-span-4">
-                      <label
-                        for="email_address"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Email address
-                      </label>
-                      <input
-                        type="text"
-                        name="email_address"
-                        id="email_address"
-                        autocomplete="email"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                          <label
+                            for="kebele"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Kebele
+                          </label>
+                          <input
+                            type="text"
+                            name="kebele"
+                            id="kebele"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
 
-                    <div class="col-span-6 sm:col-span-3">
-                      <label
-                        for="country"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Country / Region
-                      </label>
-                      <select
-                        id="country"
-                        name="country"
-                        autocomplete="country"
-                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      >
-                        <option>United States</option>
-                        <option>Canada</option>
-                        <option>Mexico</option>
-                      </select>
-                    </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                          <label
+                            for="town"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Town
+                          </label>
+                          <input
+                            type="text"
+                            name="town"
+                            id="town"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
 
-                    <div class="col-span-6">
-                      <label
-                        for="street_address"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Street address
-                      </label>
-                      <input
-                        type="text"
-                        name="street_address"
-                        id="street_address"
-                        autocomplete="street-address"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                          <label
+                            for="telephone"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Tel
+                          </label>
+                          <input
+                            type="text"
+                            name="telephone"
+                            id="telephone"
+                            autocomplete="postal-code"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                          <label
+                            for="po-box"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            PO Box
+                          </label>
+                          <input
+                            type="text"
+                            name="po-box"
+                            id="po-box"
+                            autocomplete="Phone Number"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div class="col-span-6 sm:col-span-4">
+                          <label
+                            for="email_address"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Email address
+                          </label>
+                          <input
+                            type="email"
+                            name="email_address"
+                            id="email_address"
+                            autocomplete="email"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                          <label
+                            for="emergency_contact_name"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Emergency Contact Name
+                          </label>
+                          <input
+                            type="text"
+                            name="emergency_contact_name"
+                            id="emergency_contact_name"
+                            autocomplete="emergency_contact_name"
+                            class="m-1 p-3 bg-blue-gray-50 w-full focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                          <label
+                            for="emergency_contact_phone_number"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Emergency Contact Phone Number
+                          </label>
+                          <input
+                            type="phone"
+                            name="emergency_contact_phone_number"
+                            id="emergency_contact_phone_number"
+                            autocomplete="emergency_contact_phone_number"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                      </div>
+                    </TabPanel>
 
-                    <div class="col-span-6 sm:col-span-6 lg:col-span-2">
-                      <label
-                        for="city"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        id="city"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                    <TabPanel>
+                      <div class="grid grid-cols-6 gap-6 mt-10">
+                        {/* Previous Educational Institution */}
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="previous_education"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Previous Education
+                          </label>
+                          <input
+                            type="text"
+                            id="previous_education"
+                            name="previous_education"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="previous_educational_institution"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Previous Institution
+                          </label>
+                          <input
+                            type="text"
+                            id="previous_educational_institution"
+                            name="previous_educational_institution"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="previous_major_department"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Previous Major Department
+                          </label>
+                          <input
+                            type="text"
+                            id="previous_major_department"
+                            name="previous_major_department"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="previous_education_cgpa"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Previous Education CGPA
+                          </label>
+                          <input
+                            type="number"
+                            id="previous_education_cgpa"
+                            name="previous_education_cgpa"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="service_year"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Service Year
+                          </label>
+                          <input
+                            type="year"
+                            id="service_year"
+                            name="service_year"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          />
+                        </div>
 
-                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        for="state"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        State / Province
-                      </label>
-                      <input
-                        type="text"
-                        name="state"
-                        id="state"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div className="col-span-6">
+                          <label className="block text-lg font-medium text-gray-700 mb-5">
+                            Submitted Documents
+                          </label>
+                          <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                id="grade_8_ministry"
+                                name="grade_8_ministry"
+                                onChange={handleCheckboxChange}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              />
+                              <label
+                                htmlFor="grade_8_ministry"
+                                className="ml-2 block text-sm text-gray-700"
+                              >
+                                8th Grade Ministry
+                              </label>
+                            </div>
 
-                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        for="postal_code"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        ZIP / Postal
-                      </label>
-                      <input
-                        type="text"
-                        name="postal_code"
-                        id="postal_code"
-                        autocomplete="postal-code"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        for="phone_number"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Phone Number
-                      </label>
-                      <input
-                        type="text"
-                        name="phone_number"
-                        id="phone_number"
-                        autocomplete="Phone Number"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        for="emergency_contact_name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Emergency Contact Name
-                      </label>
-                      <input
-                        type="text"
-                        name="emergency_contact_name"
-                        id="emergency_contact_name"
-                        autocomplete="emergency_contact_name"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                      <label
-                        for="emergency_contact_phone_number"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Emergency Contact Phone Number
-                      </label>
-                      <input
-                        type="text"
-                        name="emergency_contact_phone_number"
-                        id="emergency_contact_phone_number"
-                        autocomplete="emergency_contact_phone_number"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="student_id"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Student ID
-                      </label>
-                      <input
-                        type="text"
-                        id="student_id"
-                        name="student_id"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    {/* Admission Date */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="admission_date"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Admission Date
-                      </label>
-                      <input
-                        type="date"
-                        name="date_of_admission"
-                        id="date_of_admission"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                id="grades_9_10_transcript"
+                                name="grades_9_10_transcript"
+                                onChange={handleCheckboxChange}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              />
+                              <label
+                                htmlFor="grades_9_10_transcript"
+                                className="ml-2 block text-sm text-gray-700"
+                              >
+                                9th and 10th Grade Transcript
+                              </label>
+                            </div>
 
-                    {/* Expected Graduation Date */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="expected_graduation_date"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Expected Graduation Date
-                      </label>
-                      <input
-                        type="date"
-                        name="date_of_graduation"
-                        id="date_of_graduation"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                id="grade_10_national_exam"
+                                name="grade_10_national_exam"
+                                onChange={handleCheckboxChange}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              />
+                              <label
+                                htmlFor="grade_10_national_exam"
+                                className="ml-2 block text-sm text-gray-700"
+                              >
+                                10th EGSECE
+                              </label>
+                            </div>
 
-                    {/* Previous Educational Institution */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="previous_educational_institution"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Previous Educational Institution
-                      </label>
-                      <input
-                        type="text"
-                        id="previous_educational_institution"
-                        name="previous_educational_institution"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                id="grades_11_12_transcript"
+                                name="grades_11_12_transcript"
+                                onChange={handleCheckboxChange}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              />
+                              <label
+                                htmlFor="grades_11_12_transcript"
+                                className="ml-2 block text-sm text-gray-700"
+                              >
+                                11th and 12th Grade Transcript
+                              </label>
+                            </div>
 
-                    {/* Previous Graduation Date (if applicable) */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="previous_graduation_date"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Previous Graduation Date (if applicable)
-                      </label>
-                      <input
-                        type="date"
-                        name="date_of_previous_graduation"
-                        id="date_of_previous_graduation"
-                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                            <div className="flex items-start">
+                              <input
+                                type="checkbox"
+                                id="grade_12_national_exam"
+                                name="grade_12_national_exam"
+                                onChange={handleCheckboxChange}
+                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                              />
+                              <label
+                                htmlFor="grade_12_national_exam"
+                                className="ml-2 block text-sm text-gray-700"
+                              >
+                                12th NEAEA
+                              </label>
+                            </div>
+                          </div>
+                        </div>
 
-                    {/* Program/Department */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="program_department"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Program/Department
-                      </label>
-                      <input
-                        type="text"
-                        id="program_department"
-                        name="program_department"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        {/* Previous Graduation Date (if applicable) */}
+                        {/* <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="previous_graduation_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Previous Graduation Date (if applicable)
+                          </label>
+                          <input
+                            type="date"
+                            name="date_of_previous_graduation"
+                            id="date_of_previous_graduation"
+                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div> */}
+                        {/* <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="student_id"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Student ID
+                          </label>
+                          <input
+                            type="text"
+                            id="student_id"
+                            name="student_id"
+                            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div> */}
+                        {/* Admission Date */}
+                        {/* <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="admission_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Admission Date
+                          </label>
+                          <input
+                            type="date"
+                            name="date_of_admission"
+                            id="date_of_admission"
+                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div> */}
 
-                    {/* Batch/Class */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="batch_class"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Batch/Class
-                      </label>
-                      <input
-                        type="text"
-                        id="batch_class"
-                        name="batch_class"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        {/* Expected Graduation Date */}
+                        {/* <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="expected_graduation_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Expected Graduation Date
+                          </label>
+                          <input
+                            type="date"
+                            name="date_of_graduation"
+                            id="date_of_graduation"
+                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div> */}
+                      </div>
+                    </TabPanel>
+                    <TabPanel>
+                      <div class="grid grid-cols-6 gap-6">
+                        {/* Program/Department */}
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="program_department"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Program
+                          </label>
+                          <select
+                            id="program_department"
+                            name="program_department"
+                            autocomplete="program_department"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          >
+                            <option>Computer Science</option>
+                            <option>Accounting</option>
+                            <option>Marketing</option>
+                            <option>Business Management</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="program_type"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Program/Department
+                          </label>
+                          <select
+                            id="program_type"
+                            name="programtype"
+                            autocomplete="program_type"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          >
+                            <option>Regular</option>
+                            <option>Distance</option>
+                            <option>Night</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="department"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Department
+                          </label>
+                          <select
+                            id="department"
+                            name="department"
+                            autocomplete="department"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          >
+                            <option>CS</option>
+                            <option>CS</option>
+                            <option>CS</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="study_center"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Study Center
+                          </label>
+                          <select
+                            id="study_center"
+                            name="study_center"
+                            autocomplete="study_center"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          >
+                            <option>CS</option>
+                            <option>CS</option>
+                            <option>CS</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="application_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Application Date
+                          </label>
+                          <input
+                            type="date"
+                            name="application_date"
+                            id="application_date"
+                            class="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="approved"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Approved ?
+                          </label>
+                          <select
+                            id="approved"
+                            name="approved"
+                            autocomplete="approved"
+                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                          >
+                            <option>Yes</option>
+                            <option>No</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="approved_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Approved Date
+                          </label>
+                          <input
+                            type="date"
+                            name="approved_date"
+                            id="approved_date"
+                            class="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
 
-                    {/* Current Semester/Year */}
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="current_semester_year"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Current Semester/Year
-                      </label>
-                      <input
-                        type="text"
-                        id="current_semester_year"
-                        name="current_semester_year"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="passport_photo"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Passport-sized Photo
+                          </label>
+                          <input
+                            type="file"
+                            id="passport_photo"
+                            name="passport_photo"
+                            accept="image/*"
+                            onChange={handlePassportPhotoChange}
+                            className="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-[40%] shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          />
+                        </div>
 
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="course_selection"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        List of available courses with checkboxes for selection
-                      </label>
-                      <select
-                        multiple
-                        id="course_selection"
-                        name="course_selection"
-                        onChange={handleCourseSelection}
-                        className="mt-1 w-auto block py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      >
-                        {availableCourses.map((course) => (
-                          <option key={course} value={course}>
-                            {course}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="course_preferences"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Course preferences or majors (if applicable)
-                      </label>
-                      <input
-                        type="text"
-                        id="course_preferences"
-                        name="course_preferences"
-                        value={coursePreferences}
-                        onChange={(e) => setCoursePreferences(e.target.value)}
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="passport_photo"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Passport-sized Photo
-                      </label>
-                      <input
-                        type="file"
-                        id="passport_photo"
-                        name="passport_photo"
-                        accept="image/*"
-                        onChange={handlePassportPhotoChange}
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
+                        {/* <div className="col-span-6 sm:col-span-4">
                       <label
                         htmlFor="identification_copy"
                         className="block text-sm font-medium text-gray-700"
@@ -462,33 +754,45 @@ export function AddStudent() {
                         onChange={handleIdentificationCopyChange}
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                       />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="academic_transcripts"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Previous Academic Transcripts (if applicable)
-                      </label>
-                      <input
-                        type="file"
-                        id="academic_transcripts"
-                        name="academic_transcripts"
-                        accept="application/pdf"
-                        onChange={handleAcademicTranscriptsChange}
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    </div> */}
+                      </div>
+                    </TabPanel>
+                    {/* </div> */}
+                  </Tabs>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: "40px",
+                    }}
                   >
-                    Save
-                  </button>
+                    <button
+                      onClick={handlePrevious}
+                      style={{
+                        display: currentTab === 0 ? "none" : "inline-flex",
+                      }}
+                      disabled={currentTab === 0}
+                      class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Previous
+                    </button>
+                    {currentTab < 3 ? (
+                      <button
+                        onClick={handleNext}
+                        style={{ marginLeft: "auto" }}
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Next
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Submit
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </form>

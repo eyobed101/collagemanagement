@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const TableRow = styled.tr`
@@ -27,23 +27,36 @@ const StyledTable = styled.table`
   margin-top: 12px;
 `;
 
-const StyledForm = styled.div`
-  margin-top: 16px;
+
+
+
+const ModalWrapper = styled.div`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
   padding: 16px;
   border: 2px solid #e2e8f0;
   border-radius: 4px;
+  z-index: 999;
+  width: 30%;
+  font-family: 'Arial', sans-serif; /* Specify your desired font type */
 `;
 
-const StyledLabel = styled.label`
-  margin-right: 8px;
+const ModalOverlay = styled.div`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
 `;
 
-const StyledSelect = styled.select`
-  margin-right: 8px;
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-`;
+// ... (remaining code)
 
 const StyledButton = styled.button`
   padding: 8px 16px;
@@ -52,17 +65,111 @@ const StyledButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-family: 'Arial', sans-serif; /* Specify your desired font type */
+  font-size: 16px; /* Specify your desired font size */
 
   &:hover {
     background-color: #45a049;
   }
 `;
 
+const ModalForm = ({student,isOpen, onClose, onCourseSelection, onCourseRegistration, selectedCourse, allCourses, selectedCourses }) => {
+  const [selectAll, setSelectAll] = useState(false);
+  const [localSelectedCourses, setLocalSelectedCourses] = useState([]);
+
+  useEffect(() => {
+    setLocalSelectedCourses(selectedCourses);
+  }, [selectedCourses]);
+
+  const handleToggleAll = () => {
+    setSelectAll(!selectAll);
+    setLocalSelectedCourses(selectAll ? [] : allCourses.map(course => course.course));
+  };
+
+  const handleCourseSelection = (course) => {
+    const updatedSelectedCourses = [...localSelectedCourses];
+    const index = updatedSelectedCourses.indexOf(course);
+
+    if (index !== -1) {
+      updatedSelectedCourses.splice(index, 1);
+    } else {
+      updatedSelectedCourses.push(course);
+    }
+
+    setLocalSelectedCourses(updatedSelectedCourses);
+  };
+  
+
+  const handleCourseRegistration = () => {
+    // Perform course registration logic here
+    // This function will be called when the "Register Selected Courses" button is clicked
+    // You can use the selectedCourses array for further processing
+    console.log('Selected Courses:', localSelectedCourses);
+    // Close the modal after registration
+    onClose();
+  };  
+
+  return (
+    <>
+      <ModalOverlay isOpen={isOpen} onClick={onClose} />
+      <ModalWrapper isOpen={isOpen}>
+        <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+          Assign Courses to {student.name}
+          <label style={{ marginLeft: '16px', padding: '8px'}}>
+            <input type="checkbox" checked={selectAll} onChange={handleToggleAll} />
+            Select All
+          </label>
+        </h3>
+        <div style={{ marginBottom: '16px' }}>
+          <div>
+            <h4 style={{ marginBottom: '8px' }}>Select Courses</h4>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+            {allCourses.map((course) => (
+                <li key={course.course} style={{ marginBottom: '8px', padding: '8px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type="checkbox"
+                      value={course.course}
+                      checked={localSelectedCourses.includes(course.course)}
+                      onChange={() => handleCourseSelection(course.course)}
+                    />
+                    <span style={{ marginLeft: '8px' }}>{course.course}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <StyledButton onClick={handleCourseRegistration} style={{ width: '100%' }}>
+          Register Selected Courses
+        </StyledButton>
+      </ModalWrapper>
+    </>
+  );
+};
+
+
 const StudentCourseRegistration = () => {
   const [students, setStudents] = useState([
     { id: 1, name: 'John Doe', acadamicYear: 2022, department: 'Math', section: 'A', courses: [] },
     { id: 2, name: 'Jane Smith', acadamicYear: 2022, department: 'Science', section: 'B', courses: [] },
   ]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedRow, setSelectedRow] = useState(null);
+
+
+  const handleStudentSelection = (student) => {
+    setSelectedRow(student.id === selectedRow ? null : student.id);
+    setSelectedStudent(student);
+    setSelectedCourses([]);
+    setIsModalOpen(true);
+  };
+
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -77,10 +184,10 @@ const StudentCourseRegistration = () => {
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterSection, setFilterSection] = useState('');
 
-  const handleStudentSelection = (student) => {
-    setSelectedStudent(student);
-    setSelectedCourses([]);
-  };
+  // const handleStudentSelection = (student) => {
+  //   setSelectedStudent(student);
+  //   setSelectedCourses([]);
+  // };
 
   const isPrerequisitesFulfilled = (course) => {
     const passedPrerequisites = !course.prerequisites || course.prerequisites.every((prerequisite) =>
@@ -94,6 +201,7 @@ const StudentCourseRegistration = () => {
     if (selectedCourse && !selectedCourses.includes(selectedCourse)) {
       setSelectedCourses([...selectedCourses, selectedCourse]);
       setSelectedCourse('');
+
     }
   };
 
@@ -178,7 +286,10 @@ const StudentCourseRegistration = () => {
         </thead>
         <tbody>
           {filteredStudents.map((student, index) => (
-            <TableRow key={student.id} isOdd={index % 2 !== 0} onClick={() => handleStudentSelection(student)}>
+            <TableRow key={student.id}
+            isOdd={index % 2 !== 0}
+            onClick={() => handleStudentSelection(student)}
+            className={selectedRow === student.id ? 'selected-row' : ''}>
               <TableCell>{student.id}</TableCell>
               <TableCell>{student.name}</TableCell>
               <TableCell>{student.acadamicYear}</TableCell>
@@ -191,38 +302,23 @@ const StudentCourseRegistration = () => {
       </StyledTable>
 
       {selectedStudent && (
-        <StyledForm>
-          <h3>Assign Courses to {selectedStudent.name}</h3>
-          <div>
-            <StyledLabel htmlFor="course">Select Course(s):</StyledLabel>
-            <StyledSelect
-              id="course"
-              name="course"
-              value={selectedCourse}
-              onChange={(e) => setSelectedCourse(e.target.value)}
-            >
-              <option value="">Select a Course</option>
-              {allCourses.map((course) => (
-                <option key={course.course} value={course.course}>
-                  {course.course}
-                </option>
-              ))}
-            </StyledSelect>
+        <>
+         
 
-            <StyledButton onClick={handleCourseSelection}>Add Course</StyledButton>
-          </div>
-
-          <div>
-            <h4>Selected Courses</h4>
-            <ul>
-              {selectedCourses.map((course) => (
-                <li key={course}>{course}</li>
-              ))}
-            </ul>
-          </div>
-
-          <StyledButton onClick={handleCourseRegistration}>Register Selected Courses</StyledButton>
-        </StyledForm>
+          <ModalForm
+            student={selectedStudent}
+            isOpen={isModalOpen}
+            onClose={() => {
+              setSelectedRow(null);
+              closeModal();
+            }}
+            onCourseSelection={handleCourseSelection}
+            onCourseRegistration={handleCourseRegistration}
+            selectedCourse={selectedCourse}
+            allCourses={allCourses}
+            selectedCourses={selectedStudent.courses}
+          />
+        </>
       )}
     </div>
   );

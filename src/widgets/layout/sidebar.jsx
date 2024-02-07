@@ -9,6 +9,43 @@ import {
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 
+
+// const renderSubMenu = (subMenu, sidenavType) => {
+//   return (
+//     <ul className="flex flex-col gap-1">
+//       {subMenu.map(({ icon, name, path, subMenu }) => (
+//         <li key={name}>
+//           <NavLink to={path}>
+//             {({ isActive }) => (
+//               <Button
+//                 variant={isActive ? "gradient" : "text"}
+//                 color={
+//                   isActive
+//                     ? sidenavColor
+//                     : sidenavType === "dark"
+//                     ? "white"
+//                     : "blue-gray"
+//                 }
+//                 className="flex items-center gap-4 px-8 capitalize"
+//                 fullWidth
+//               >
+//                 {icon}
+//                 <Typography
+//                   color="inherit"
+//                   className="font-medium capitalize"
+//                 >
+//                   {name}
+//                 </Typography>
+//               </Button>
+//             )}
+//           </NavLink>
+//           {subMenu && renderSubMenu(subMenu, sidenavType)}
+//         </li>
+//       ))}
+//     </ul>
+//   );
+// };
+
 export function Sidebar({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
@@ -17,6 +54,77 @@ export function Sidebar({ brandImg, brandName, routes }) {
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const renderSubMenu = (subMenu, sidenavType) => {
+    return (
+      <ul className="flex flex-col gap-1">
+        {subMenu.map(({ icon, name, path, subMenu }) => (
+          <li key={name}>
+            <div
+              onMouseEnter={(e) => subMenu && handleMenuOpen(e)}
+              onMouseLeave={handleMenuClose}
+            >
+              <NavLink to={path}>
+                {({ isActive }) => (
+                  <Button
+                    variant={isActive ? "gradient" : "text"}
+                    color={
+                      isActive
+                        ? sidenavColor
+                        : sidenavType === "dark"
+                        ? "white"
+                        : "blue-gray"
+                    }
+                    className="flex items-center gap-4 px-8 capitalize"
+                    fullWidth
+                  >
+                    {icon}
+                    <Typography
+                      color="inherit"
+                      className="font-medium capitalize"
+                    >
+                      {name}
+                    </Typography>
+                  </Button>
+                )}
+              </NavLink>
+              {subMenu && (
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  {subMenu.map((subMenuItem, subIndex) => (
+                    <MenuItem
+                      key={subIndex}
+                      onClick={() => {
+                        subMenuItem.onClick && subMenuItem.onClick();
+                        handleMenuClose();
+                      }}
+                    >
+                      {subMenuItem.name}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  
 
   return (
     <aside
@@ -61,34 +169,7 @@ export function Sidebar({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, path }) => (
-              <li key={name}>
-                <NavLink to={`/${layout}${path}`}>
-                  {({ isActive }) => (
-                    <Button
-                      variant={isActive ? "gradient" : "text"}
-                      color={
-                        isActive
-                          ? sidenavColor
-                          : sidenavType === "dark"
-                          ? "white"
-                          : "blue-gray"
-                      }
-                      className="flex items-center gap-4 px-4 capitalize"
-                      fullWidth
-                    >
-                      {icon}
-                      <Typography
-                        color="inherit"
-                        className="font-medium capitalize"
-                      >
-                        {name}
-                      </Typography>
-                    </Button>
-                  )}
-                </NavLink>
-              </li>
-            ))}
+            {renderSubMenu(pages, sidenavType)}
           </ul>
         ))}
       </div>

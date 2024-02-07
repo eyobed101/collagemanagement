@@ -9,16 +9,29 @@ import {
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import { useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { ArrowForward, ArrowForwardIos, ArrowRight } from "@mui/icons-material";
 
 const initialActiveIndex = 0;
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleItemClick = (index, onClick) => {
     setActiveIndex(index);
     onClick();
+    setAnchorEl(null);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const { sidenavColor, sidenavType, openSidenav } = controller;
@@ -83,31 +96,93 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, onClick }, pageIndex) => (
+            {pages.map(({ icon, name, onClick, subMenu }, pageIndex) => (
               <li key={name}>
-                <Button
-                  variant={pageIndex === activeIndex ? "gradient" : "text"}
-                  color={
-                    pageIndex === activeIndex
-                      ? sidenavColor
-                      : sidenavType === "dark"
-                      ? "white"
-                      : "blue-gray"
-                  }
-                  className={`flex items-center gap-4 px3 capitalize  ${
-                    pageIndex === activeIndex ? "active" : ""
-                  }`}
-                  fullWidth
-                  onClick={() => handleItemClick(pageIndex, onClick)}
-                >
-                  {icon}
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
+                {subMenu ? (
+                  <>
+                    <Button
+                      variant="text"
+                      color={
+                        pageIndex === activeIndex
+                          ? sidenavColor
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className={`flex items-center gap-4 px-3 capitalize ${
+                        pageIndex === activeIndex ? "active" : ""
+                      }`}
+                      fullWidth
+                      onClick={handleMenuOpen}
+                    >
+                      {icon}
+                      <Typography
+                        color="inherit"
+                        className="font-medium capitalize"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>{name}</span>
+                        <ArrowForwardIos style={{ fontSize: "1.2rem", marginLeft:"15px" }} />
+                      </Typography>
+                    </Button>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                    >
+                      {subMenu.map((item, subIndex) => (
+                        <MenuItem
+                          key={subIndex}
+                          className={`flex items-center gap-4 px-3 capitalize ${
+                            pageIndex === activeIndex ? "active" : ""
+                          }`}
+                          onClick={() =>
+                            handleItemClick(pageIndex, item.onClick)
+                          }
+                        >
+                          {item.icon}
+                          {item.name}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </>
+                ) : (
+                  <Button
+                    variant={pageIndex === activeIndex ? "gradient" : "text"}
+                    color={
+                      pageIndex === activeIndex
+                        ? sidenavColor
+                        : sidenavType === "dark"
+                        ? "white"
+                        : "blue-gray"
+                    }
+                    className={`flex items-center gap-4 px-3 capitalize ${
+                      pageIndex === activeIndex ? "active" : ""
+                    }`}
+                    fullWidth
+                    onClick={() => handleItemClick(pageIndex, onClick)}
                   >
-                    {name}
-                  </Typography>
-                </Button>
+                    {icon}
+                    <Typography
+                      color="inherit"
+                      className="font-medium capitalize"
+                    >
+                      {name}
+                    </Typography>
+                  </Button>
+                )}
               </li>
             ))}
           </ul>
