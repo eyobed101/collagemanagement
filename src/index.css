@@ -19,5 +19,6 @@ code {
 @layer base {
   html {
     font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #4279A6;
   }
 }

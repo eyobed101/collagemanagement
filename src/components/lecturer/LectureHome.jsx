@@ -78,7 +78,7 @@ function CreateSubject() {
           visible={open}
           title="Add Subject"
           onOk={handleOk}
-          okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+          okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
           onCancel={handleCancel}
           footer={[
             <Button key="back" onClick={handleCancel}>

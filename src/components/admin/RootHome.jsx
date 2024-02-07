@@ -436,8 +436,8 @@ const RootHome = () => {
               colors: {
                 text: "#98A2B3",
                 font: "#3599B8",
-                primary25: "#FFF",
-                primary: "#FFF",
+                primary25: "#4279A6",
+                primary: "#4279A6",
                 color: "#98A2B3",
               },
             })}
@@ -560,7 +560,7 @@ const RootHome = () => {
       <Modal  
         title="Edit User"
         visible={isModalVisible}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
@@ -594,7 +594,7 @@ const RootHome = () => {
       <Modal
         title="Delete User"
         visible={isDeleteModalVisible}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
       >
@@ -604,7 +604,7 @@ const RootHome = () => {
       <Modal  
         title="Edit Center"
         visible={isModalVisible1}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         onOk={handleModalOk1}
         onCancel={handleModalCancel1}
       >
@@ -633,7 +633,7 @@ const RootHome = () => {
       <Modal
         title="Delete Campus"
         visible={isDeleteModalVisible1}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
         onOk={handleDeleteModalOk1}
         onCancel={handleDeleteModalCancel1}
       >

@@ -66,7 +66,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
           />
           <Typography
             variant="h6"
-            color={sidenavType === "dark" ? "white" : "blue-gray"}
+            color={sidenavType === "dark" ? "white" : "#4279A6"}
           >
             {brandName}
           </Typography>

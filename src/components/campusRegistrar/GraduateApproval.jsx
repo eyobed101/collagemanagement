@@ -12,7 +12,13 @@ const GraduatesApproval = () => {
     // Fetch or set your graduates data here
     // For demonstration purposes, I'm using static data
     const initialData = [
-      { key: '1', studentName: 'John Doe', program: 'Computer Science', status: 'Pending Approval' },
+      { key: '1', studentName: 'John Doe', program: 'Computer Science',batch: '2021/22',cgpa: 2.85, major: 2.4, remain: 0, status: 'Pending Approval' },
+      { key: '2', studentName: 'Jane Doe', program: 'Electrical Enginnering',batch: '2021/22',cgpa: 3.42, major: 3.1, remain: 2,  status: 'Pending Approval' },
+      { key: '3', studentName: 'Abel Kebde', program: 'Information Science',batch: '2021/22',cgpa: 4, major: 4, remain: 0,  status: 'Pending Approval' },
+      { key: '4', studentName: 'Kalkidan Misganaw', program: 'Industrial Science',batch: '2019/20',cgpa: 3.77, major: 3.2, remain: 0,  status: 'Pending Approval' },
+      { key: '5', studentName: 'Eyobed Smith', program: 'Computer Science',batch: '2021/22',cgpa: 3.51, major: 3.3, remain: 2,  status: 'Pending Approval' },
+      { key: '6', studentName: 'Exodus Eyob', program: 'Computer Science',batch: '2020/21',cgpa: 3.58, major: 2.7, remain: 0,  status: 'Pending Approval' },
+      { key: '7', studentName: 'Tomas Mekonen', program: 'Computer Science',batch: '2020/21',cgpa: 3.48, major: 2.8, remain: 0,  status: 'Pending Approval' },
       // Add more graduate entries
     ];
     setGraduatesData(initialData);
@@ -28,6 +34,26 @@ const GraduatesApproval = () => {
       title: 'Program',
       dataIndex: 'program',
       key: 'program',
+    },
+    {
+      title: 'Batch',
+      dataIndex: 'batch',
+      key: 'batch',
+    },
+    {
+      title: 'CGPA',
+      dataIndex: 'cgpa',
+      key: 'cgpa',
+    },
+    {
+      title: 'MAJOR GPA',
+      dataIndex: 'major',
+      key: 'major',
+    },
+    {
+      title: 'Remaining Course',
+      dataIndex: 'remain',
+      key: 'remain',
     },
     {
       title: 'Status',
@@ -84,7 +110,7 @@ const GraduatesApproval = () => {
         visible={isApprovalModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        okButtonProps={{ style: { backgroundColor: 'blue' } }} 
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
 
       >
         <p>Are you sure you want to approve the graduation for {selectedGraduate?.studentName}?</p>
