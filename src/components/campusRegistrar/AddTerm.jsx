@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Input, DatePicker } from 'antd';
+import { Table, Button, Input, DatePicker,Popconfirm } from 'antd';
 import moment from 'moment';
 
 const AddTerm = () => {
@@ -63,7 +63,12 @@ const AddTerm = () => {
             <Button onClick={cancel}>Cancel</Button>
           </span>
         ) : (
-          <Button onClick={() => edit(record.key)}>Edit</Button>
+          <span>
+            <Button onClick={() => edit(record.key)}>Edit</Button>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
+          </span>
         );
       },
     },
@@ -81,6 +86,12 @@ const AddTerm = () => {
     setData([...data, newData]);
     setEditingKey(newData.key);
   };
+
+  const handleDelete = (key) => {
+    const newData = data.filter(item => item.key !== key);
+    setData(newData);
+  };
+
 
   const edit = (key) => {
     setEditingKey(key);

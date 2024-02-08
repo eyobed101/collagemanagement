@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Select, Button, Table, Space,Input } from 'antd';
+import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 // import SiderGenerator from './Menu';
 
@@ -100,6 +100,12 @@ const Curriculum = () => {
     setIsCourseModalVisible(false);
   };
 
+  const handleDelete = (key) => {
+    console.log("handle   ", key)
+    const newData = courses.filter(item => item.id !== key.id);
+    setCourses(newData);
+  };
+
   const columns = [
     {
       title: 'Curriculum Name',
@@ -158,6 +164,9 @@ const Curriculum = () => {
         render: (text, record) => (
           <Space size="middle">
             <Button onClick={() => handleEditCourse(record)}>Edit</Button>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
           </Space>
         ),
       },
