@@ -200,6 +200,13 @@ const CourseLeaseManagement = () => {
           </div>
         </div>
       </div>
+      <div className="flex justify-end">
+            <button
+              className="px-4 py-3 bg-green-500 text-white rounded"
+            >
+              Save Transaction{" "}
+            </button>
+          </div>
     </div>
   );
 };
