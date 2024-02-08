@@ -16,6 +16,7 @@ import StudentCourseRegistration from "./manageStudent";
 import AddDropManagement from "./addDropManagement";
 import GradeEntry from "./gradeEntry";
 import CourseOffering from "./CourseOffering"
+import CourseLeaseManagement from "./courseLease";
 
 import {
   Configurator,
@@ -47,6 +48,7 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isCourseRegistration, setIsCourseRegistration] = useState(false);
   const [isAddDrop, setIsAddDrop] = useState(false);
   const [isGradeEntry, setIsGradeEntry] = useState(false);
+  const [isCourseLease, setIsCourseLease] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openSubMenu, setOpenSubMenu] = useState(null);
 
@@ -109,24 +111,39 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseRegistration(false);
     setIsAddDrop(false);
     setIsGradeEntry(false);
+    setIsCourseLease(false)
+
   };
   const handleCourseRegistration = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(true);
     setIsAddDrop(false);
     setIsGradeEntry(false);
+    setIsCourseLease(false)
+
+  };
+  const handleCourseLease = () => {
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(true)
   };
   const handleAddDrop = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
     setIsAddDrop(true);
     setIsGradeEntry(false);
+    setIsCourseLease(false)
+
   };
   const handleGradeEntry = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
     setIsAddDrop(false);
     setIsGradeEntry(true);
+    setIsCourseLease(false)
+
   };
 
   const handlelogout = () => {
@@ -150,7 +167,7 @@ const RegistrarOfficerSiderGenerator = () => {
               icon: <ListAlt {...icon} />,
               name: "Course Lease",
 
-              // onClick: () => console.log("Course Lease clicked"),
+              onClick: handleCourseLease,
             },
             {
               icon: <HowToReg {...icon} />,
@@ -215,6 +232,7 @@ const RegistrarOfficerSiderGenerator = () => {
           {isAddDrop ? <AddDropManagement /> : null}
           {isCourseRegistration ? <CourseOffering /> : null}
           {isGradeEntry ? <GradeEntry /> : null}
+          {isCourseLease ? <CourseLeaseManagement /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />
