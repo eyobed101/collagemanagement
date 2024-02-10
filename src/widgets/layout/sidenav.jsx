@@ -37,6 +37,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
     setAnchorEl(null);
   };
 
+  const [hoveredItemIndex, setHoveredItemIndex] = useState(null);
+
+  
+  const handleMouseEnter = (index) => {
+    setHoveredItemIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredItemIndex(null);
+  };
+
   const { sidenavColor, sidenavType, openSidenav } = controller;
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
@@ -79,7 +90,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
           color="white"
           size="sm"
           ripple={false}
-          className="absolute right-0 top-0 grid rounded-br-none rounded-tl-none xl:hidden"
+          className="absolute right-0 top-0 grid bg-[#4279A6] rounded-br-none rounded-tl-none xl:hidden"
           onClick={() => setOpenSidenav(dispatch, false)}
         >
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
@@ -87,13 +98,13 @@ export function Sidenav({ brandImg, brandName, routes }) {
       </div>
       <div className="m-4">
         {routes.map(({ title, pages }, key) => (
-          <ul key={key} className="mb-4 flex flex-col gap-1">
+          <ul key={key} className="mb-4 flex flex-col gap-1 ">
             {title && (
               <li className="mx-3.5 mt-2 mb-2">
                 <Typography
                   variant="small"
                   color={sidenavType === "dark" ? "white" : "blue-gray"}
-                  className="font-black uppercase opacity-75"
+                  className="font-black uppercase opacity-75 "
                 >
                   {title}
                 </Typography>
@@ -105,38 +116,39 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   <>
                     <Button
                       variant="text"
+                      style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null }}
                       color={
                         pageIndex === activeIndex
-                          ? sidenavColor
+                          ? "#4279A6"
                           : sidenavType === "dark"
                           ? "white"
                           : "blue-gray"
                       }
-                      className={`flex items-center gap-4 px-3 capitalize ${
+                      className={`flex items-center gap-4 px-3 capitalize relative ${
                         pageIndex === activeIndex ? "active" : ""
-                      }`}
+                      } border rounded-xl  `}
                       fullWidth
                       onClick={(e) => handleMenuOpen(e, pageIndex)}
                     >
                       {icon}
                       <Typography
-                        color="inherit"
-                        className="font-medium capitalize"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
+                        color="#4279A6"
+                        className="font-medium capitalize flex items-center justify-between w-full "
                       >
                         <span>{name}</span>
-                        <ArrowForwardIos
-                          style={{ fontSize: "1.2rem", marginLeft: "15px" }}
-                        />
+                        <ArrowForwardIos className="text-sm" />
                       </Typography>
+                      {openSubMenuIndex === pageIndex && (
+                        <div
+                          className="absolute top-0 right-0 w-full h-full bg-[#4279A6] opacity-25 rounded-lg z-10"
+                          onClick={handleMenuClose}
+                        ></div>
+                      )}
                     </Button>
                     <Menu
                       anchorEl={anchorEl}
                       open={openSubMenuIndex === pageIndex}
+                      
                       onClose={handleMenuClose}
                       anchorOrigin={{
                         vertical: "top",
@@ -148,36 +160,52 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       }}
                     >
                       {subMenu.map((item, subIndex) => (
-                        <MenuItem
-                          key={subIndex}
-                          className={`flex items-center gap-4 px-3 capitalize ${
-                            pageIndex === activeIndex ? "active" : ""
-                          }`}
-                          onClick={() =>
-                            handleItemClick(pageIndex, item.onClick)
-                          }
-                        >
-                          {item.icon}
-                          {item.name}
-                        </MenuItem>
+                       <MenuItem
+                       selected={true}
+                       divider={true}
+                       dense={true}
+                       
+                      //  disableGutters={true}
+                       key={subIndex}
+                       
+                       className={`flex items-center gap-4 px-1 capitalize w-[280px] h-[50px]  !hover:bg-[#4279A6]  ${
+                         pageIndex === activeIndex ? "active" : ""
+                       } !hover:bg-[#4279A6] `}
+                       onClick={() =>
+                         handleItemClick(pageIndex, item.onClick)
+                       }
+                       onMouseEnter={() => handleMouseEnter(subIndex)}
+                       onMouseLeave={handleMouseLeave}
+                       style={{borderRadius:30,  backgroundColor:
+                        hoveredItemIndex === subIndex
+                          ? '#4279A6'
+                          : null}}
+
+                     >
+                       {item.icon}
+                       {item.name}
+                     </MenuItem>
                       ))}
                     </Menu>
                   </>
                 ) : (
                   <Button
-                    variant={pageIndex === activeIndex ? "gradient" : "text"}
+                    // variant={pageIndex === activeIndex ? "gradient" : "text"}
+                    variant="text"
+                    style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null }}
                     color={
                       pageIndex === activeIndex
-                        ? sidenavColor
+                        ? "#4279A6"
                         : sidenavType === "dark"
                         ? "white"
                         : "blue-gray"
                     }
-                    className={`flex items-center gap-4 px-3 capitalize ${
+                    className={`flex items-center gap-4 px-3  capitalize ${
                       pageIndex === activeIndex ? "active" : ""
-                    }`}
+                    } border rounded-xl`}
                     fullWidth
                     onClick={() => handleItemClick(pageIndex, onClick)}
+                
                   >
                     {icon}
                     <Typography

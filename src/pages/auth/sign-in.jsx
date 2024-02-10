@@ -115,7 +115,9 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button onClick={() => onFinish()} className="mt-6" fullWidth type="submit">
+          <Button
+          style={{backgroundColor: "#4279A6"}}
+          onClick={() => onFinish()} className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
 
