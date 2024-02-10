@@ -1,333 +1,480 @@
-import React, { useMemo, useState } from "react";
-import styled from "styled-components";
-import { gradeEntryData } from "@/data";
-const TableRow = styled.tr`
-  background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
-  padding: 10px;
-`;
+import React, { useState } from 'react';
+import { Space, Table, Button, InputNumber,Col, DatePicker, Drawer, Form, Input, Row, Select ,Modal } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { userAction } from "../../redux/user";
+import IconButton from "@mui/material/IconButton";
+import MuiDrawer from "@mui/material/Drawer";
+import { styled, useTheme } from "@mui/material/styles";
+// import Icon from "react-eva-icons";
+import { Layout, Menu } from "antd";
+import { faAdd, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const TableCell = styled.td`
-  padding: 8px;
-  border: 2px solid #e2e8f0;
-  border-collapse: collapse;
-`;
 
-const TableHeader = styled.th`
-  border: 2px solid #e2e8f0;
-  border-collapse: collapse;
-  padding: 12px;
-  text-align: left;
-  background-color: #f0f0f0;
-`;
+// Mock data
+const { Option } = Select;
+const drawerWidth = 240;
+const campuses = [
+  { id: 1, name: 'computerscience' },
+  { id: 2, name: 'informationscience' },
+  { id: 3, name: 'Electricalscience' },
+  { id: 4, name: 'Accounting' },
+  { id: 5, name: 'Management' },
+  // Add more campuses as needed
+];
+const Acadamic = [
+    { id: 1, year:2011},
+    { id: 2, year: 2010 },
+    { id: 3, year: 2009 },
+    { id: 4, year: 2008 },
+    { id: 5, year: 2007 },
+    { id: 6, year: 2006 },
+    { id: 7, year: 2005 },
+    { id: 8, year: 2004 },
+    // Add more campuses as needed
+  ];
 
-const StyledTable = styled.table`
-  width: 100%;
-  min-width: 640px;
-  border-collapse: collapse;
-  margin-top: 12px;
-`;
+const Term =[
+    { id: 1, term: 1},
+    { id: 2, term: 2},
+    { id: 3, term: 3},
+]
+const Section = [
+    { id: 1, section: 1},
+    { id: 2, section: 2},
+    { id: 3, section: 3},
+    { id: 4, section: 4},
+    // Add more campuses as needed
+  ];
 
-const StyledForm = styled.div`
-  margin-top: 16px;
-  padding: 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 4px;
-`;
+const courserecords ={
+    1: [
+        { id: 1, name: "Principal of accounting" ,acadamicYear :2011,  department :'informationscience' },
+        { id: 2, name: "Economics",acadamicYear :2011,  department :'informationscience'},
+        { id: 3, name: "Global trends" ,acadamicYear :2011,  department :'informationscience'},
+        { id: 4,  name: "English",acadamicYear :2011,  department :'informationscience'},
+        { id: 13,  name: "Chemistry",acadamicYear :2010,  department :'Electricalscience'},
+        { id: 14,  name: "Physics",acadamicYear :2010,  department :'Electricalscience'},
+        { id: 26,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
+        { id: 15,  name: "Dynamics" ,acadamicYear :2010,  department :'Electricalscience'},
+        { id: 16,  name: "Power",acadamicYear :2010,  department :'Electricalscience'},
+        { id: 35, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
 
-const StyledLabel = styled.label`
-  margin-right: 8px;
-`;
+    ],
+    2: [
+        { id: 5, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
+        { id: 6,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
+        { id: 7,  name: "Maths of Computer Science",acadamicYear :2011, department :'computerscience'},
+        { id: 8,  name: "Geography",acadamicYear :2011, department :'computerscience'},
+    ],
+    3:[
+        { id: 9, name: "Intro to database", acadamicYear :2009, department :'Management'},
+        { id: 10,  name: "Statistics", acadamicYear :2009, department :'Management'},
+        { id: 11,  name: "Electronic", acadamicYear :2009,  department :'Management'},
+        { id: 12,  name: "Antroplogy", acadamicYear :2009,  department :'Management'},
+    ]
+}
 
-const StyledSelect = styled.select`
-  margin-right: 8px;
-  padding: 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-`;
 
-const StyledButton = styled.button`
-  padding: 8px 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+const columns = [
+    {
+      title: (
+        <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
+          Name
+        </p>
+      ),
+      dataIndex: "name",
+      key: "name",
+ 
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">ID</p>,
+      key: "id",
+      dataIndex: "id",
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Department</p>,
+      dataIndex: "department",
+      key: "department",
+    },
+    {
+        title: <p className="font-jakarta  font-[600]">Course</p>,
+        dataIndex: "course",
+        key: "course",
+      },
+      {
+        title: 'Assessment',
+        dataIndex: 'grade',
+        key: 'grade',
+        render: (text, record) => (
+          <EditableGradeCell
+            value={text}
+            onChange={(value) => handleGradeChange(value, record)}
+          />
+        ),
+      },
+      // { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
+  ];
 
-  &:hover {
-    background-color: #45a049;
-  }
-`;
+  const handleGradeChange = (value, key) => {
+    console.log('sss',key)
+
+    return 
+    // setStudentRecords((prevRecords) => {
+    //   const updatedRecords = { ...prevRecords };
+    //   updatedRecords[1] = updatedRecords[1].map((student) =>
+    //     student.id === key ? { ...student, grade: value, letterGrade: convertToLetterGrade(value) } : student
+    //   );
+    //   return updatedRecords;
+    // });
+  };
+
+  // Function to convert numerical grade to letter grade
+
+
+  const EditableGradeCell = ({ value, onChange }) => {
+ 
+    return (
+      <Form.Item  name="grade" label="Grade" >
+          <Select value={value} onChange={onChange} >
+            <Option value="A+">A+</Option>
+            <Option value="A">A</Option>
+            <Option value="B+">B+</Option>
+            <Option value="B">B</Option>
+            <Option value="C+">C+</Option>
+            <Option value="C">C</Option>
+            <Option value="D">D</Option>
+            <Option value="F">F</Option>
+          </Select>
+        {/* <InputNumber value={value} onChange={onChange} /> */}
+      </Form.Item>
+    );
+  };
+ 
 
 const GradeEntry = () => {
-  const [students, setStudents] = useState(gradeEntryData);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [selectedCampus, setSelectedCampus] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState(Term[0].term);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedname, setSelectedname] = useState([]);
+  const [selectedCourse , setSelectedCourse] = useState(null);
 
-  const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const [filterAcademicYear, setFilterAcademicYear] = useState("");
-  const [filterDepartment, setFilterDepartment] = useState("");
-  const [filterSection, setFilterSection] = useState("");
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const studentRecords = {
+    1: [
+      { id: 101, name: 'Student 1', section :1 , department :'computerscience' , course: selectedCourse , grade :'A+' },
+      { id: 102, name: 'Student 2',  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :'A-'   },
+      { id: 103, name: 'Student 3',  section :1 ,department :'Management' , course: selectedCourse , grade :'B+'   },
+      { id: 104, name: 'Student 4',   section :2 ,department :'Accounting' , course: selectedCourse , grade :'B+'   }, 
+      { id: 105, name: 'Student 5',  section :2 ,department :'computerscience' , course: selectedCourse , grade :'A-'   },
+      { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'B'  }, 
+      { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'A'   },
+      { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'C'  },  
+      // Add more students for Campus 1
+    ],
+    2: [
+      { id: 201, name: 'Student 9', cgpa :'3.5', acadamicYear :2011,section :3,  department :'informationscience' ,curricula:"tot13" },
+      { id: 202, name: 'Student 10', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
+      { id: 203, name: 'Student 11', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
+      
+      // Add more students for Campus 2
+    ],
+    3: [
+      { id: 301, name: 'Student 19', cgpa :'3.5', acadamicYear :2011,section :3 ,  department :'informationscience' ,curricula:"tot13" },
+      { id: 302, name: 'Student 20', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
+      { id: 303, name: 'Student 21', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
+      
+      // Add more students for Campus 2
+    ],
+   
+    // Add more campuses as needed
+  };  
 
-  const filteredStudents = useMemo(() => {
-    return students.filter(
-      (student) =>
-        (!filterAcademicYear || student.batch === filterAcademicYear) &&
-        (!filterDepartment || student.department === filterDepartment) &&
-        (!filterSection || student.section === filterSection)
+
+
+ 
+  function getWindowSize() {
+    const { innerWidth, innerHeight } = window;
+    return { innerWidth, innerHeight };
+  }
+  const [windowSize, setWindowSize] = useState(getWindowSize());
+  React.useEffect(() => {
+    // Actions to perform after state update
+    console.log("selectedCourse updated:", selectedCourse);
+  }, [selectedCourse]);
+
+
+  const handleView = (data) => {
+    navigate("/view-student", { state: { data } });
+  };
+
+
+  const handleCampusChange = async(value) => {
+    setSelectedCampus(value);
+    // setSelectedYear(null); // Reset selected year when campus changes
+  };
+
+  const handlelogout =() =>{
+    dispatch(userAction.logout());
+  }
+
+  const handleYearChange = async (value) => {
+    setSelectedYear(value);
+  };
+  const handleSchoolname = async (value) => {
+    setSelectedname(value);
+  };
+
+  const handleTermChange = async (value) => {
+    setSelectedTerm(value);
+  };
+  const handleSectionChange = async (value) => {
+    setSelectedSection(value);
+  };
+  const handleCourseChange = async (value) => {
+    console.log("test is ",value);
+    setSelectedCourse(value);
+  };
+
+
+  const getFilteredStudentRecords = (term ,campus , section , course) => {
+    console.log(campus ,term ,section);
+    console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
+    if(term , campus , section , course) {
+      return studentRecords[1].filter((student) => student.department == campus  && student.section == section && student.course == course);
+    }  
+    //  else if(term ,year , campus , section) {
+    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
+    //   }
+    //   else if (term , year , campus){
+    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year );
+    //   }
+    
+    //   else if(term ,year){
+    //     return studentRecords[term].filter((student) =>  student.acadamicYear == year  );
+    //   }
+    //   else if (term) {
+    //     return studentRecords[term];
+    //   }
+      else{
+        return null;
+      }
+  };
+  
+  const [loading, setLoading] = useState(false);
+  const [opens, setOpens] = useState(false);
+  const [newGrade, setNewGrade] = useState({
+    studentname: selectedname,
+    acadamicYear: selectedYear,
+    department: selectedCampus,
+    term:selectedTerm,
+    courses: selectedCourse,
+    Grade:"",
+  });
+
+  const showModal = () => {
+    setOpens(true);
+   
+  };
+
+  const handleOk = async () => {
+    console.log ("Grade value   ", newGrade)
+          setOpens(false);    
+  };
+
+  const handleCancel = () => {
+    setOpens(false);
+  };
+  const handleSubject = (e) => {
+    setNewGrade({ ...newGrade, [e.target.name]: e.target.value });
+  };
+
+  const handleGrade = () =>{ 
+    return (
+     <>
+      {opens ? (
+        <Modal
+          open = {opens}
+          title="Add Grade"
+          onOk={handleOk}
+          okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
+          onCancel={handleCancel}
+          footer={[
+            <Button key="back" onClick={handleCancel}>
+              Exit
+            </Button>,
+            <Button key="submit" loading={loading} onClick={handleOk}>
+              Submit
+            </Button>,
+          ]}
+        >
+          <Form
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 30 }}
+            layout="horizontal"
+          >
+              <Form.Item label="Name">        
+        <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
+            style={{ width: '100%' }}
+            placeholder="--Select Acadamic Year of the Student---"
+            onChange={handleSchoolname}
+          >
+            {(getFilteredStudentRecords(selectedTerm ,selectedYear, selectedCampus ,selectedSection))?.map((item, i) => (
+              <Option key={item.key} value={item.name} lable={item.name}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
+            </Form.Item>
+            <Form.Item label="Department">
+            <Input name="department" value={newGrade.department} placeholder= {selectedCampus} />
+              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
+            </Form.Item>
+            <Form.Item label="Acadamic Year">
+            <Input name="acadamicYear"  value={newGrade.acadamicYear} placeholder= {selectedYear}/>
+              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
+            </Form.Item>
+            <Form.Item label="Term">
+            <Input name="term" value={newGrade.term} placeholder= {selectedTerm}/>
+              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
+            </Form.Item>
+            <Form.Item label="Courses">
+            <Input name="courses" value={newGrade.courses} placeholder= {selectedCourse} />
+              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
+            </Form.Item>
+
+            <Form.Item
+              label="Grade"
+              name="Grade"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input name="Grade" onChange={(e) => handleSubject(e)} />
+            </Form.Item>
+          
+          </Form>
+        </Modal>
+      ) : null}
+    </>
     );
-  }, [students, filterAcademicYear, filterDepartment, filterSection]);
+  }
 
-  const paginatedStudents = useMemo(() => {
-    const start = pageIndex * pageSize;
-    const end = start + pageSize;
-    return filteredStudents.slice(start, end);
-  }, [filteredStudents, pageIndex, pageSize]);
-
-  const handleStudentSelection = (student) => {
-    setSelectedStudent(student);
-  };
-
-  const handleGradeSubmission = () => {
-    // Implement logic to submit grades to backend or perform further actions
-    console.log("Grades submitted:", students);
-  };
-
-  const handlePrintReport = (student) => {
-    const printWindow = window.open("", "_blank");
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>${student.first_name}'s Grade Report</title>
-          <style>
-            /* Add your print-friendly styles here */
-            body {
-              font-family: 'Arial', sans-serif;
-            }
-            table {
-              border-collapse: collapse;
-              width: 100%;
-              margin-bottom: 20px;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-              text-align: left;
-            }
-            th {
-              background-color: #f2f2f2;
-            }
-          </style>
-        </head>
-        <body>
-          <h2>${student.first_name}'s Grade Report</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Grade</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${student.courses
-                .map(
-                  (course) => `
-                <tr>
-                  <td>${course}</td>
-                  <td>${student.grades ? student.grades[course] : "N/A"}</td>
-                </tr>
-              `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.print();
-  };
-
-  const handleGradeChange = (course, value) => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.id === selectedStudent.id
-          ? {
-              ...student,
-              courses: [...student.courses],
-              grades: { ...student.grades, [course]: value },
-            }
-          : student
-      )
-    );
-  };
 
   return (
-    <div>
-      <h2>Grade Management</h2>
-      <div>
-        <h3>Students Table</h3>
-        <div>
-          <label htmlFor="filterBatch">Filter by Batch:</label>
-          <select
-            className="p-1 mr-2 border rounded"
-            id="filterBatch"
-            name="filterBatch"
-            value={filterAcademicYear}
-            onChange={(e) => setFilterAcademicYear(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="2021-2022">2021-2022</option>
-            {/* Add more academic years as needed */}
-          </select>
-
-          <label htmlFor="filterDepartment">Filter by Department:</label>
-          <select
-            className="p-1 mr-2 border rounded"
-            id="filterDepartment"
-            name="filterDepartment"
-            value={filterDepartment}
-            onChange={(e) => setFilterDepartment(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="Math">Computer Science</option>
-            <option value="Science">Science</option>
-            {/* Add more departments as needed */}
-          </select>
-
-          <label htmlFor="filterSection">Filter by Section:</label>
-          <select
-            className="p-1 mr-2 border rounded"
-            id="filterSection"
-            name="filterSection"
-            value={filterSection}
-            onChange={(e) => setFilterSection(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-            <option value="E">E</option>
-            {/* Add more sections as needed */}
-          </select>
-        </div>
-        <StyledTable>
-          <thead>
-            <tr>
-              <TableHeader>ID</TableHeader>
-              <TableHeader>First Name</TableHeader>
-              <TableHeader>Last Name</TableHeader>
-              <TableHeader>Email</TableHeader>
-              <TableHeader>Batch</TableHeader>
-              <TableHeader>Department</TableHeader>
-              <TableHeader>Section</TableHeader>
-              <TableHeader>Courses</TableHeader>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedStudents.map((student, index) => (
-              <TableRow
-                key={student.id}
-                isOdd={index % 2 !== 0}
-                onClick={() => handleStudentSelection(student)}
-              >
-                <TableCell>{student.id}</TableCell>
-                <TableCell>{student.first_name}</TableCell>
-                <TableCell>{student.last_name}</TableCell>
-                <TableCell>{student.email}</TableCell>
-                <TableCell>{student.batch}</TableCell>
-                <TableCell>{student.department}</TableCell>
-                <TableCell>{student.section}</TableCell>
-                <TableCell>{student.courses.join(", ")}</TableCell>
-              </TableRow>
-            ))}
-          </tbody>
-        </StyledTable>
-        <div>
-          <button onClick={() => setPageIndex(0)} disabled={pageIndex === 0}>
-            {"<<"}
-          </button>{" "}
-          <button
-            onClick={() => setPageIndex(pageIndex - 1)}
-            disabled={pageIndex === 0}
-          >
-            {"<"}
-          </button>{" "}
-          <button
-            onClick={() => setPageIndex(pageIndex + 1)}
-            disabled={
-              pageIndex === Math.ceil(filteredStudents.length / pageSize) - 1
-            }
-          >
-            {">"}
-          </button>{" "}
-          <button
-            onClick={() =>
-              setPageIndex(
-                Math.max(0, Math.ceil(filteredStudents.length / pageSize) - 1)
-              )
-            }
-            disabled={
-              pageIndex === Math.ceil(filteredStudents.length / pageSize) - 1
-            }
-          >
-            {">>"}
-          </button>{" "}
-          <span>
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {Math.ceil(filteredStudents.length / pageSize)}
-            </strong>{" "}
-          </span>
-          <select
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-          >
-            {[5, 10, 20].map((size) => (
-              <option key={size} value={size}>
-                Show {size}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      {selectedStudent && (
-        <div>
-          <h3>Grade Submission for {selectedStudent.first_name}</h3>
-          <StyledForm>
-            {selectedStudent.courses.map((course) => (
-              <div key={course}>
-                <StyledLabel>{course}</StyledLabel>
-                <StyledSelect
-                  value={
-                    selectedStudent.grades ? selectedStudent.grades[course] : ""
-                  }
-                  onChange={(e) => handleGradeChange(course, e.target.value)}
-                >
-                  <option value="">Select Grade</option>
-                  {["A", "B", "C", "D", "F"].map((grade) => (
-                    <option key={grade} value={grade}>
-                      {grade}
-                    </option>
-                  ))}
-                </StyledSelect>
-              </div>
-            ))}
-            <StyledButton onClick={handleGradeSubmission}>
-              Submit Grades
-            </StyledButton>
-            <br />
-            <br />
-            <StyledButton onClick={handlePrintReport}>
-              Print Report
-            </StyledButton>
-          </StyledForm>
-        </div>
-      )}
+    <div className="bg-[#F9FAFB] min-h-[100vh]  ">
+        {/* <SiderGenerator /> */}
+    <div className="list-header mb-2 ml-100">
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">GradeEntry Managment System</h1>
     </div>
+    <div className="list-sub mb-10 ml-[2%] ">
+     {/* {handleGrade()} */}
+      <div className="list-filter">
+      
+        <h1>Active Term :  Term {selectedTerm}</h1> 
+      
+
+         {selectedTerm  && ( 
+            <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
+            placeholder="--Select Department of the Student ---"
+            style={{ width: 240 }}
+            onChange={handleCampusChange}
+          >
+            {campuses?.map((item, i) => (
+              <Option key={item.id} value={item.name} lable={item.name}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+          )}
+
+           {selectedCampus  && selectedTerm && (
+        <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
+            style={{ width: 220 }}
+            placeholder="--Select Section of the Student---"
+            onChange={handleSectionChange}
+          >
+            {Section?.map((item, i) => (
+              <Option key={item.key} value={item.section} lable={item.section}>
+                {item.section}
+              </Option>
+            ))}
+          </Select>
+          )}
+            {selectedCampus  && selectedTerm && (
+        <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#4279A6] border-[2px]"
+            style={{ width: 220 }}
+            placeholder="--Select Course To Grade---"
+            value={selectedCourse}
+            onChange={handleCourseChange}
+          >
+            {courserecords[1]?.map((item, i) => (
+              <Option key={item.key} value={item.name} lable={item.name}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+          )}
+          {/* {selectedCampus && selectedYear && selectedTerm && selectedSection && (
+             <Button
+        style={{
+          borderRadius: "8px",
+          borderWidth: 1,
+        }}
+        icon={<FontAwesomeIcon className="pr-2" icon={faAdd} />}
+        className=" !text-[white] !bg-[#15C9CE] hover:!text-[white]"
+        onClick={showModal}
+      >
+        Add Grade
+      </Button>
+        )} */}
+      </div>
+ </div>
+
+      <div className='ml-[2%]'>
+        {/* Display student records based on selected campus and year */}
+        {/* {selectedCampus && selectedYear && ( */}
+          <div className="" >
+        <div style={{flex:1 , flexDirection:'row' , justifyContent:'space-between' ,display:'flex'}}>
+          <h4 className="text-base  font-[600] font-jakarta ">Student Records for  Term {selectedTerm} </h4>
+          <h4 className="text-base  font-[600] font-jakarta ">Course That Grade will be given  {selectedCourse} </h4>
+          <h4 className="text-base  font-[600] font-jakarta ">Section Of The Students {selectedSection} </h4>
+
+          </div>
+            <Table
+                    // onRow={(record, rowIndex) => {
+        //   return {
+        //     onClick: (event) => showModal(record), // click row
+        //   };
+        // }}
+        style={{ marginTop: 20 , color: '#4279A6' }}
+        columns={columns}
+        dataSource={getFilteredStudentRecords(selectedTerm ,selectedCampus,  selectedSection ,selectedCourse)}
+        pagination={{ position: ["bottomCenter"] }}
+      />
+
+<Button  type="primary" style={{ marginBottom: 16 , backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }} >
+        Submit
+      </Button>
+          </div>
+        {/* )} */}
+      </div>
+    </div> 
   );
 };
 

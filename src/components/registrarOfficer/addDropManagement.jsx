@@ -217,17 +217,17 @@ const AddDropManagement = () => {
                 <option value="Term 2">Term 2</option>
               </select>
             </div>
-            <div className="flex flex-col">
-              <div className="mb-10 flex">
+            <div className="flex flex-col w-full">
+              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
                 <label className="block text-lg font-semibold mr-5 text-[#434343]">
-                  Number of Students in selected Section
+                  Number of Students
                 </label>
 
                 <label className="px-8 py-2 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
                   {filteredStudents.length}
                 </label>
               </div>
-              <div className="mb-10 flex">
+              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
                 <label className="block text-lg font-semibold text-[#434343] mr-5">
                   Today's Date{" "}
                 </label>
@@ -245,7 +245,7 @@ const AddDropManagement = () => {
           <h2 className="text-lg font-semibold mb-2 text-[#434343]">
             Students under selected Section
           </h2>
-          <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto max-h-48 shadow-sm rounded-md">
+          <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto h-full shadow-sm rounded-md">
             {filteredStudents.map((student) => (
               <div
                 key={student.id}

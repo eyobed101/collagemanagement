@@ -12,11 +12,12 @@ import MenuItem from "@mui/material/MenuItem";
 // import { Layout, Menu } from "antd";
 
 import AddStudent from "./addStudent";
-import StudentCourseRegistration from "./manageStudent";
+// import StudentCourseRegistration from "./manageStudent";
 import AddDropManagement from "./addDropManagement";
 import GradeEntry from "./gradeEntry";
-import CourseOffering from "./CourseOffering"
 import CourseLeaseManagement from "./courseLease";
+import StudentCourseRegistration from "./courseRegistration";
+import StudentCourseExemption from "./studentExemption";
 
 import {
   Configurator,
@@ -35,7 +36,7 @@ import { setSidenavType } from "@/context";
 import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
-import { FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
+import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
 import { Avatar, List } from "@mui/material";
 
 const icon = {
@@ -49,8 +50,8 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isAddDrop, setIsAddDrop] = useState(false);
   const [isGradeEntry, setIsGradeEntry] = useState(false);
   const [isCourseLease, setIsCourseLease] = useState(false);
+  const [isCourseExemption, setIsCourseExemption] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openSubMenu, setOpenSubMenu] = useState(null);
 
   const drawerWidth = 240;
   const navigate = useNavigate();
@@ -112,6 +113,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsAddDrop(false);
     setIsGradeEntry(false);
     setIsCourseLease(false)
+    setIsCourseExemption(false)
 
   };
   const handleCourseRegistration = () => {
@@ -120,6 +122,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsAddDrop(false);
     setIsGradeEntry(false);
     setIsCourseLease(false)
+    setIsCourseExemption(false)
+
 
   };
   const handleCourseLease = () => {
@@ -128,13 +132,17 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsAddDrop(false);
     setIsGradeEntry(false);
     setIsCourseLease(true)
+    setIsCourseExemption(false)
+
   };
   const handleAddDrop = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
     setIsAddDrop(true);
     setIsGradeEntry(false);
-    setIsCourseLease(false)
+    setIsCourseLease(false);
+    setIsCourseExemption(false);
+
 
   };
   const handleGradeEntry = () => {
@@ -142,7 +150,19 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseRegistration(false);
     setIsAddDrop(false);
     setIsGradeEntry(true);
-    setIsCourseLease(false)
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+
+
+  };
+  const handleCourseExemption = () => {
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(true)
+
 
   };
 
@@ -178,6 +198,11 @@ const RegistrarOfficerSiderGenerator = () => {
               icon: <Add {...icon} />,
               name: "Course ADD/DROP",
               onClick: handleAddDrop,
+            },
+            {
+              icon: <FaFreeCodeCamp {...icon} />,
+              name: "Course Exemption",
+              onClick: handleCourseExemption,
             },
           ],
 
@@ -230,9 +255,10 @@ const RegistrarOfficerSiderGenerator = () => {
         <div>
           {isAddStudent ? <AddStudent /> : null}
           {isAddDrop ? <AddDropManagement /> : null}
-          {isCourseRegistration ? <CourseOffering /> : null}
+          {isCourseRegistration ? <StudentCourseRegistration /> : null}
           {isGradeEntry ? <GradeEntry /> : null}
           {isCourseLease ? <CourseLeaseManagement /> : null}
+          {isCourseExemption ? <StudentCourseExemption /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />

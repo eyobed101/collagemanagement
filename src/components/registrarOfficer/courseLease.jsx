@@ -8,12 +8,10 @@ const CourseLeaseManagement = () => {
   const [courseType, setCourseType] = useState("");
   const [prerequisites, setPrerequisites] = useState(false);
 
-  // Add your department and course data here
   const departments = ["Dept A", "Dept B"];
   const courses = [
     { id: 101, name: "Course 1", department: "Dept A", section: "A" },
     { id: 102, name: "Course 2", department: "Dept B", section: "B" },
-    // Add more courses as needed
   ];
 
   const filteredCoursesByDepartment = courses.filter(
@@ -104,7 +102,6 @@ const CourseLeaseManagement = () => {
           </div>
         </div>
 
-        {/* Borrowing Department */}
         <div>
           <h2 className="text-lg font-semibold mb-2 text-[#434343]">
             Borrowing Department
