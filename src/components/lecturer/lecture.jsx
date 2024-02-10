@@ -3,14 +3,6 @@ import { Space, Table, Button, InputNumber,Col, DatePicker, Drawer, Form, Input,
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { userAction } from "../../redux/user";
-import IconButton from "@mui/material/IconButton";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled, useTheme } from "@mui/material/styles";
-// import Icon from "react-eva-icons";
-import { Layout, Menu } from "antd";
-import { faAdd, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 
 // Mock data
 const { Option } = Select;
@@ -247,19 +239,7 @@ const Lecturer = () => {
     if(term , campus , section , course) {
       return studentRecords[1].filter((student) => student.department == campus  && student.section == section && student.course == course);
     }  
-    //  else if(term ,year , campus , section) {
-    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year && student.section == section );
-    //   }
-    //   else if (term , year , campus){
-    //     return studentRecords[term].filter((student) => student.department == campus && student.acadamicYear == year );
-    //   }
-    
-    //   else if(term ,year){
-    //     return studentRecords[term].filter((student) =>  student.acadamicYear == year  );
-    //   }
-    //   else if (term) {
-    //     return studentRecords[term];
-    //   }
+
       else{
         return null;
       }
@@ -388,7 +368,7 @@ const Lecturer = () => {
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
             placeholder="--Select Department of the Student ---"
-            style={{ width: 240 }}
+            style={{ width: 280 }}
             onChange={handleCampusChange}
           >
             {campuses?.map((item, i) => (
@@ -398,12 +378,12 @@ const Lecturer = () => {
             ))}
           </Select>
           )}
-
+ 
            {selectedCampus  && selectedTerm && (
         <Select
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
-            style={{ width: 220 }}
+            style={{ width: 260,marginLeft:20 }}
             placeholder="--Select Section of the Student---"
             onChange={handleSectionChange}
           >
@@ -418,7 +398,7 @@ const Lecturer = () => {
         <Select
             bordered={false}
             className="!rounded-[6px] border-[#4279A6] border-[2px]"
-            style={{ width: 220 }}
+            style={{ width: 260 , marginLeft:20 }}
             placeholder="--Select Course To Grade---"
             value={selectedCourse}
             onChange={handleCourseChange}
@@ -450,7 +430,7 @@ const Lecturer = () => {
         {/* Display student records based on selected campus and year */}
         {/* {selectedCampus && selectedYear && ( */}
           <div className="" >
-        <div style={{flex:1 , flexDirection:'row' , justifyContent:'space-between' ,display:'flex'}}>
+        <div style={{flex:1 , flexDirection:'row' , justifyContent:'space-between' ,display:'flex' , paddingRight:20}}>
           <h4 className="text-base  font-[600] font-jakarta ">Student Records for  Term {selectedTerm} </h4>
           <h4 className="text-base  font-[600] font-jakarta ">Course That Grade will be given  {selectedCourse} </h4>
           <h4 className="text-base  font-[600] font-jakarta ">Section Of The Students {selectedSection} </h4>

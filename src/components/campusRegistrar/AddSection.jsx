@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input } from 'antd';
+import { Table, Button, Modal, Form, Input,Popconfirm } from 'antd';
 // import 'antd/dist/antd.css';
 
 const AddSection = () => {
@@ -64,14 +64,22 @@ const AddSection = () => {
             <Button onClick={cancel}>Cancel</Button>
           </span>
         ) : (
-          <Button onClick={() => edit(record.key)}>Edit</Button>
-        );
+            <span>
+            <Button onClick={() => edit(record.key)}>Edit</Button>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
+          </span>        );
       },
     },
   ];
 
   const generateRandomKey = () => {
     return Math.random().toString(36).substr(2, 9);
+  };
+  const handleDelete = (key) => {
+    const newData = data.filter(item => item.key !== key);
+    setData(newData);
   };
 
   const showEditModal = () => {
