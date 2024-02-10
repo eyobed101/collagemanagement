@@ -99,7 +99,6 @@ export function AddStudent() {
                           key={index}
                           style={{
                             color: index === currentTab ? "#FFF" : "#000",
-                            border: '1px solid black',
                             fontSize: "15px",
                             padding: "15px",
                             margin:"4px",
