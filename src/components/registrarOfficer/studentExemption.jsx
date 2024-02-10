@@ -7,7 +7,6 @@ const StudentCourseExemption = () => {
     "Course 1",
     "Course 2",
     "Course 3",
-    // Add more courses as needed
   ]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [suggestedStudents, setSuggestedStudents] = useState([]);
@@ -56,7 +55,7 @@ const StudentCourseExemption = () => {
 
     if (foundStudent) {
       setSelectedStudent(foundStudent);
-      setSearchQuery(foundStudent.name); // Update input value with selected student name
+      setSearchQuery(foundStudent.name); 
       setSuggestedStudents([]);
     }
   };
@@ -108,7 +107,6 @@ const StudentCourseExemption = () => {
         </button>
       </div>
 
-      {/* Student Information */}
       {selectedStudent && (
         <div className="mb-4">
           <h2 className="text-lg font-semibold mb-2 text-[#434343]">
