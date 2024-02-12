@@ -116,7 +116,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   <>
                     <Button
                       variant="text"
-                      style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null }}
+                      style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null, color:pageIndex === activeIndex?  '#FFF' : '#4279A6'}}
                       color={
                         pageIndex === activeIndex
                           ? "#4279A6"
@@ -179,7 +179,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                        style={{borderRadius:30,  backgroundColor:
                         hoveredItemIndex === subIndex
                           ? '#4279A6'
-                          : null}}
+                          : null , color:hoveredItemIndex === subIndex?  '#FFF' : '#4279A6'}}
 
                      >
                        {item.icon}
@@ -192,7 +192,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                   <Button
                     // variant={pageIndex === activeIndex ? "gradient" : "text"}
                     variant="text"
-                    style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null }}
+                    style={{backgroundColor: pageIndex === activeIndex?  '#4279A6' : null , color:pageIndex === activeIndex?  '#FFF' : '#4279A6' }}
                     color={
                       pageIndex === activeIndex
                         ? "#4279A6"
