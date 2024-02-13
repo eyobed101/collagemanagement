@@ -1,118 +1,213 @@
-import React, { useState } from "react";
-import { Button, Modal, Form, Input, message } from "antd";
-import { useSelector } from "react-redux";
-import { PlusOutlined } from "@ant-design/icons";
-import {
-  doc,
-  setDoc,
-  getDocs,
-  collection,
-  where,
-  query,
-} from "firebase/firestore";
-import { firestoreDb, storage } from "../../firebase";
-import uuid from "react-uuid";
-import TextArea from "antd/lib/input/TextArea";
-import { faAdd, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from 'react';
+import { Table, Select, InputNumber, Input , DatePicker ,Form ,Button } from 'antd';
+import moment from 'moment';
 
-function CreateSubject() {
-  const uid = useSelector((state) => state.user.profile);
 
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [newSubject, setNewSubject] = useState({
-    name: "",
-    description: "",
-    school_id: uid.school,
-  });
+const { Option } = Select;
 
-  const showModal = () => {
-    setOpen(true);
+const CreateSubject = () => {
+  // State variables
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [updateReason, setUpdateReason] = useState('');
+  const [data , setData] =  useState([
+    {
+      key: '1',
+      studentName: 'John Doe',
+      studentId: '001',
+      courseNo: 'CS101',
+      courseGrade: 90, 
+      gradeLetter:'A+',
+      dateSubmitted: '2023-01-15',
+      updateReason: 'Improved performance',
+      term: 'GOTE/I/2020/2021',
+    },
+    {
+      key: '2',
+      studentName: 'Jane JOb',
+      studentId: '002',
+      courseNo: 'CS102',
+      courseGrade : 70, // Sample grade
+      gradeLetter:'B',
+      dateSubmitted: '2023-01-15',
+      updateReason: 'Improved performance',
+      term: 'GOTE/I/2020/2021',
+    },
+  ]);
+
+  // Table columns
+  const columns = [
+    {
+      title: 'Student Name',
+      dataIndex: 'studentName',
+      key: 'studentName',
+    },
+    {
+      title: 'Student ID',
+      dataIndex: 'studentId',
+      key: 'studentId',
+    },
+    {
+      title: 'Course Number',
+      dataIndex: 'courseNo',
+      key: 'courseNo',
+    },
+    {
+      title: 'Course Grade',
+      dataIndex: 'courseGrade',
+      key: 'courseGrade',
+      render: (text, record) => (
+        <EditableGradeCell
+          value={text}
+          onChange={(value) => handleGradeChange(value, record)}
+        />
+        
+      ),
+    },
+    {
+      title: 'Grade Letter',
+      dataIndex: 'gradeLetter',
+       key: 'gradeLetter',
+    },
+    {
+      title: 'Date Submitted',
+      dataIndex: 'dateSubmitted',
+      key: 'dateSubmitted',
+      render: (_, record) =>  (
+      <DatePicker
+      value={moment(record.dateSubmitted)}
+      onChange={onchange}
+    />),
+    },
+    {
+      title: 'Update Reason',
+      dataIndex: 'updateReason',
+      key: 'updateReason',
+      render: (_, record) => (
+        <Input
+          value={record.updateReason}
+          onChange={e => handleUpdateReasonChange(e.target.value, record)}
+        />
+      ),
+    },
+    {
+      title: 'Term',
+      dataIndex: 'term',
+      key: 'term',
+    },
+  ];
+  const handleUpdateReasonChange = (value, record) => {
+    record.updateReason = value;
+  };
+  const EditableGradeCell = ({  value: initialValue, onChange }) => {
+    const [value, setValue] = useState(initialValue);
+    const [editing, setEditing] = useState(false);
+
+    const handleInputChange = (newValue) => {
+      setValue(newValue);
+    };
+  
+    const handleBlur = () => {
+      setEditing(false);
+      onChange(value);
+    };
+  
+    const handleFocus = () => {
+      setEditing(true);
+    };
+  
+  
+    return (
+      <Form.Item name="grade" label="Grade" style={{marginTop:20}}>
+        <InputNumber
+        
+       placeholder={value}
+        value={value}
+        onChange={handleInputChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+      />
+      </Form.Item>
+    );
+  };
+  
+  const handleGradeChange = (value, record) => {
+    // Update the course grade for the corresponding student record
+    record.courseGrade = value;
+    
+    // Calculate the letter grade based on the course grade
+    const letterGrade = calculateLetterGrade(value);
+    
+    // Update the student records with the new data
+    const updatedRecords = data.map(student => {
+      if (student.studentId === record.studentId) {
+        return { ...student, courseGrade: value, gradeLetter: letterGrade };
+      }
+      return student;
+    });
+    setData(updatedRecords);
   };
 
-  const handleOk = async () => {
-    const q = query(
-      collection(firestoreDb, "subject"),
-      where("name", "==", newSubject.name)
-    );
-    const checkIsExist = (await getDocs(q)).empty;
-    if (checkIsExist) {
-      setLoading(true);
-      setDoc(doc(firestoreDb, "subject", uuid()), newSubject)
-        .then((response) => {
-          message.success("Data successfuly added");
-          setLoading(false);
-          setOpen(false);
-        })
-        .catch((error) => {
-          message.error("Data is not added, Please try again");
-          setLoading(false);
-        });
+  // Function to calculate letter grade based on course grade
+  const calculateLetterGrade = grade => {
+    if (grade > 85) {
+      return 'A+';
+    } else if (grade > 80) {
+      return 'A-';
+    } else if (grade > 75) {
+      return 'B+';
+    } else if (grade > 70) {
+      return 'B';
+    } else if (grade > 65) {
+      return 'B-';
+    } else if (grade > 60) {
+      return 'C+';
+    } else if (grade > 50) {
+      return 'C';
     } else {
-      message.warning("Subject Already exist");
+      return 'F';
     }
   };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-  const handleSubject = (e) => {
-    setNewSubject({ ...newSubject, [e.target.name]: e.target.value });
-  };
   return (
-    <>
-      <Button
-        style={{
-          borderRadius: "8px",
-          borderWidth: 1,
-        }}
-        icon={<FontAwesomeIcon className="pr-2" icon={faAdd} />}
-        className=" !text-[white] !bg-[#15C9CE] hover:!text-[white]"
-        onClick={showModal}
+    <div className="bg-[#F9FAFB] min-h-[100vh]  ">
+    {/* <SiderGenerator /> */}
+<div className="list-header mb-2 ml-100">
+  <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Grade Changes</h1>
+</div>
+<div className="list-sub mb-10 ml-[2%] ">
+ {/* {handleGrade()} */}
+  <div className="list-filter">
+
+      <Select
+        placeholder="Select Student ID"
+        className="!rounded-[6px] border-[#4279A6] border-[2px]"
+        onChange={value => setSelectedStudentId(value)}
+        style={{ width: "70%", marginBottom: 16 , marginTop:10 }}
       >
-        Add Subject
+        {/* Option items for each student ID */}
+        {data.map(student => (
+          <Option key={student.studentId} value={student.studentId}>
+            {student.studentId}
+          </Option>
+        ))}
+      </Select>
+
+      </div>
+ </div>
+      
+      {/* Table displaying student data */}
+      <Table
+      style={{ marginTop: 20 , color: '#4279A6' }}
+        columns={columns}
+        dataSource={selectedStudentId ? data.filter(student => student.studentId === selectedStudentId) : null}
+        pagination={{ position: ["bottomCenter"] }}
+      />
+
+<Button   type="primary" style={{margin:20 , backgroundColor:'green' , justifySelf:'flex-end', display:'flex' }} >
+        Save Changes
       </Button>
-      {open ? (
-        <Modal
-          visible={open}
-          title="Add Subject"
-          onOk={handleOk}
-          okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-          onCancel={handleCancel}
-          footer={[
-            <Button key="back" onClick={handleCancel}>
-              Exit
-            </Button>,
-            <Button key="submit" loading={loading} onClick={handleOk}>
-              Submit
-            </Button>,
-          ]}
-        >
-          <Form
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
-            layout="horizontal"
-          >
-            <Form.Item
-              label="Subject"
-              name="Subject"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input name="name" onChange={(e) => handleSubject(e)} />
-            </Form.Item>
-            <Form.Item label="Description">
-              <TextArea name="description" onChange={(e) => handleSubject(e)} />
-            </Form.Item>
-          </Form>
-        </Modal>
-      ) : null}
-    </>
+    </div>
   );
-}
+};
 
 export default CreateSubject;
+

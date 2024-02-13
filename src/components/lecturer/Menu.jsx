@@ -70,12 +70,12 @@ const LucturerSiderGenerator = () => {
       pages: [
         {
           icon: <UserCircleIcon {...icon} />,
-          name: "Lecturer",
+          name: "Grade Entry",
           onClick: handleLecturer,
         },
         {
           icon: <BookOpenIcon {...icon} />,
-          name: "Create Subject",
+          name: "Grade Change",
           onClick: handleCreateSubject,
         },
         {

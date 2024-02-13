@@ -46,6 +46,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
   const handleMouseLeave = () => {
     setHoveredItemIndex(null);
+    // setAnchorEl(null);
   };
 
   const { sidenavColor, sidenavType, openSidenav } = controller;
@@ -128,7 +129,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         pageIndex === activeIndex ? "active" : ""
                       } border rounded-xl  `}
                       fullWidth
-                      onClick={(e) => handleMenuOpen(e, pageIndex)}
+                      // onClick={(e) => handleMenuOpen(e, pageIndex)}
+                      onMouseEnter={(e) => handleMenuOpen(e, pageIndex)}
+                      // onMouseLeave={(e) => handleMenuClose()}
                     >
                       {icon}
                       <Typography
@@ -205,6 +208,8 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     } border rounded-xl`}
                     fullWidth
                     onClick={() => handleItemClick(pageIndex, onClick)}
+                    // onMouseEnter={(e) => handleMenuClose()}
+
                 
                   >
                     {icon}
