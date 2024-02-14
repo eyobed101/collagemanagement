@@ -18,3 +18,21 @@
 .ant-btn-primary {
     background-color: Grey;
 }
+
+/* Change placeholder color for InputNumber */
+.ant-input-number-input::-webkit-input-placeholder {
+    color: #333; /* Change placeholder color to gray */
+  }
+  
+  .ant-input-number-input::-moz-placeholder {
+    color: #333; /* Change placeholder color to gray */
+  }
+  
+  .ant-input-number-input:-ms-input-placeholder {
+    color: #333;; /* Change placeholder color to gray */
+  }
+  
+  .ant-input-number-input::placeholder {
+    color: #333;; /* Change placeholder color to gray */
+  }
+  
