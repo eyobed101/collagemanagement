@@ -143,7 +143,7 @@ const StudentCourseExemption = () => {
             Available Courses
           </h2>
           <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-sm rounded-md">
-            {availableCourses.map((course, index) => (
+            {selectedStudent ? availableCourses.map((course, index) => (
               <div
                 key={index}
                 className="border mb-2 p-2 cursor-pointer text-black"
@@ -151,7 +151,7 @@ const StudentCourseExemption = () => {
               >
                 {course}
               </div>
-            ))}
+            )):"student has not been chosen"}
           </div>
         </div>
 
@@ -160,11 +160,11 @@ const StudentCourseExemption = () => {
             Selected Courses
           </h2>
           <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-sm rounded-md">
-            {selectedCourses.map((course, index) => (
+            {selectedStudent ? selectedCourses.map((course, index) => (
               <div key={index} className="border mb-2 p-2 text-black">
                 {course}
               </div>
-            ))}
+            )) : "student has not been chosen"}
           </div>
           <div className="flex justify-between mt-10">
             <div className="flex">

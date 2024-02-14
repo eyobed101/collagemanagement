@@ -1,5 +1,7 @@
 // src/components/AddDropManagement.js
 import React, { useState } from "react";
+import addDropTableData from "@/data/addrop";
+import courseTableData from "@/data/courses";
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -16,80 +18,47 @@ const AddDropManagement = () => {
 
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const students = [
-    {
-      id: 1,
-      name: "Student 1",
-      department: "Dept A",
-      section: "A",
-      program: "Program A",
-      term: "Term 1",
-      courses: [],
-    },
-    {
-      id: 2,
-      name: "Student 2",
-      department: "Dept B",
-      section: "B",
-      program: "Program B",
-      term: "Term 2",
-      courses: [],
-    },
-    {
-      id: 3,
-      name: "Student 3",
-      department: "Dept A",
-      section: "B",
-      program: "Program A",
-      term: "Term 1",
-      courses: [],
-    },
-    {
-      id: 4,
-      name: "Student 4",
-      department: "Dept B",
-      section: "A",
-      program: "Program B",
-      term: "Term 2",
-      courses: [],
-    },
-    {
-      id: 1,
-      name: "Student 5",
-      department: "Dept B",
-      section: "B",
-      program: "Program A",
-      term: "Term 1",
-      courses: [],
-    },
-    {
-      id: 2,
-      name: "Student 6",
-      department: "Dept A",
-      section: "A",
-      program: "Program B",
-      term: "Term 2",
-      courses: [],
-    },
-  ];
+  const departmentOptions = Array.from(
+    new Set(addDropTableData.map((student) => student.department))
+  );
+  const sectionOptionsByDepartment = addDropTableData.reduce((acc, student) => {
+    acc[student.department] = acc[student.department] || [];
+    if (!acc[student.department].includes(student.section)) {
+      acc[student.department].push(student.section);
+    }
+    return acc;
+  }, {});
 
-  const courses = [
-    { id: 101, name: "Course 1", department: "Dept A", section: "A" },
-    { id: 102, name: "Course 2", department: "Dept B", section: "B" },
-    { id: 102, name: "Course 33", department: "Dept A", section: "A" },
-    { id: 102, name: "Course 21", department: "Dept B", section: "B" },
-    { id: 102, name: "Course 3", department: "Dept C", section: "A" },
-    { id: 102, name: "Course 11", department: "Dept C", section: "B" },
-    { id: 102, name: "Course 6", department: "Dept C", section: "A" },
-    { id: 102, name: "Course 7", department: "Dept A", section: "B" },
-    { id: 102, name: "Course 5", department: "Dept B", section: "A" },
-    { id: 102, name: "Course 8", department: "Dept C", section: "B" },
-    { id: 102, name: "Course 7", department: "Dept B", section: "A" },
-    { id: 102, name: "Course 9", department: "Dept A", section: "B" },
-    { id: 102, name: "Course 10", department: "Dept A", section: "A" },
-  ];
 
-  const filteredStudents = students.filter(
+  const uniqueTerms = Array.from(
+    new Set(
+      addDropTableData
+        .filter(
+          (student) =>
+            student.department === selectedDepartment &&
+            student.section === selectedSection
+        )
+        .map((student) => student.term)
+    )
+  );
+
+  const uniquePrograms = Array.from(
+    new Set(
+      addDropTableData
+        .filter(
+          (student) =>
+            student.department === selectedDepartment &&
+            student.section === selectedSection
+        )
+        .map((student) => student.program)
+    )
+  );
+
+
+  
+
+ 
+  const filteredStudents = addDropTableData.filter(
     (student) =>
       (!selectedDepartment || student.department === selectedDepartment) &&
       (!selectedSection || student.section === selectedSection) &&
@@ -97,7 +66,7 @@ const AddDropManagement = () => {
       (!selectedTerm || student.term === selectedTerm)
   );
 
-  const filteredCourses = courses.filter(
+  const filteredCourses = courseTableData.filter(
     (course) =>
       (!selectedOfferingDepartment ||
         course.department === selectedOfferingDepartment) &&
@@ -159,8 +128,10 @@ const AddDropManagement = () => {
                 onChange={(e) => setSelectedDepartment(e.target.value)}
               >
                 <option value="">Select Department</option>
-                <option value="Dept A">Dept A</option>
-                <option value="Dept B">Dept B</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Accounting">Accounting</option>
+                <option value="Psychology">Psychology</option>
               </select>
             </div>
 
@@ -177,45 +148,46 @@ const AddDropManagement = () => {
                 onChange={(e) => setSelectedSection(e.target.value)}
               >
                 <option value="">Select Section</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
+                {sectionOptionsByDepartment[selectedDepartment]?.map(
+                  (section) => (
+                    <option key={section} value={section}>
+                      {section}
+                    </option>
+                  )
+                )}
               </select>
             </div>
 
             <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[45%]">
-              <label
-                for="departmentOption"
-                className="block text-lg font-semibold mb-2 text-[#434343]"
-              >
-                Program{" "}
-              </label>
-              <select
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-                value={selectedProgram}
-                onChange={(e) => setSelectedProgram(e.target.value)}
-              >
-                <option value="">Select Program</option>
-                <option value="Program A">Program A</option>
-                <option value="Program B">Program B</option>
-              </select>
+            <label
+          htmlFor="departmentOption"
+          className="block text-lg font-semibold mb-2 text-[#434343]"
+        >
+          Program{" "}
+        </label>
+        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
+          {selectedDepartment && selectedSection ? (
+            uniquePrograms.join(', ') || "Program Not Found"
+          ) : (
+            "Select Department and Section"
+          )}
+        </div>
             </div>
 
             <div className="mb-10 flex flex-col w-[100%] sm:w-[45%]">
-              <label
-                for="departmentOption"
-                className="block text-lg font-semibold mb-2 text-[#434343]"
-              >
-                Term/Acadamic Year{" "}
-              </label>
-              <select
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-                value={selectedTerm}
-                onChange={(e) => setSelectedTerm(e.target.value)}
-              >
-                <option value="">Select Term</option>
-                <option value="Term 1">Term 1</option>
-                <option value="Term 2">Term 2</option>
-              </select>
+            <label
+          htmlFor="departmentOption"
+          className="block text-lg font-semibold mb-2 text-[#434343]"
+        >
+          Term/Academic Year{" "}
+        </label>
+        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
+          {selectedDepartment && selectedSection ? (
+            uniqueTerms.join(', ') || "Term Not Found"
+          ) : (
+            "Select Department and Section"
+          )}
+        </div>
             </div>
             <div className="flex flex-col w-full">
               <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
@@ -246,23 +218,29 @@ const AddDropManagement = () => {
             Students under selected Section
           </h2>
           <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto h-full shadow-sm rounded-md">
-            {filteredStudents.map((student) => (
-              <div
-                key={student.id}
-                className={`border mb-2 p-2 cursor-pointer text-black${
-                  selectedUser && selectedUser.id === student.id
-                    ? "bg-blue-100"
-                    : ""
-                }`}
-                onClick={() => {
-                  setSelectedUser(selectedUser === student ? null : student);
-                  setCoursesToAdd([]);
-                  setCoursesToDrop([]);
-                }}
-              >
-                {student.id} - {student.name}
-              </div>
-            ))}
+            {selectedDepartment
+              ? selectedSection
+                ? filteredStudents.map((student) => (
+                    <div
+                      key={student.id}
+                      className={`border mb-2 p-2 cursor-pointer text-black${
+                        selectedUser && selectedUser.id === student.id
+                          ? "bg-blue-100"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedUser(
+                          selectedUser === student ? null : student
+                        );
+                        setCoursesToAdd([]);
+                        setCoursesToDrop([]);
+                      }}
+                    >
+                      {student.id} - {student.name}
+                    </div>
+                  ))
+                : "No section selected"
+              : "No department selected"}
           </div>
         </div>
       </div>
@@ -276,9 +254,11 @@ const AddDropManagement = () => {
             value={selectedOfferingDepartment}
             onChange={(e) => setSelectedOfferingDepartment(e.target.value)}
           >
-            <option value="">Select Offering Department</option>
-            <option value="Dept A">Dept A</option>
-            <option value="Dept B">Dept B</option>
+            <option value="">Select Department</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Accounting">Accounting</option>
+            <option value="Psychology">Psychology</option>
           </select>
         </div>
 
@@ -291,6 +271,8 @@ const AddDropManagement = () => {
             <option value="">Select Offering Section</option>
             <option value="A">A</option>
             <option value="B">B</option>
+            <option value="D">D</option>
+            <option value="C">C</option>
           </select>
         </div>
       </div>
@@ -302,11 +284,15 @@ const AddDropManagement = () => {
               Courses
             </h2>
             <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto max-h-48 min-h-[200px] shadow-sm rounded-md">
-              {filteredCourses.map((course) => (
-                <div key={course.id} className="border p-4 mb-2">
-                  {course.id} - {course.name}
-                </div>
-              ))}
+              {selectedOfferingDepartment
+                ? selectedOfferingSection
+                  ? filteredCourses.map((course) => (
+                      <div key={course.id} className="border p-4 mb-2">
+                        {course.id} - {course.name}
+                      </div>
+                    ))
+                  : "No offering section selected"
+                : "No offering department selected"}
             </div>
           </div>
         </div>
