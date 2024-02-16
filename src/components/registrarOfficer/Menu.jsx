@@ -30,7 +30,7 @@ import {
 // import { IconButton } from "@mui/material";
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined , ExitToAppOutlined , RedoOutlined} from "@mui/icons-material";
+import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, AdminPanelSettings, ReportOffOutlined , ExitToAppOutlined , RedoOutlined} from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
 import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
@@ -263,6 +263,11 @@ const RegistrarOfficerSiderGenerator = () => {
               icon: <HowToReg {...icon} />,
               name: "Student Document",
               // onClick: handleCourseRegistration,
+            },
+            {
+              icon: <AdminPanelSettings {...icon} />,
+              name: "Admission Status",
+              // onClick: handleEntryExam,
             },
             {
               icon: <Add {...icon} />,
