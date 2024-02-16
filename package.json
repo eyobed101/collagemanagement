@@ -43,7 +43,8 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.8",
     "uuid": "^9.0.1",
-    "vite-plugin-style-import": "^2.0.0"
+    "vite-plugin-style-import": "^2.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "18.2.31",

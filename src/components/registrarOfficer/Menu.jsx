@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { userAction } from "../../redux/user";
-import IconButton from "@mui/material/IconButton";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled, useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -34,10 +31,15 @@ import {
 // import { IconButton } from "@mui/material";
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined, StarOutlineSharp } from "@mui/icons-material";
+// import { AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined, StarOutlineSharp } from "@mui/icons-material";
+import { Add, AddIcCallOutlined, HowToReg, ListAlt,StarOutlineSharp, LogoutOutlined, Report, AdminPanelSettings, ReportOffOutlined , ExitToAppOutlined , RedoOutlined} from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
 import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
+import EntryExam from "./EntryExam";
+import ExitExam from "./ExitExam";
+import Remedial from "./Remedial";
+import StudentCourses from "./CourseTaken";
 import { Avatar, List } from "@mui/material";
 
 const icon = {
@@ -53,6 +55,12 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isCourseLease, setIsCourseLease] = useState(false);
   const [isCourseExemption, setIsCourseExemption] = useState(false);
   const [isStudentStatus, setIsStudentStatus] = useState(false);
+  const [isEntryExam, setIsEntryExam] = useState(false);
+  const [isExitExam, setIsExitExam] = useState(false);
+  const [isRemedial, setIsRemedial] = useState(false);
+  const [isCourseTaken, setIsCourseTaken] = useState(false);
+
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const drawerWidth = 240;
@@ -109,6 +117,19 @@ const RegistrarOfficerSiderGenerator = () => {
     ));
   };
 
+  const handleCourseTaken =() =>{
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false)
+    setIsCourseExemption(false)
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(true)
+  }
+
   const handleAddStudent = () => {
     setIsAddStudent(true);
     setIsCourseRegistration(false);
@@ -117,6 +138,11 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false)
     setIsCourseExemption(false)
     setIsStudentStatus(false)
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
+
 
   };
   const handleCourseRegistration = () => {
@@ -130,6 +156,10 @@ const RegistrarOfficerSiderGenerator = () => {
 
 
 
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
   };
   const handleCourseLease = () => {
     setIsAddStudent(false);
@@ -140,6 +170,10 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseExemption(false)
     setIsStudentStatus(false)
 
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
   };
   const handleAddDrop = () => {
     setIsAddStudent(false);
@@ -150,6 +184,10 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseExemption(false);
     setIsStudentStatus(false)
 
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
 
   };
   const handleGradeEntry = () => {
@@ -162,7 +200,37 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsStudentStatus(false)
 
 
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
   };
+
+  const handleEntryExam =() =>{
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+    setIsEntryExam(true)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
+  }
+
+  const handleExitExam =() =>{
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+    setIsEntryExam(false)
+    setIsExitExam(true)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
+  }
   const handleCourseExemption = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
@@ -184,7 +252,24 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsStudentStatus(true)
 
 
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
   };
+
+  const handleRemedial =() => {
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(true)
+    setIsCourseTaken(false)
+  }
 
   const handlelogout = () => {
     dispatch(userAction.logout());
@@ -196,8 +281,45 @@ const RegistrarOfficerSiderGenerator = () => {
       pages: [
         {
           icon: <UserCircleIcon {...icon} />,
-          name: "Register Student",
-          onClick: handleAddStudent,
+          name: "Student",
+          subMenu: [
+            {
+              icon: <ListAlt {...icon} />,
+              name: "Student Admission",
+              onClick: handleAddStudent,
+            },
+            {
+              icon: <HowToReg {...icon} />,
+              name: "Student Document",
+              // onClick: handleCourseRegistration,
+            },
+            {
+              icon: <AdminPanelSettings {...icon} />,
+              name: "Admission Status",
+              onClick: handleStudentStatus,
+            },
+            {
+              icon: <Add {...icon} />,
+              name: "Entry Exam",
+              onClick: handleEntryExam,
+            },
+            {
+              icon: <ExitToAppOutlined {...icon} />,
+              name: "Exit Exam",
+              onClick: handleExitExam,
+            },
+            {
+              icon: <RedoOutlined {...icon} />,
+              name: "Remedial",
+              onClick: handleRemedial,
+            },
+            {
+              icon: <FaFreeCodeCamp {...icon} />,
+              name: "Course Taken",
+              onClick: handleCourseTaken,
+            },
+          ],
+          
         },
         {
           icon: <BookOpenIcon {...icon} />,
@@ -287,6 +409,10 @@ const RegistrarOfficerSiderGenerator = () => {
           {isCourseLease ? <CourseLeaseManagement /> : null}
           {isCourseExemption ? <StudentCourseExemption /> : null}
           {isStudentStatus ? <StudentStatusManagement /> : null}
+          {isEntryExam ? <EntryExam /> : null}
+          {isExitExam ? <ExitExam /> : null}
+          {isRemedial ? <Remedial /> : null}
+          {isCourseTaken ?<StudentCourses /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />

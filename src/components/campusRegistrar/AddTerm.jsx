@@ -42,13 +42,21 @@ const AddTerm = () => {
       title: 'Start Date',
       dataIndex: 'startDate',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'startDate', 'date'),
+      render: (_, record) =>  (
+        <DatePicker
+        value={moment(record.startDate)}
+        onChange={onchange}
+      />),
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'endDate', 'date'),
+      render: (_, record) =>  (
+        <DatePicker
+        value={moment(record.endDate)}
+        onChange={onchange}
+      />),
     },
     {
       title: 'Action',
@@ -118,9 +126,7 @@ const AddTerm = () => {
         {inputType === 'date' ? (
       <DatePicker
  style={{ width: '100%' }}
-        value={record[dataIndex]}
-//  value={moment(record[dataIndex])}
-      onChange={(date) => handleInputChange(date, record, dataIndex)}
+      onChange={onchange}
       picker='date'
 />
         ) : (

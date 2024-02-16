@@ -170,7 +170,7 @@ const CreateSubject = () => {
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
     {/* <SiderGenerator /> */}
-<div className="list-header mb-2 ml-100">
+<div className="list-header mb-2 ">
   <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Grade Changes</h1>
 </div>
 <div className="list-sub mb-10 ml-[2%] ">
