@@ -12,6 +12,9 @@ const StudentStatusManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; 
 
+  const [filterDepartment, setFilterDepartment] = useState("");
+  const [filterSection, setFilterSection] = useState("");
+
 
   const TableRow = styled.tr`
     background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
@@ -142,14 +145,67 @@ const StudentStatusManagement = () => {
     handleCloseModal();
   };
 
-  const totalPages = Math.ceil(students.length / itemsPerPage);
+  const uniqueDepartments = [...new Set(students.map((student) => student.department))];
+  const uniqueSections = [...new Set(students.map((student) => student.section))];
 
-  const visibleStudents = students.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  const filteredStudents = students.filter((student) => {
+    return (
+      (!filterDepartment || student.department === filterDepartment) &&
+      (!filterSection || student.section === filterSection)
+    );
+  });
+  
+  const totalPages = itemsPerPage > 0 ? Math.ceil(filteredStudents.length / itemsPerPage) : 1;
+  const validPageNumber = Math.max(1, Math.min(currentPage, totalPages));
+  const visibleStudents = filteredStudents.slice(
+    (validPageNumber - 1) * itemsPerPage,
+    validPageNumber * itemsPerPage
   );
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+      <div className="flex justify-start mt-4 space-x-4">
+        <div>
+          <label className="block text-lg font-semibold mb-2 text-[#434343]">
+            Department
+          </label>
+          <select
+            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            value={filterDepartment}
+            onChange={(e) => setFilterDepartment(e.target.value)}
+          >
+            <option value="">Select Department</option>
+            {uniqueDepartments.map((department) => (
+              <option key={department} value={department}>
+                {department}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-lg font-semibold mb-2 text-[#434343]">
+            Section
+          </label>
+          <select
+            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            value={filterSection}
+            onChange={(e) => setFilterSection(e.target.value)}
+          >
+            <option value="">Select Section</option>
+            {uniqueSections.map((section) => (
+              <option key={section} value={section}>
+                {section}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* <button
+          className="px-4 py-2 bg-[#4279A6] text-white rounded"
+          onClick={() => setCurrentPage(1)}
+        >
+          Apply Filters
+        </button> */}
+      </div>
       <StyledTable>
         <thead>
           <tr>
