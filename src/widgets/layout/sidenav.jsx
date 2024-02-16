@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { ArrowForwardIos } from "@mui/icons-material";
@@ -37,6 +37,32 @@ export function Sidenav({ brandImg, brandName, routes }) {
     setAnchorEl(null);
   };
 
+  const handleMouseLeave = () => {
+     setOpenSubMenuIndex(null);
+     setHoveredItemIndex(null);
+    // /  setAnchorEl(null)
+  };
+
+  useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (
+        anchorEl &&
+        !anchorEl.contains(event.target) &&
+        !event.target.classList.contains("MuiButtonBase-root")
+      ) {
+        setOpenSubMenuIndex(null);
+      }
+    };
+  
+    document.body.addEventListener("click", handleDocumentClick);
+  
+    return () => {
+      document.body.removeEventListener("click", handleDocumentClick);
+    };
+  }, [anchorEl]);
+  
+  
+
   const [hoveredItemIndex, setHoveredItemIndex] = useState(null);
 
   
@@ -44,10 +70,6 @@ export function Sidenav({ brandImg, brandName, routes }) {
     setHoveredItemIndex(index);
   };
 
-  const handleMouseLeave = () => {
-    setHoveredItemIndex(null);
-    // setAnchorEl(null);
-  };
 
   const { sidenavColor, sidenavType, openSidenav } = controller;
   const sidenavTypes = {
@@ -130,8 +152,13 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       } border rounded-xl  `}
                       fullWidth
                       // onClick={(e) => handleMenuOpen(e, pageIndex)}
-                      onMouseEnter={(e) => handleMenuOpen(e, pageIndex)}
-                      // onMouseLeave={(e) => handleMenuClose()}
+                      onPointerEnter={(e) => handleMenuOpen(e, pageIndex)}
+                      
+                      //  onMouseEnter={(e) => handleMenuOpen(e, pageIndex)}
+                      // onMouseLeave={handleMouseLeave}
+
+                      //  onMouseLeave={handleMouseLeave}
+
                     >
                       {icon}
                       <Typography
@@ -151,8 +178,9 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <Menu
                       anchorEl={anchorEl}
                       open={openSubMenuIndex === pageIndex}
-                      
                       onClose={handleMenuClose}
+                      // onMouseEnter={handleMenuClose}
+
                       anchorOrigin={{
                         vertical: "top",
                         horizontal: "right",
@@ -178,7 +206,6 @@ export function Sidenav({ brandImg, brandName, routes }) {
                          handleItemClick(pageIndex, item.onClick)
                        }
                        onMouseEnter={() => handleMouseEnter(subIndex)}
-                       onMouseLeave={handleMouseLeave}
                        style={{borderRadius:30,  backgroundColor:
                         hoveredItemIndex === subIndex
                           ? '#4279A6'
@@ -203,11 +230,14 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         ? "white"
                         : "blue-gray"
                     }
+                    // git clean --force && git reset --hard
                     className={`flex items-center gap-4 px-3  capitalize ${
                       pageIndex === activeIndex ? "active" : ""
                     } border rounded-xl`}
                     fullWidth
                     onClick={() => handleItemClick(pageIndex, onClick)}
+                    onMouseEnter={handleMouseLeave}
+
                     // onMouseEnter={(e) => handleMenuClose()}
 
                 

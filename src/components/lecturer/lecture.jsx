@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Space, Table, Button, InputNumber,Col, DatePicker, Drawer, Form, Input, Row, Select ,Modal } from "antd";
+import { Space, Table, Button, InputNumber, Form,  Select ,Modal, } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -71,6 +71,8 @@ const Lecturer = () => {
       { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'92',letterGrade : 'A+' }, 
       { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'64' ,letterGrade : 'C+'  },
       { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'78' ,letterGrade : 'B+' },  
+      { id: 108, name: 'Student 8',  section :1 ,department :'computerscience' , course: selectedCourse , grade :'78' ,letterGrade : 'B+' },  
+
       // Add more students for Campus 1
     ],
   });  
@@ -141,7 +143,7 @@ const Lecturer = () => {
   
   
     return (
-      <Form.Item name="grade" label="Grade">
+      <Form.Item name="grade" label="Grade" style={{marginTop:20  }}>
         <InputNumber
        placeholder={value}
         value={value}
@@ -176,7 +178,6 @@ const Lecturer = () => {
     }
   };
 
-
   const handleGradeChange = (value, record) => {
     // Update the grade for the corresponding student record
     const updatedStudent = { ...record, grade: value };
@@ -185,26 +186,16 @@ const Lecturer = () => {
     updatedStudent.letterGrade = convertToLetterGrade(value);
   
     // Update the studentRecords state with the new data
-    const updatedRecords = { ...studentRecords };
-
-    updatedRecords[1] = updatedRecords[1].map((student) => {
-      if (student.id === record.id) {
-        console.log('New grade:', value);
-        console.log('Corresponding record id :', updatedRecords);
-      
-        // setSelectedletter(updatedRecords[1])
-        return updatedStudent;
-      }
-      console.log('New grade:', value);
-      console.log('Corresponding record:', student);
-      return student;
-    });
+    const updatedRecords = {
+      ...studentRecords,
+      1: studentRecords[1].map((student) =>
+        student.id === record.id ? updatedStudent : student
+      ),
+    };
   
-     setStudentRecords(updatedRecords);
-  
-    // You can perform any necessary operations here
-   
+    setStudentRecords(updatedRecords);
   };
+  
 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
@@ -238,16 +229,45 @@ const Lecturer = () => {
     };
     setStudentRecords(updatedStudentRecords);
   };
-  const getFilteredStudentRecords = (term ,campus , section , course) => {
-    console.log(campus ,term ,section ,course);
-    console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
-    if(term , campus , section , course) {
-      return studentRecords[1].filter((student) => student.department == campus  && student.section == section  );
-    }  
-      else{
+  // const getFilteredStudentRecords = (term ,campus , section , course) => {
+  //   console.log(campus ,term ,section ,course);
+  //   console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
+  //   if(term , campus , section , course) {
+  //     return studentRecords[1].filter((student) => student.department == campus  && student.section == section   );
+  //   }  
+  //     else{
+  //       return null;
+  //     }
+  // };
+
+  const getFilteredStudentRecords = (term, campus, section, course) => {
+    if (term && campus && section && course) {
+        // Filter student records based on the selected criteria
+        const filteredRecords = studentRecords[1].filter((student) => {
+            return student.department === campus && student.section === section;
+        });
+
+        // Create a set to store unique student IDs
+        const uniqueIds = new Set();
+
+        // Filter out duplicate records based on student ID
+        const uniqueFilteredRecords = filteredRecords.filter((student) => {
+            if (uniqueIds.has(student.id)) {
+                // If the student ID is already in the set, it's a duplicate
+                return false;
+            } else {
+                // Otherwise, add the student ID to the set and return true
+                uniqueIds.add(student.id);
+                return true;
+            }
+        });
+
+        return uniqueFilteredRecords;
+    } else {
         return null;
-      }
-  };
+    }
+};
+
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
@@ -306,7 +326,7 @@ const Lecturer = () => {
             ))}
           </Select>
           )}
-    
+       
       </div>
  </div>
 
@@ -317,7 +337,7 @@ const Lecturer = () => {
           <h4 className="text-base  font-[600] font-jakarta ">Student Records for  Term {selectedTerm} </h4>
           <h4 className="text-base  font-[600] font-jakarta ">Course That Grade will be given  {selectedCourse} </h4>
           <h4 className="text-base  font-[600] font-jakarta ">Section Of The Students {selectedSection} </h4>
-
+          
           </div>
             <Table
         style={{ marginTop: 20 , color: '#4279A6' }}

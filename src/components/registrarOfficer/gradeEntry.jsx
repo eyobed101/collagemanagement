@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Space, Table, Button, InputNumber,Col, DatePicker, Drawer, Form, Input, Row, Select ,Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { userAction } from "../../redux/user";
 
 // Mock data
 const { Option } = Select;
@@ -15,17 +14,6 @@ const campuses = [
   { id: 5, name: 'Management' },
   // Add more campuses as needed
 ];
-const Acadamic = [
-    { id: 1, year:2011},
-    { id: 2, year: 2010 },
-    { id: 3, year: 2009 },
-    { id: 4, year: 2008 },
-    { id: 5, year: 2007 },
-    { id: 6, year: 2006 },
-    { id: 7, year: 2005 },
-    { id: 8, year: 2004 },
-    // Add more campuses as needed
-  ];
 
 const Term =[
     { id: 1, term: 1},
@@ -46,30 +34,46 @@ const courserecords ={
         { id: 2, name: "Economics",acadamicYear :2011,  department :'informationscience'},
         { id: 3, name: "Global trends" ,acadamicYear :2011,  department :'informationscience'},
         { id: 4,  name: "English",acadamicYear :2011,  department :'informationscience'},
+        { id: 5, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
+        { id: 6,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
+        { id: 7,  name: "Maths of Computer Science",acadamicYear :2011, department :'computerscience'},
+        { id: 8,  name: "Geography",acadamicYear :2011, department :'computerscience'},
+        { id: 9, name: "Intro to database", acadamicYear :2009, department :'Management'},
+        { id: 10,  name: "Statistics", acadamicYear :2009, department :'Management'},
+        { id: 11,  name: "Electronic", acadamicYear :2009,  department :'Management'},
+        { id: 12,  name: "Antroplogy", acadamicYear :2009,  department :'Management'},
         { id: 13,  name: "Chemistry",acadamicYear :2010,  department :'Electricalscience'},
         { id: 14,  name: "Physics",acadamicYear :2010,  department :'Electricalscience'},
         { id: 26,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
         { id: 15,  name: "Dynamics" ,acadamicYear :2010,  department :'Electricalscience'},
         { id: 16,  name: "Power",acadamicYear :2010,  department :'Electricalscience'},
         { id: 35, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
-
-    ],
-    2: [
-        { id: 5, name: "Introduction to Computer Science" ,acadamicYear :2011, department :'computerscience'},
-        { id: 6,  name: "Intro to programming",acadamicYear :2011, department :'computerscience'},
-        { id: 7,  name: "Maths of Computer Science",acadamicYear :2011, department :'computerscience'},
-        { id: 8,  name: "Geography",acadamicYear :2011, department :'computerscience'},
-    ],
-    3:[
-        { id: 9, name: "Intro to database", acadamicYear :2009, department :'Management'},
-        { id: 10,  name: "Statistics", acadamicYear :2009, department :'Management'},
-        { id: 11,  name: "Electronic", acadamicYear :2009,  department :'Management'},
-        { id: 12,  name: "Antroplogy", acadamicYear :2009,  department :'Management'},
-    ]
+    ], 
 }
 
+const GradeEntry = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [selectedCampus, setSelectedCampus] = useState(null)
+  const [selectedTerm, setSelectedTerm] = useState(Term[0].term);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedCourse , setSelectedCourse] = useState(null);
 
-const columns = [
+  const [studentRecords, setStudentRecords ] = useState({
+    1: [
+      { id: 101, name: 'Student 1', section :1 , department :'computerscience' , course: selectedCourse , grade :'80' ,letterGrade : 'A'},
+      { id: 102, name: 'Student 2',  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :'75' ,letterGrade :'B+' },
+      { id: 103, name: 'Student 3',  section :1 ,department :'Management' , course: selectedCourse , grade :'70'  ,letterGrade : 'B'},
+      { id: 104, name: 'Student 4',   section :2 ,department :'Accounting' , course: selectedCourse , grade :'90' ,letterGrade : 'A+' }, 
+      { id: 105, name: 'Student 5',  section :2 ,department :'computerscience' , course: selectedCourse , grade :'81',letterGrade : 'A-'  },
+      { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'92',letterGrade : 'A+' }, 
+      { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'64' ,letterGrade : 'C+'  },
+      { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'78' ,letterGrade : 'B+' },  
+      // Add more students for Campus 1
+    ],
+  });  
+
+  const columns = [
     {
       title: (
         <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
@@ -104,91 +108,102 @@ const columns = [
             value={text}
             onChange={(value) => handleGradeChange(value, record)}
           />
+          
         ),
       },
-      // { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
+      { title: 'Grade', dataIndex: 'letterGrade', key: 'letterGrade' },
   ];
 
-  const handleGradeChange = (value, key) => {
-    console.log('sss',key)
+  
 
-    return 
-    // setStudentRecords((prevRecords) => {
-    //   const updatedRecords = { ...prevRecords };
-    //   updatedRecords[1] = updatedRecords[1].map((student) =>
-    //     student.id === key ? { ...student, grade: value, letterGrade: convertToLetterGrade(value) } : student
-    //   );
-    //   return updatedRecords;
-    // });
-  };
-
+  
   // Function to convert numerical grade to letter grade
 
 
-  const EditableGradeCell = ({ value, onChange }) => {
- 
+  const EditableGradeCell = ({  value: initialValue, onChange }) => {
+    const [value, setValue] = useState(initialValue);
+    const [editing, setEditing] = useState(false);
+
+    const handleInputChange = (newValue) => {
+      setValue(newValue);
+    };
+  
+    const handleBlur = () => {
+      setEditing(false);
+      onChange(value);
+    };
+  
+    const handleFocus = () => {
+      setEditing(true);
+    };
+  
+  
     return (
-      <Form.Item  name="grade" label="Grade" >
-          <Select value={value} onChange={onChange} >
-            <Option value="A+">A+</Option>
-            <Option value="A">A</Option>
-            <Option value="B+">B+</Option>
-            <Option value="B">B</Option>
-            <Option value="C+">C+</Option>
-            <Option value="C">C</Option>
-            <Option value="D">D</Option>
-            <Option value="F">F</Option>
-          </Select>
-        {/* <InputNumber value={value} onChange={onChange} /> */}
+      <Form.Item name="grade" label="Grade" style={{marginTop:20  }}>
+        <InputNumber
+       placeholder={value}
+        value={value}
+        onChange={handleInputChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        
+        // style={{ width: '100%' }} // Ensure the input takes the full width
+
+      />
       </Form.Item>
     );
   };
- 
+  
+  const convertToLetterGrade = (grade) => {
+    if (grade > 85) {
+      return 'A+';
+    } else if (grade > 80) {
+      return 'A-';
+    } else if (grade > 75) {
+      return 'B+';
+    } else if (grade > 70) {
+      return 'B';
+    } else if (grade > 65) {
+      return 'B-';
+    } else if (grade > 60) {
+      return 'C+';
+    } else if (grade > 50) {
+      return 'C';
+    } else {
+      return 'F';
+    }
+  };
 
-const GradeEntry = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [selectedCampus, setSelectedCampus] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedTerm, setSelectedTerm] = useState(Term[0].term);
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [selectedname, setSelectedname] = useState([]);
-  const [selectedCourse , setSelectedCourse] = useState(null);
 
+  const handleGradeChange = (value, record) => {
+    // Update the grade for the corresponding student record
+    const updatedStudent = { ...record, grade: value };
+  
+    // Calculate and update the letter grade
+    updatedStudent.letterGrade = convertToLetterGrade(value);
+  
+    // Update the studentRecords state with the new data
+    const updatedRecords = { ...studentRecords };
 
-  const studentRecords = {
-    1: [
-      { id: 101, name: 'Student 1', section :1 , department :'computerscience' , course: selectedCourse , grade :'A+' },
-      { id: 102, name: 'Student 2',  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :'A-'   },
-      { id: 103, name: 'Student 3',  section :1 ,department :'Management' , course: selectedCourse , grade :'B+'   },
-      { id: 104, name: 'Student 4',   section :2 ,department :'Accounting' , course: selectedCourse , grade :'B+'   }, 
-      { id: 105, name: 'Student 5',  section :2 ,department :'computerscience' , course: selectedCourse , grade :'A-'   },
-      { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'B'  }, 
-      { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'A'   },
-      { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'C'  },  
-      // Add more students for Campus 1
-    ],
-    2: [
-      { id: 201, name: 'Student 9', cgpa :'3.5', acadamicYear :2011,section :3,  department :'informationscience' ,curricula:"tot13" },
-      { id: 202, name: 'Student 10', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
-      { id: 203, name: 'Student 11', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
+    updatedRecords[1] = updatedRecords[1].map((student) => {
+      if (student.id === record.id) {
+        console.log('New grade:', value);
+        console.log('Corresponding record id :', updatedRecords);
       
-      // Add more students for Campus 2
-    ],
-    3: [
-      { id: 301, name: 'Student 19', cgpa :'3.5', acadamicYear :2011,section :3 ,  department :'informationscience' ,curricula:"tot13" },
-      { id: 302, name: 'Student 20', cgpa :'3.2', acadamicYear :2009,section :2 , department :'computerscience' ,curricula:"tot13" },
-      { id: 303, name: 'Student 21', cgpa :'3.8', acadamicYear :2011,section :2 , department :'Accounting' ,curricula:"tot13" },
-      
-      // Add more students for Campus 2
-    ],
+        // setSelectedletter(updatedRecords[1])
+        return updatedStudent;
+      }
+      console.log('New grade:', value);
+      console.log('Corresponding record:', student);
+      return student;
+    });
+  
+     setStudentRecords(updatedRecords);
+  
+    // You can perform any necessary operations here
    
-    // Add more campuses as needed
-  };  
+  };
 
-
-
- 
   function getWindowSize() {
     const { innerWidth, innerHeight } = window;
     return { innerWidth, innerHeight };
@@ -203,26 +218,8 @@ const GradeEntry = () => {
   const handleView = (data) => {
     navigate("/view-student", { state: { data } });
   };
-
-
   const handleCampusChange = async(value) => {
-    setSelectedCampus(value);
-    // setSelectedYear(null); // Reset selected year when campus changes
-  };
-
-  const handlelogout =() =>{
-    dispatch(userAction.logout());
-  }
-
-  const handleYearChange = async (value) => {
-    setSelectedYear(value);
-  };
-  const handleSchoolname = async (value) => {
-    setSelectedname(value);
-  };
-
-  const handleTermChange = async (value) => {
-    setSelectedTerm(value);
+    setSelectedCampus(value); 
   };
   const handleSectionChange = async (value) => {
     setSelectedSection(value);
@@ -230,139 +227,64 @@ const GradeEntry = () => {
   const handleCourseChange = async (value) => {
     console.log("test is ",value);
     setSelectedCourse(value);
+
+    const updatedStudentRecords = {
+      1: studentRecords[1].map((student) => ({
+        ...student,
+        course: value,
+      })),
+    };
+    setStudentRecords(updatedStudentRecords);
   };
+  // const getFilteredStudentRecords = (term ,campus , section , course) => {
+  //   console.log(campus ,term ,section ,course);
+  //   console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
+  //   if(term , campus , section , course) {
+  //     return studentRecords[1].filter((student) => student.department == campus  && student.section == section  );
+  //   }  
+  //     else{
+  //       return null;
+  //     }
+  // };
+  const getFilteredStudentRecords = (term, campus, section, course) => {
+    if (term && campus && section && course) {
+        // Filter student records based on the selected criteria
+        const filteredRecords = studentRecords[1].filter((student) => {
+            return student.department === campus && student.section === section;
+        });
 
+        // Create a set to store unique student IDs
+        const uniqueIds = new Set();
 
-  const getFilteredStudentRecords = (term ,campus , section , course) => {
-    console.log(campus ,term ,section);
-    console.log("test " ,studentRecords[1].filter((student) => student.department == campus ))
-    if(term , campus , section , course) {
-      return studentRecords[1].filter((student) => student.department == campus  && student.section == section && student.course == course);
-    }  
+        // Filter out duplicate records based on student ID
+        const uniqueFilteredRecords = filteredRecords.filter((student) => {
+            if (uniqueIds.has(student.id)) {
+                // If the student ID is already in the set, it's a duplicate
+                return false;
+            } else {
+                // Otherwise, add the student ID to the set and return true
+                uniqueIds.add(student.id);
+                return true;
+            }
+        });
 
-      else{
+        return uniqueFilteredRecords;
+    } else {
         return null;
-      }
-  };
-  
-  const [loading, setLoading] = useState(false);
-  const [opens, setOpens] = useState(false);
-  const [newGrade, setNewGrade] = useState({
-    studentname: selectedname,
-    acadamicYear: selectedYear,
-    department: selectedCampus,
-    term:selectedTerm,
-    courses: selectedCourse,
-    Grade:"",
-  });
-
-  const showModal = () => {
-    setOpens(true);
-   
-  };
-
-  const handleOk = async () => {
-    console.log ("Grade value   ", newGrade)
-          setOpens(false);    
-  };
-
-  const handleCancel = () => {
-    setOpens(false);
-  };
-  const handleSubject = (e) => {
-    setNewGrade({ ...newGrade, [e.target.name]: e.target.value });
-  };
-
-  const handleGrade = () =>{ 
-    return (
-     <>
-      {opens ? (
-        <Modal
-          open = {opens}
-          title="Add Grade"
-          onOk={handleOk}
-          okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-          onCancel={handleCancel}
-          footer={[
-            <Button key="back" onClick={handleCancel}>
-              Exit
-            </Button>,
-            <Button key="submit" loading={loading} onClick={handleOk}>
-              Submit
-            </Button>,
-          ]}
-        >
-          <Form
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 30 }}
-            layout="horizontal"
-          >
-              <Form.Item label="Name">        
-        <Select
-            bordered={false}
-            className="!rounded-[6px] border-[#4279A6] border-[2px]"
-            style={{ width: '100%' }}
-            placeholder="--Select Acadamic Year of the Student---"
-            onChange={handleSchoolname}
-          >
-            {(getFilteredStudentRecords(selectedTerm ,selectedYear, selectedCampus ,selectedSection))?.map((item, i) => (
-              <Option key={item.key} value={item.name} lable={item.name}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
-            </Form.Item>
-            <Form.Item label="Department">
-            <Input name="department" value={newGrade.department} placeholder= {selectedCampus} />
-              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
-            </Form.Item>
-            <Form.Item label="Acadamic Year">
-            <Input name="acadamicYear"  value={newGrade.acadamicYear} placeholder= {selectedYear}/>
-              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
-            </Form.Item>
-            <Form.Item label="Term">
-            <Input name="term" value={newGrade.term} placeholder= {selectedTerm}/>
-              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
-            </Form.Item>
-            <Form.Item label="Courses">
-            <Input name="courses" value={newGrade.courses} placeholder= {selectedCourse} />
-              {/* <TextArea name="description" onChange={(e) => handleSubject(e)} /> */}
-            </Form.Item>
-
-            <Form.Item
-              label="Grade"
-              name="Grade"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input name="Grade" onChange={(e) => handleSubject(e)} />
-            </Form.Item>
-          
-          </Form>
-        </Modal>
-      ) : null}
-    </>
-    );
-  }
-
+    }
+};
 
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
     <div className="list-header mb-2 ml-100">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">GradeEntry Managment System</h1>
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Grade Entry</h1>
     </div>
     <div className="list-sub mb-10 ml-[2%] ">
      {/* {handleGrade()} */}
       <div className="list-filter">
       
         <h1>Active Term :  Term {selectedTerm}</h1> 
-      
-
          {selectedTerm  && ( 
             <Select
             bordered={false}
@@ -410,25 +332,12 @@ const GradeEntry = () => {
             ))}
           </Select>
           )}
-          {/* {selectedCampus && selectedYear && selectedTerm && selectedSection && (
-             <Button
-        style={{
-          borderRadius: "8px",
-          borderWidth: 1,
-        }}
-        icon={<FontAwesomeIcon className="pr-2" icon={faAdd} />}
-        className=" !text-[white] !bg-[#15C9CE] hover:!text-[white]"
-        onClick={showModal}
-      >
-        Add Grade
-      </Button>
-        )} */}
+    
       </div>
  </div>
 
       <div className='ml-[2%]'>
-        {/* Display student records based on selected campus and year */}
-        {/* {selectedCampus && selectedYear && ( */}
+       
           <div className="" >
         <div style={{flex:1 , flexDirection:'row' , justifyContent:'space-between' ,display:'flex' , paddingRight:20}}>
           <h4 className="text-base  font-[600] font-jakarta ">Student Records for  Term {selectedTerm} </h4>
@@ -437,25 +346,37 @@ const GradeEntry = () => {
 
           </div>
             <Table
-                    // onRow={(record, rowIndex) => {
-        //   return {
-        //     onClick: (event) => showModal(record), // click row
-        //   };
-        // }}
         style={{ marginTop: 20 , color: '#4279A6' }}
         columns={columns}
         dataSource={getFilteredStudentRecords(selectedTerm ,selectedCampus,  selectedSection ,selectedCourse)}
         pagination={{ position: ["bottomCenter"] }}
       />
 
-<Button  type="primary" style={{ marginBottom: 16 , backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }} >
+<Button   type="primary" style={{ marginBottom: 16 , margingLeft:20, marginTop :20, backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }} >
         Submit
       </Button>
           </div>
-        {/* )} */}
       </div>
     </div> 
   );
 };
 
 export default GradeEntry;
+
+
+
+
+
+// const studentRecords = {
+//   1: [
+//     { id: 101, name: 'Student 1', section :1 , department :'computerscience' , course: selectedCourse , grade :'80' ,letterGrade : 'A-'},
+//     { id: 102, name: 'Student 2',  section :1 ,department :'Electricalscience' , course: selectedCourse , grade :'75' ,letterGrade : 'B+'  },
+//     { id: 103, name: 'Student 3',  section :1 ,department :'Management' , course: selectedCourse , grade :'70'  ,letterGrade : 'B' },
+//     { id: 104, name: 'Student 4',   section :2 ,department :'Accounting' , course: selectedCourse , grade :'90' ,letterGrade : 'A+'  }, 
+//     { id: 105, name: 'Student 5',  section :2 ,department :'computerscience' , course: selectedCourse , grade :'81',letterGrade : 'A-'   },
+//     { id: 106, name: 'Student 6',  section :3 ,department :'Management' ,  course: selectedCourse , grade :'92',letterGrade : 'A+'  }, 
+//     { id: 107, name: 'Student 7',  section :2 ,department :'Information Science' , course: selectedCourse , grade :'64' ,letterGrade : 'B-'  },
+//     { id: 108, name: 'Student 8',  section :3 ,department :'Electricalscience' , course: selectedCourse , grade :'78' ,letterGrade : 'B+' },  
+//     // Add more students for Campus 1
+//   ],
+// };  
