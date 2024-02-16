@@ -18,6 +18,7 @@ import GradeEntry from "./gradeEntry";
 import CourseLeaseManagement from "./courseLease";
 import StudentCourseRegistration from "./courseRegistration";
 import StudentCourseExemption from "./studentExemption";
+import StudentStatusManagement from "./manageStudent";
 
 import {
   Configurator,
@@ -33,7 +34,7 @@ import {
 // import { IconButton } from "@mui/material";
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined } from "@mui/icons-material";
+import { Add, AddIcCallOutlined, HowToReg, ListAlt, LogoutOutlined, Report, ReportOffOutlined, StarOutlineSharp } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
 import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-icons/fa";
@@ -51,6 +52,7 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isGradeEntry, setIsGradeEntry] = useState(false);
   const [isCourseLease, setIsCourseLease] = useState(false);
   const [isCourseExemption, setIsCourseExemption] = useState(false);
+  const [isStudentStatus, setIsStudentStatus] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const drawerWidth = 240;
@@ -114,6 +116,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(false);
     setIsCourseLease(false)
     setIsCourseExemption(false)
+    setIsStudentStatus(false)
 
   };
   const handleCourseRegistration = () => {
@@ -123,6 +126,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(false);
     setIsCourseLease(false)
     setIsCourseExemption(false)
+    setIsStudentStatus(false)
+
 
 
   };
@@ -133,6 +138,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(false);
     setIsCourseLease(true)
     setIsCourseExemption(false)
+    setIsStudentStatus(false)
 
   };
   const handleAddDrop = () => {
@@ -142,6 +148,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(false);
     setIsCourseLease(false);
     setIsCourseExemption(false);
+    setIsStudentStatus(false)
 
 
   };
@@ -152,6 +159,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(true);
     setIsCourseLease(false);
     setIsCourseExemption(false)
+    setIsStudentStatus(false)
 
 
   };
@@ -162,6 +170,18 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsGradeEntry(false);
     setIsCourseLease(false);
     setIsCourseExemption(true)
+    setIsStudentStatus(false)
+
+
+  };
+  const handleStudentStatus = () => {
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+    setIsStudentStatus(true)
 
 
   };
@@ -215,6 +235,13 @@ const RegistrarOfficerSiderGenerator = () => {
           
         },
         {
+          icon: <StarOutlineSharp {...icon} />,
+          name: "Students Status",
+          onClick: handleStudentStatus,
+
+          
+        },
+        {
           icon: <FaGraduationCap {...icon} />,
           name: "Grade Entry",
           onClick: handleGradeEntry,
@@ -259,6 +286,7 @@ const RegistrarOfficerSiderGenerator = () => {
           {isGradeEntry ? <GradeEntry /> : null}
           {isCourseLease ? <CourseLeaseManagement /> : null}
           {isCourseExemption ? <StudentCourseExemption /> : null}
+          {isStudentStatus ? <StudentStatusManagement /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />
