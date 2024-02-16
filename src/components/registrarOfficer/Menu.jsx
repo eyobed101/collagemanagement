@@ -352,17 +352,17 @@ const RegistrarOfficerSiderGenerator = () => {
         {
           icon: <FaPaperclip {...icon} />,
           name: "Reports",
-          onClick: handleAddDrop,
+          // onClick: handleAddDrop,
 
           
         },
-        {
-          icon: <StarOutlineSharp {...icon} />,
-          name: "Students Status",
-          onClick: handleStudentStatus,
+        // {
+        //   icon: <StarOutlineSharp {...icon} />,
+        //   name: "Students Status",
+        //   onClick: handleStudentStatus,
 
           
-        },
+        // },
         {
           icon: <FaGraduationCap {...icon} />,
           name: "Grade Entry",
