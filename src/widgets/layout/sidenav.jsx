@@ -157,7 +157,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           pageIndex === activeIndex ? "active" : ""
                         } border rounded-xl  `}
                         fullWidth
-                        onMouseEnter={(e) => handleMenuOpen(e, pageIndex)}
+                        onClick={(e) => handleMenuOpen(e, pageIndex)}
                       >
                         {icon}
                         <Typography
@@ -202,7 +202,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           onClick={() =>
                             handleItemClick(pageIndex, item.onClick)
                           }
-                          onMouseEnter={() => handleMouseEnter(subIndex)}
+                          // onMouseEnter={() => handleMouseEnter(subIndex)}
                           //  onMouseLeave={handleMouseLeave}
                           style={{
                             borderRadius: 30,

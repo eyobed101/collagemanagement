@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Table, Button, Modal, Form, Input,Popconfirm } from 'antd';
+import axios from 'axios';
 // import 'antd/dist/antd.css';
 
 const AddSection = () => {
+
+  const [sections , setSection] = useState([])
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([
     {
       key: '1',
@@ -28,8 +32,18 @@ const AddSection = () => {
   const columns = [
     {
       title: 'Section ',
-      dataIndex: 'section',
-      key: 'section',
+      dataIndex: 'sectionId',
+      key: 'sectionId',
+    },
+    {
+      title: 'Study Center',
+      dataIndex: 'campusId',
+      key: 'campusId',
+    },
+    {
+      title: 'Section Name',
+      dataIndex: 'sectionName',
+      key: 'sectionName',
     },
     {
       title: 'Program',
@@ -37,19 +51,19 @@ const AddSection = () => {
       key: 'program',
     },
     {
-      title: 'Batch',
-      dataIndex: 'batch',
-      key: 'batch',
+      title: 'Program Type',
+      dataIndex: 'programType',
+      key: 'programType',
     },
     {
-        title: 'Term / Acadamic Year',
-        dataIndex: 'term',
-        key: 'term',
+        title: 'Acadamic Year',
+        dataIndex: 'acadYear',
+        key: 'acadYear',
     },
     {
-        title: 'Department',
-        dataIndex: 'department',
-        key: 'department',
+        title: 'Date Created',
+        dataIndex: 'dateCreated',
+        key: 'dateCreated',
       },
     {
       title: 'Action',
@@ -74,9 +88,22 @@ const AddSection = () => {
     },
   ];
 
-  const generateRandomKey = () => {
-    return Math.random().toString(36).substr(2, 9);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Section');
+        setSection(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
   const handleDelete = (key) => {
     const newData = data.filter(item => item.key !== key);
     setData(newData);
@@ -208,15 +235,6 @@ const AddSection = () => {
     </Modal>
   );
 
-  const handleInputChange = (e, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = e.target.value;
-      setData(newData);
-    }
-  };
-
   const edit = (key) => {
     setEditingKey(key);
     showEditModal();
@@ -233,7 +251,9 @@ const AddSection = () => {
       <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16,  backgroundColor:'#4279A6' }}>
         Create New Section
       </Button>
-      <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />
+      <Table dataSource={sections} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.sectionId}
+      pagination={{ pageSize: 10 }} />
       {editModal}
       {createModal}
     </div>

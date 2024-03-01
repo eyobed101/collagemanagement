@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { Form, Input, Select, Radio, Button, Table , Row , Col } from 'antd';
+import axios from 'axios';
 // import 'antd/dist/antd.css';
 
 const { Option } = Select;
@@ -17,6 +18,22 @@ const AddCourse = () => {
     form.resetFields(); // Reset form fields after submission
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Courses');
+        setTableData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
   const columns = [
     { title: 'Course No', dataIndex: 'courseNo', key: 'courseNo' },
     { title: 'Course Name', dataIndex: 'courseName', key: 'courseName' },
@@ -27,7 +44,7 @@ const AddCourse = () => {
     // { title: 'Course Order', dataIndex: 'courseOrder', key: 'courseOrder' },
     { title: 'Department', dataIndex: 'department', key: 'department' },
     { title: 'Program', dataIndex: 'program', key: 'program' },
-    { title: 'Has Prereq', dataIndex: 'hasPrereq', key: 'hasPrereq' },
+    { title: 'Has Prereq', dataIndex: 'hasPreReq', key: 'hasPreReq' },
     { title: 'Has Lab', dataIndex: 'hasLab', key: 'hasLab' },
   ];
 

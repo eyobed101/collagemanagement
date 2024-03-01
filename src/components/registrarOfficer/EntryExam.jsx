@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd';
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 
 const { Option } = Select;
@@ -52,16 +53,34 @@ const mockData = [
 
 const EntryExam = () => {
   const [visible, setVisible] = useState(false);
-  const [dataSource, setDataSource] = useState(mockData);
+  const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record) => record.key === editingKey;
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/EntryExams');
+        setDataSource(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
   const columns = [
     {
       title: 'Student ID',
-      dataIndex: 'studentId',
+      dataIndex: 'studId',
       editable: true,
 
     },
@@ -171,8 +190,8 @@ const EntryExam = () => {
   };
 
   const handleSearch = (value) => {
-    const filteredData = mockData.filter((record) =>
-      record.studentId.includes(value)
+    const filteredData = dataSource.filter((record) =>
+      record.studId.includes(value)
     );
     setDataSource(filteredData);
   };
@@ -232,7 +251,10 @@ const EntryExam = () => {
       </div>
       <Table 
       style={{ marginTop: 20 , color: '#4279A6' }}
-      dataSource={dataSource} columns={columns} />
+      dataSource={dataSource} columns={columns} 
+      bordered  loading={loading}
+      rowKey={(record) => record.studId}
+      pagination={{ pageSize: 10 }} />
       <Modal
         title={editingKey ? 'Edit Record' : 'Create Record'}
         visible={visible}

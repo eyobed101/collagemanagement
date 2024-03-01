@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { Space, Table, Button, Col, DatePicker, Drawer, Form, Input, Row, Select ,Card } from "antd";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
-// import ChartTeacher from "../../graph/teacherGraph/Chart";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown} from "@fortawesome/free-solid-svg-icons";
-import { faArrowUp} from "@fortawesome/free-solid-svg-icons";
+
 
 // Mock data
 const { Option } = Select;
@@ -49,43 +47,6 @@ const studentRecords = {
   // Add more campuses as needed
 };
 
-const columns = [
-    {
-      title: (
-        <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
-          Name
-        </p>
-      ),
-      dataIndex: "name",
-      key: "name",
- 
-    },
-    {
-      title: <p className="font-jakarta  font-[600]">ID</p>,
-      key: "id",
-      dataIndex: "id",
-    },
-    {
-      title: <p className="font-jakarta  font-[600]">Grade</p>,
-      dataIndex: "cgpa",
-      key: "cgpa"
-    },
-    {
-      title: <p className="font-jakarta  font-[600]">Academic Year</p>,
-      dataIndex: "acadamicYear",
-      key: "acadamicYear",
-    },
-    {
-      title: <p className="font-jakarta  font-[600]">Department</p>,
-      dataIndex: "department",
-      key: "department",
-    },
-    {
-        title: <p className="font-jakarta  font-[600]">Curriculum</p>,
-        dataIndex: "curricula",
-        key: "curricula",
-      },
-  ];
 
 
 const CampusRegistrar = () => {
@@ -94,10 +55,74 @@ const CampusRegistrar = () => {
    const navigate = useNavigate();
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
-  const [teachvalue , setTeachvalue] = useState([])
+  const [student , setStudent] = useState([])
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Applicants');
+        setStudent(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  const columns = [
+    {
+      title: (
+        <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
+          Name
+        </p>
+      ),
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span>{`${record.fname} ${record.mname}`}</span>
+      ),
+ 
+    },
+    {
+      title: <p className="font-jakarta  font-[600]"> Student ID</p>,
+      key: "studId",
+      dataIndex: "studId",
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Program</p>,
+      dataIndex: "program",
+      key: "program"
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Approved </p>,
+      dataIndex: "approved",
+      key: "approved",
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Program Type</p>,
+      dataIndex: "programType",
+      key: "programType",
+    },
+    {
+        title: <p className="font-jakarta  font-[600]">Center ID</p>,
+        dataIndex: "centerId",
+        key: "centerId",
+      },
+  ];
+
   const handleView = (data) => {
     navigate("/view-student", { state: { data } });
   };
+
+
+
+
 
 
   const handleCampusChange = async(value) => {
@@ -193,26 +218,7 @@ const CampusRegistrar = () => {
  </div>
  <div className="list-sub mb-10 ml-[2%]">
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
- <Grid item xs={12} sm={12} md={4}>
-          <Card
-            bordered={false}
-            className="w-[100%] min-h-[419px]"
-          >
-              <div className="flex flex-row justify-start align-bottom items-center">
-              {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-                <h1 className="text-base text-[#344054] font-normal"  >Graduate students</h1>
-            </div>
-            <div className="flex flex-row justify-start align-bottom items-center">
-            <h1 className="text-3xl text-[#344054]">10</h1>
-            <h4 className="text-base text-[#344054]">/ 50    </h4>
-                <FontAwesomeIcon className="pr-2  mb-2 ml-5 text-[red]" icon={faArrowDown} />
-                <h4 className="text-sm text-[red]" style={{marginLeft:-4}}>20%</h4>
-                </div>
-                <h4 className="text-base text-[#344054] font-normal  mb-5">Decreased on graduate Students</h4>
-            {/* <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} /> */}
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={12} md={8}>
+         <Grid item xs={12} sm={12} md={12}>
           <Card
             bordered={false}
             className="w-[100%] min-h-[419px]"
@@ -230,10 +236,9 @@ const CampusRegistrar = () => {
           };
         }}
         style={{ marginTop: 20 }}
-        columns={columns}
-        dataSource={getFilteredStudentRecords(selectedCampus, selectedYear)}
-        pagination={{ position: ["bottomCenter"] }}
-      />
+      dataSource={student} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.studId}
+      pagination={{ pageSize: 10 }} />
           </div>
       </div>    
             </div>

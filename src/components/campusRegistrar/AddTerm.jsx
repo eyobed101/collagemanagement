@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Input, DatePicker,Popconfirm } from 'antd';
 import moment from 'moment';
+import axios from 'axios';
 
 const AddTerm = () => {
+  const [term , setTerm] = useState([])
+  const [loading, setLoading] = useState(true);
+
   const [data, setData] = useState([
     {
       key: '1',
@@ -14,6 +18,21 @@ const AddTerm = () => {
     },
     // Add more sample data as needed
   ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Terms');
+        setTerm(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [editingKey, setEditingKey] = useState('');
 
@@ -28,15 +47,21 @@ const AddTerm = () => {
     },
     {
       title: 'Term Name',
-      dataIndex: 'termName',
+      dataIndex: 'name',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'termName'),
+      render: (text, record) => renderCell(text, record, 'name'),
     },
     {
       title: 'Academic Year',
-      dataIndex: 'academicYear',
+      dataIndex: 'acadYear',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'academicYear'),
+      render: (text, record) => renderCell(text, record, 'acadYear'),
+    },
+    {
+      title: 'Program Type',
+      dataIndex: 'programType',
+      editable: true,
+      render: (text, record) => renderCell(text, record, 'programType'),
     },
     {
       title: 'Start Date',
@@ -57,6 +82,12 @@ const AddTerm = () => {
         value={moment(record.endDate)}
         onChange={onchange}
       />),
+    },
+    {
+      title: 'Center ID',
+      dataIndex: 'centerId',
+      editable: true,
+      render: (text, record) => renderCell(text, record, 'centerId'),
     },
     {
       title: 'Action',
@@ -86,8 +117,10 @@ const AddTerm = () => {
     const newData = {
       key: String(data.length + 1),
       termId: '',
-      termName: '',
-      academicYear: '',
+      name: '',
+      acadYear: '',
+      programType: '',
+      centerId:'',
       startDate: moment(),
       endDate: moment(),
     };
@@ -155,22 +188,18 @@ const AddTerm = () => {
       setData(newData);
     }
   };
-  const handleDateChange = (date, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = date;
-      setData(newData);
-    }
-  };
+
 
   return (
     <div>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 , backgroundColor:'#4279A6' }} >
         Add New Term
       </Button>
-      <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />
-    </div>
+      <Table dataSource={term} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.termId}
+      pagination={{ pageSize: 10 }} />
+     
+        </div>
   );
 };
 

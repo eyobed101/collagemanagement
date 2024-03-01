@@ -30,6 +30,7 @@ import { LogoutOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
 import { FaGraduationCap, FaSchool } from "react-icons/fa";
+// import App from "./tests";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
