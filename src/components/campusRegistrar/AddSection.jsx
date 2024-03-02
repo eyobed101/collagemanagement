@@ -5,8 +5,18 @@ import axios from 'axios';
 const { Option } = Select;
 
 const AddSection = () => {
-  const [data, setData] = useState([]);
-  const [studyCenters, setStudyCenters] = useState([]);
+  const [data, setData] = useState([
+    {
+      key: '1',
+      section: 'SEC/7090/12',
+      program: 'Regular',
+      batch: 'Bachelor of Science',
+      term: '2011/12/II',
+      department: 'Computer Science',
+    },
+    // Add more sample data as needed
+  ]);
+
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [editingKey, setEditingKey] = useState('');
@@ -38,8 +48,18 @@ const AddSection = () => {
   const columns = [
     {
       title: 'Section ',
-      dataIndex: 'section',
-      key: 'section',
+      dataIndex: 'sectionId',
+      key: 'sectionId',
+    },
+    {
+      title: 'Study Center',
+      dataIndex: 'campusId',
+      key: 'campusId',
+    },
+    {
+      title: 'Section Name',
+      dataIndex: 'sectionName',
+      key: 'sectionName',
     },
     {
       title: 'Program',
@@ -47,24 +67,20 @@ const AddSection = () => {
       key: 'program',
     },
     {
-      title: 'Batch',
-      dataIndex: 'batch',
-      key: 'batch',
+      title: 'Program Type',
+      dataIndex: 'programType',
+      key: 'programType',
     },
     {
-      title: 'Term / Academic Year',
-      dataIndex: 'term',
-      key: 'term',
+        title: 'Term / Acadamic Year',
+        dataIndex: 'term',
+        key: 'term',
     },
     {
-      title: 'Study Center',
-      dataIndex: 'campusId',
-      key: 'campusId',
-      render: (campusId) => {
-        const studyCenter = studyCenters.find(center => center.campusId === campusId);
-        return studyCenter ? studyCenter.centerName : '';
+        title: 'Department',
+        dataIndex: 'department',
+        key: 'department',
       },
-    },
     {
       title: 'Action',
       key: 'action',
@@ -92,7 +108,6 @@ const AddSection = () => {
   const generateRandomKey = () => {
     return Math.random().toString(36).substr(2, 9);
   };
-
   const handleDelete = (key) => {
     const newData = data.filter(item => item.key !== key);
     setData(newData);
@@ -237,12 +252,34 @@ const AddSection = () => {
     </Modal>
   );
 
+  const handleInputChange = (e, record, dataIndex) => {
+    const newData = [...data];
+    const index = newData.findIndex((item) => record.key === item.key);
+    if (index > -1) {
+      newData[index][dataIndex] = e.target.value;
+      setData(newData);
+    }
+  };
+
+  const edit = (key) => {
+    setEditingKey(key);
+    showEditModal();
+  };
+
+  const save = (key) => {
+    setEditingKey('');
+    setIsEditModalVisible(false);
+    setIsCreateModalVisible(false);
+  };
+
   return (
     <div>
       <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }}>
         Create New Section
       </Button>
-      <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />
+      <Table dataSource={sections} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.sectionId}
+      pagination={{ pageSize: 10 }} />
       {editModal}
       {createModal}
     </div>

@@ -1,6 +1,8 @@
 import React, { useState , useEffect} from "react";
 import { Space, Table, Tag, Card, Select ,Modal , Input ,Button } from "antd";
 import Grid from "@mui/material/Grid";
+import axios from 'axios';
+
 
 // import ChartStudent from "../../graph/studentGraph/Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +23,7 @@ const RootHome = () => {
   const [isAll, setIsAll] = useState("none");
   const [attendStudents, setAttendStudents] = useState();
   const [datas, setData] = useState([]);
-  const [datas1, setData1] = useState([]);
+  // const [datas1, setData1] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modifiedUserData, setModifiedUserData] = useState({});
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -30,6 +32,10 @@ const RootHome = () => {
   const [isModalVisible1, setIsModalVisible1] = useState(false);
   const [modifiedUserData1, setModifiedUserData1] = useState({});
   const [isDeleteModalVisible1, setIsDeleteModalVisible1] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [studyCenters, setStudyCenters] = useState([]);
+
+
 
 
 
@@ -64,30 +70,18 @@ const RootHome = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch or set your user data here
-    // For demonstration purposes, I'm using static data
-    const data1 = [
-      {
-        key: "1",
-        id:"campus1",
-        name: "Addis Ababa center",
-        location: "Addis Ababa Stadium",
-      },
-      {
-        key: "2",
-        id:"campus2",
-        name: "Jima center",
-        location: "Jimma Stadium",
-      },
-      {
-        key: "3",
-        id:"campus2",
-        name: "Addis Ababa Lamberet center",
-        location: "Addis Ababa Lamberet Kebele 12 center",
-      },
-    ];
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/StudyCenters');
+        setStudyCenters(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setData1(data1);
+    fetchData();
   }, []);
 
 
@@ -137,24 +131,12 @@ const RootHome = () => {
  
   
   const columns1 = [
-    {
-      title: "Campus Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => (
-        <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
-      ),
-    },
-    {
-      title: "Campus ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Campus Location",
-      dataIndex: "location",
-      key: "location",
-    },
+    { title: 'Center ID', dataIndex: 'CenterId', key: 'CenterId' },
+    { title: 'Center Name', dataIndex: 'CenterName', key: 'CenterName' },
+    { title: 'Regional Center Name', dataIndex: 'RegionalCenterName', key: 'RegionalCenterName' },
+    { title: 'Region', dataIndex: 'Region', key: 'Region' },
+    { title: 'Current Center This', dataIndex: 'CurrentCenterThis', key: 'CurrentCenterThis' },
+    { title: 'Center Type', dataIndex: 'CenterType', key: 'CenterType' },
     {
       title: 'Action',
       key: 'action',
@@ -537,11 +519,12 @@ const RootHome = () => {
                 </h1>
               </div>
               <Table
-                columns={columns1}
-                dataSource={datas1}
-                style={{ marginTop: 20 }}
-                pagination={{ position: ["bottomCenter"] }}
-              />
+      dataSource={studyCenters}
+      columns={columns1}
+      loading={loading}
+      rowKey={(record) => record.CenterId}
+      pagination={{ pageSize: 10 }}
+    />
               ;
               {/* <div className="flex flex-row justify-start align-bottom items-center">
                 <h1 className="text-base text-[#98A2B3]">Registerar Data</h1> 

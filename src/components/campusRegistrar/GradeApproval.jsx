@@ -1,42 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal } from 'antd';
+import axios from 'axios';
 // import SiderGenerator from './Menu';
 
 const GradeApproval = () => {
   const [data, setData] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isApprovalModalVisible, setIsApprovalModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
-    // Fetch or set your grade data here
-    // For demonstration purposes, I'm using static data
-    const initialData = [
-      { key: '1', student: 'John Doe', course: 'Math', grade: 'A', status: 'Pending' },
-      // Add more grade entries
-    ];
-    setData(initialData);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Grades');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const columns = [
     {
-      title: 'Student',
-      dataIndex: 'student',
-      key: 'student',
+      title: 'Student ID',
+      dataIndex: 'studId',
+      key: 'studId',
     },
     {
-      title: 'Course',
-      dataIndex: 'course',
-      key: 'course',
+      title: 'Course No',
+      dataIndex: 'courseNo',
+      key: 'courseNo',
     },
     {
-      title: 'Grade',
-      dataIndex: 'grade',
-      key: 'grade',
+      title: 'course Grade',
+      dataIndex: 'courseGrade',
+      key: 'courseGrade',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Submitted By',
+      dataIndex: 'submitBy',
+      key: 'submitBy',
+    },
+    {
+      title: 'Date Submitted',
+      dataIndex: 'dateSubmitted',
+      key: 'dateSubmitted',
+    },
+    {
+      title: 'Term Id',
+      dataIndex: 'termId',
+      key: 'termId',
+    },
+
+    {
+      title: 'Updated',
+      dataIndex: 'updated',
+      key: 'updated',
     },
     {
       title: 'Action',
@@ -91,7 +115,9 @@ const GradeApproval = () => {
       <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
         Grade Approval
       </p>
-      <Table columns={columns} dataSource={data} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} />
+      <Table  dataSource={data} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.studId}
+      pagination={{ pageSize: 10 }} />
 
       <Modal
         title="Approval Confirmation"

@@ -1,22 +1,46 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
+import axios from 'axios';
+
 
 import {
   MdWork,
   MdAddLocation,
+  MdHowToReg,
+  MdLocationOn,
+
 } from "react-icons/md";
 
 function CampusForm({ onSubmit }) {
-  const [campusName, setCampusName] = useState('');
-  const [campusLocation, setCampusLocation] = useState('');
+  const [centerId, setCenterId] = useState('');
+  const [centerName, setCenterName] = useState('');
+  const [regionalCenterName, setRegionalCenterName] = useState('');
+  const [region, setRegion] = useState('');
+  const [currentCenterThis, setcurrentCenterThis] = useState('');
+  const [centerType, setcenterType] = useState('');
 
 
-  const handleSubmit = () => {
-    const newCampus = {
-      name: campusName,
-      location: campusLocation,
-    };
-    onSubmit(newCampus);
+
+  const handleSubmit = async () => {
+    try {
+      // Make a POST request to your server endpoint
+      const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter/', {
+        centerId: centerId, 
+        centerName: centerName,
+        regionalCenterName: regionalCenterName, // Add other properties as needed
+        region: region,
+        currentCenterThis: currentCenterThis,
+        centerType: centerType,
+      });
+
+      // Handle the response as needed
+      console.log('Data successfully posted:', response.data);
+
+      // Optionally, invoke the onSubmit callback
+      onSubmit(response.data);
+    } catch (error) {
+      console.error('Error posting data:', error);
+    }
   };
 
   return (
@@ -35,26 +59,76 @@ function CampusForm({ onSubmit }) {
          Root Adminstrator
           </p> 
             </div> 
+            <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
+          <MdHowToReg className="text-xl text-gray-700" />
+          <input
+            type="text"
+            required
+            value={centerId}
+            onChange={(e) => setCenterId(e.target.value)}
+            placeholder="Center ID to add for the university"
+            className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+          />
+        </div>
         <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
           <MdWork className="text-xl text-gray-700" />
           <input
             type="text"
             required
-            value={campusName}
-            onChange={(e) => setCampusName(e.target.value)}
-            placeholder="Campus name to add for the university"
+            value={centerName}
+            onChange={(e) => setCenterName(e.target.value)}
+            placeholder="Center name to add for the university"
             className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
           />
         </div>
          <div className="w-full flex flex-col md:flex-row items-center gap-3">
           <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
-            <MdAddLocation className="text-gray-700 text-2xl" />
+            <MdWork className="text-gray-700 text-2xl" />
             <input
               type="text"
               required
-              value={campusLocation}
-              onChange={(e) => setCampusLocation(e.target.value)}
-              placeholder="Campus Location "
+              value={regionalCenterName}
+              onChange={(e) => setRegionalCenterName(e.target.value)}
+              placeholder="Regional Center Name"
+              className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+            />
+          </div>
+        </div>
+        <div className="w-full flex flex-col md:flex-row items-center gap-3">
+          <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
+            <MdLocationOn className="text-gray-700 text-2xl" />
+            <input
+              type="text"
+              required
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              placeholder="Region Location "
+              className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+            />
+          </div>
+        </div>
+        <div className="w-full flex flex-col md:flex-row items-center gap-3">
+          <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
+            <MdWork className="text-gray-700 text-2xl" />
+            <input
+              type="text"
+              required
+              value={currentCenterThis}
+              onChange={(e) => setcurrentCenterThis(e.target.value)}
+              placeholder="Current Center  "
+              className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+            />
+          </div>
+        </div>
+        <div className="w-full flex flex-col md:flex-row items-center gap-3">
+          <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
+            <MdWork className="text-gray-700 text-2xl" />
+            <input
+              type="text"
+              required
+              value={centerType}
+              onChange={(e) => setcenterType(e.target.value)}
+              placeholder="Center Type "
               className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
             />
           </div>
@@ -62,10 +136,10 @@ function CampusForm({ onSubmit }) {
         <div className="flex items-center w-full">
           <button
             type="button"
-            className="ml-0 md:ml-auto w-full md:w-auto border-none outline-none bg-emerald-500 px-12 py-2 rounded-lg text-lg text-white font-semibold"
+            className="ml-0 md:ml-auto w-full md:w-auto border-none outline-none bg-[#4279A6] px-12 py-2 rounded-lg text-lg text-white font-semibold"
             onClick={handleSubmit}
           >
-            Save Campus
+            Save Center
           </button>
         </div>
       </div>

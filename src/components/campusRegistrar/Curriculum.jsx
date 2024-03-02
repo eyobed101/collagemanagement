@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 // import SiderGenerator from './Menu';
+import axios from 'axios';
 
 const { Option } = Select;
 
 const Curriculum = () => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCurriculumModalVisible, setIsCurriculumModalVisible] = useState(false);
   const [isCourseModalVisible, setIsCourseModalVisible] = useState(false);
@@ -17,10 +19,26 @@ const Curriculum = () => {
   const [isEditCourseModalVisible, setIsEditCourseModalVisible] = useState(false);
   const [selectedCurriculum, setSelectedCurriculum] = useState(null);
   const [isEditCurriculumModalVisible, setIsEditCurriculumModalVisible] = useState(false);
+  const [curriculum , setCurriculum] = useState([])
 
   const showCurriculumModal = () => {
     setIsCurriculumModalVisible(true);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Curricula');
+        setCurriculum(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const showCourseModal = (curriculumName) => {
     setIsCourseModalVisible(true);
@@ -108,36 +126,41 @@ const Curriculum = () => {
 
   const columns = [
     {
-      title: 'Curriculum Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Course No',
+      dataIndex: 'courseNo',
+      key: 'courseNo',
     },
     {
-      title: 'Year',
-      dataIndex: 'year',
-      key: 'year',
+      title: 'Approved Date',
+      dataIndex: 'approvedDate',
+      key: 'approvedDate',
     },
     {
-      title: 'Program',
-      dataIndex: 'program',
-      key: 'program',
+      title: 'Program Type',
+      dataIndex: 'programType',
+      key: 'programType',
     },
     {
-      title: 'Section',
-      dataIndex: 'section',
-      key: 'section',
+      title: 'Effective Start Date',
+      dataIndex: 'effectiveSdate',
+      key: 'effectiveSdate',
     },
     {
-      title: 'Department',
-      dataIndex: 'department',
-      key: 'department',
+      title: 'Effective End Date',
+      dataIndex: 'effectiveEdate',
+      key: 'effectiveEdate',
+    },
+    {
+      title: 'Campus Id',
+      dataIndex: 'campusId',
+      key: 'campusId',
     },
     {
         title: 'Action',
         key: 'action',
         render: (text, record) => (
           <Space size="middle">
-            <Button onClick={() => showCourseModal(record)}>Add Courses</Button>
+            <Button onClick={() => showCourseModal(record)}>Add Curricula based on Id</Button>
           </Space>
         ),
       },
@@ -301,7 +324,9 @@ const Curriculum = () => {
       </Form>
     </Modal>
 
-      <Table columns={columns} dataSource={curriculums} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} />
+      <Table dataSource={curriculum} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.termId}
+      pagination={{ pageSize: 10 }} />
       <Table columns={courseColumns} dataSource={courses} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} />
 
     </div>

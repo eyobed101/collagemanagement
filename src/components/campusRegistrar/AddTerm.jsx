@@ -1,20 +1,20 @@
 import React, { useState , useEffect} from 'react';
 import { Table, Button, Input, DatePicker, Popconfirm, Select } from 'antd';
 import moment from 'moment';
-import axios from 'axios';
-
-const { Option } = Select;
-
-const generateRandomTermId = () => {
-  const currentYear = new Date().getFullYear();
-  const randomSuffix = Math.random().toString(36).substring(2, 4).toUpperCase();
-  return `LTFO/${randomSuffix}/${currentYear}/${currentYear + 1}`;
-};
-
 
 const AddTerm = () => {
-  
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([
+    {
+      key: '1',
+      termId: 'T001',
+      termName: 'Term 1',
+      academicYear: '2022-2023',
+      startDate: moment('2022-09-01'),
+      endDate: moment('2022-12-31'),
+    },
+    // Add more sample data as needed
+  ]);
+
   const [editingKey, setEditingKey] = useState('');
   const [studyCenters, setStudyCenters] = useState([]);
 
@@ -79,39 +79,9 @@ const AddTerm = () => {
     },
     {
       title: 'Academic Year',
-      dataIndex: 'acadYear',
+      dataIndex: 'academicYear',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'acadYear'),
-    },
-    {
-      title: 'Program Type',
-      dataIndex: 'programType',
-      editable: true,
-      render: (_, record) => (
-        isEditing(record) ? (
-          <Select
-            defaultValue={record.programType}
-            onChange={(value) => handleInputChange({ target: { value } }, record, 'programType')}
-          >
-            <Option value="Regular">Regular</Option>
-          </Select>
-        ) : record.programType
-      ),
-    },
-    {
-      title: 'Program',
-      dataIndex: 'program',
-      editable: true,
-      render: (_, record) => (
-        isEditing(record) ? (
-          <Select
-            defaultValue={record.program}
-            onChange={(value) => handleInputChange({ target: { value } }, record, 'program')}
-          >
-            <Option value="Degree">Degree</Option>
-          </Select>
-        ) : record.program
-      ),
+      render: (text, record) => renderCell(text, record, 'academicYear'),
     },
     {
       title: 'Start Date',
@@ -134,6 +104,12 @@ const AddTerm = () => {
           onChange={(date) => handleDateChange(date, record, 'endDate')}
         />
       ),
+    },
+    {
+      title: 'Center ID',
+      dataIndex: 'centerId',
+      editable: true,
+      render: (text, record) => renderCell(text, record, 'centerId'),
     },
     {
       title: 'Action',
@@ -160,46 +136,16 @@ const AddTerm = () => {
   ];
 
   const handleAdd = () => {
-  const newTermId = generateRandomTermId();
-  const newData = {
-    key: String(data.length + 1),
-    termId: newTermId,
-    termName: '',
-    academicYear: '',
-    programType: 'Regular',
-    program: 'Degree',
-    startDate: moment(),
-    endDate: moment(),
-    centerId: '', 
-  };
-  setData([...data, newData]);
-  setEditingKey(newData.key);
-};
-
-
-  const save = (key) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => key === item.key);
-    const item = newData[index];
-    console.log(newData)
-
-    newData.splice(index, 1, {
-      ...item,
-      ...{ key },
-      ...{ endDate: moment(item.endDate) },
-      ...{ centerId: item.selectedCenterId },
-    });
-
-    axios.post('http://localhost:5169/api/Terms/Terms', newData[index])
-      .then(response => {
-console.log(response)      
-})
-      .catch(error => {
-        console.error('Error updating term data:', error);
-      });
-
-    setData(newData);
-    setEditingKey('');
+    const newData = {
+      key: String(data.length + 1),
+      termId: '',
+      termName: '',
+      academicYear: '',
+      startDate: moment(),
+      endDate: moment(),
+    };
+    setData([...data, newData]);
+    setEditingKey(newData.key);
   };
 
   const handleDelete = (key) => {
@@ -277,7 +223,6 @@ console.log(response)
       setData(newData);
     }
   };
-  
   const handleDateChange = (date, record, dataIndex) => {
     const newData = [...data];
     const index = newData.findIndex((item) => record.key === item.key);
@@ -287,15 +232,16 @@ console.log(response)
     }
   };
 
-   
-  
   return (
     <div>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
         Add New Term
       </Button>
-      <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />
-    </div>
+      <Table dataSource={term} columns={columns}  bordered  loading={loading}
+      rowKey={(record) => record.termId}
+      pagination={{ pageSize: 10 }} />
+     
+        </div>
   );
 }
 export default AddTerm;
