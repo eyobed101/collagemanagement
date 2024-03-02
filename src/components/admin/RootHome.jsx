@@ -34,7 +34,8 @@ const RootHome = () => {
   const [isDeleteModalVisible1, setIsDeleteModalVisible1] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studyCenters, setStudyCenters] = useState([]);
-
+  const [employee, setEmployee] = useState([]);
+ 
 
 
 
@@ -84,31 +85,52 @@ const RootHome = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Employees');
+        setEmployee(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
 
   const columns = [
     {
+      title: "Employee ID",
+      dataIndex: "empId",
+      key: "empId",
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => (
-        <a style={{ color: "black", fontWeight: "bold" }}>{text}</a>
+      render: (text, record) => (
+        <span>{`${record.title} ${record.fname} ${record.mname} ${record.lname}`}</span>
       ),
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Employee Type",
+      dataIndex: "empType",
+      key: "empType",
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
+      title: "Employee Position",
+      dataIndex: "empPosition",
+      key: "empPosition",
     },
     {
       title: "Center",
-      dataIndex: "center",
-      key: "center",
+      dataIndex: "centerId",
+      key: "centerId",
     },
   {
       title: 'Action',
@@ -181,10 +203,10 @@ const RootHome = () => {
   const handleModalOk = () => {
     // Handle your logic to update the user data
     // For demonstration purposes, I'm updating the data in state
-    const updatedData = datas.map((user) =>
+    const updatedData = employee.map((user) =>
       user.key === selectedUser.key ? { ...user, ...modifiedUserData } : user
     );
-    setData(updatedData);
+    setEmployee(updatedData);
     setIsModalVisible(false);
     setSelectedUser(null);
     setModifiedUserData({});
@@ -199,8 +221,8 @@ const RootHome = () => {
   const handleDeleteModalOk = () => {
     // Handle your logic to delete the user data
     // For demonstration purposes, I'm updating the data in state
-    const updatedData = datas.filter((user) => user.key !== selectedUser.key);
-    setData(updatedData);
+    const updatedData = employee.filter((user) => user.key !== selectedUser.key);
+    setEmployee(updatedData);
     setIsDeleteModalVisible(false);
     setSelectedUser(null);
   };
@@ -213,10 +235,10 @@ const RootHome = () => {
   const handleModalOk1 = () => {
     // Handle your logic to update the user data
     // For demonstration purposes, I'm updating the data in state
-    const updatedData = datas1.map((user) =>
+    const updatedData = studyCenters.map((user) =>
       user.key === selectedUser1.key ? { ...user, ...modifiedUserData } : user
     );
-    setData1(updatedData);
+    setStudyCenters(updatedData);
     setIsModalVisible1(false);
     setSelectedUser1(null);
     setModifiedUserData1({});
@@ -231,8 +253,8 @@ const RootHome = () => {
   const handleDeleteModalOk1 = () => {
     // Handle your logic to delete the user data
     // For demonstration purposes, I'm updating the data in state
-    const updatedData = datas1.filter((user) => user.key !== selectedUser1.key);
-    setData1(updatedData);
+    const updatedData = studyCenters.filter((user) => user.key !== selectedUser1.key);
+    setStudyCenters(updatedData);
     setIsDeleteModalVisible1(false);
     setSelectedUser1(null);
   };
@@ -501,9 +523,10 @@ const RootHome = () => {
             </div>
             <Table
               columns={columns}
-              dataSource={datas}
-              style={{ marginTop: 20 }}
-              pagination={{ position: ["bottomCenter"] }}
+              dataSource={employee}
+              loading={loading}
+              rowKey={(record) => record.empId}
+              pagination={{ pageSize: 10 }}
             />
             ;
           </Card>
@@ -525,19 +548,8 @@ const RootHome = () => {
       rowKey={(record) => record.CenterId}
       pagination={{ pageSize: 10 }}
     />
-              ;
-              {/* <div className="flex flex-row justify-start align-bottom items-center">
-                <h1 className="text-base text-[#98A2B3]">Registerar Data</h1> 
-            </div>
-            <div className="flex flex-row justify-start align-bottom items-center">
-            <h1 className="text-xl text-[#98A2B3]">Available Soon</h1>
-                </div> */}
-            </div>
-            {/* <Liner datas={students} /> */}
-            {/* <div className="mt-[19%]">
-            <ChartStaff  title="" aspect={2 / 1} />
-            </div> */}
-          </Card>
+         </div>
+         </Card>
         </Grid>
       </Grid>
       <Modal  

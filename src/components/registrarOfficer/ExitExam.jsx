@@ -186,9 +186,7 @@ const ExitExam = () => {
   };
 
   const handleSearch = (value) => {
-    const filteredData = mockData.filter((record) =>
-      record.studentId.includes(value)
-    );
+    const filteredData = dataSource.filter(record => record.studId.toLowerCase() === value.toLowerCase());
     setDataSource(filteredData);
   };
 
