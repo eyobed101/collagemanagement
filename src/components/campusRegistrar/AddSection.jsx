@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input,Popconfirm } from 'antd';
-// import 'antd/dist/antd.css';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Input, Popconfirm, Select } from 'antd';
+import axios from 'axios';
+
+const { Option } = Select;
 
 const AddSection = () => {
-  const [data, setData] = useState([
-    {
-      key: '1',
-      section: 'SEC/7090/12',
-      program: 'Regular',
-      batch: 'Bachelor of Science',
-      term: '2011/12/II',
-      department: 'Computer Science',
-    },
-    // Add more sample data as needed
-  ]);
-
+  const [data, setData] = useState([]);
+  const [studyCenters, setStudyCenters] = useState([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [editingKey, setEditingKey] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:5169/api/StudyCenters')
+      .then(response => {
+        setStudyCenters(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching study centers:', error);
+      });
+
+    axios.get('http://localhost:5169/api/Section')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching sections:', error);
+      });
+  }, []);
 
   const cancel = () => {
     setEditingKey('');
@@ -42,15 +52,19 @@ const AddSection = () => {
       key: 'batch',
     },
     {
-        title: 'Term / Acadamic Year',
-        dataIndex: 'term',
-        key: 'term',
+      title: 'Term / Academic Year',
+      dataIndex: 'term',
+      key: 'term',
     },
     {
-        title: 'Department',
-        dataIndex: 'department',
-        key: 'department',
+      title: 'Study Center',
+      dataIndex: 'campusId',
+      key: 'campusId',
+      render: (campusId) => {
+        const studyCenter = studyCenters.find(center => center.campusId === campusId);
+        return studyCenter ? studyCenter.centerName : '';
       },
+    },
     {
       title: 'Action',
       key: 'action',
@@ -64,12 +78,13 @@ const AddSection = () => {
             <Button onClick={cancel}>Cancel</Button>
           </span>
         ) : (
-            <span>
+          <span>
             <Button onClick={() => edit(record.key)}>Edit</Button>
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <Button type="danger">Delete</Button>
             </Popconfirm>
-          </span>        );
+          </span>
+        );
       },
     },
   ];
@@ -77,6 +92,7 @@ const AddSection = () => {
   const generateRandomKey = () => {
     return Math.random().toString(36).substr(2, 9);
   };
+
   const handleDelete = (key) => {
     const newData = data.filter(item => item.key !== key);
     setData(newData);
@@ -107,23 +123,31 @@ const AddSection = () => {
   };
 
   const onFinishEdit = (values) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => item.key === editingKey);
-
-    if (index > -1) {
-      newData[index] = { ...newData[index], ...values };
-      setData(newData);
-      setEditingKey('');
-      setIsEditModalVisible(false);
-    }
   };
 
   const onFinishCreate = (values) => {
     const newData = [...data];
-    const newKey = String(data.length + 1);
+    const newKey = generateRandomKey();
     newData.push({ ...values, key: newKey });
     setData(newData);
     setIsCreateModalVisible(false);
+
+    const newSection = {
+      ...values,
+    };
+
+    axios.post('http://localhost:5169/api/Section', newSection)
+      .then(response => {
+        console.log('Section created successfully:', response.data);
+        const newData = [...data];
+        const newKey = generateRandomKey();
+        newData.push({ ...newSection, key: newKey });
+        setData(newData);
+        setIsCreateModalVisible(false);
+      })
+      .catch(error => {
+        console.error('Error creating section:', error);
+      });
   };
 
   const isEditing = (record) => record.key === editingKey;
@@ -157,7 +181,6 @@ const AddSection = () => {
       </Form.Item>
     </Form>
   );
-
   const createForm = (
     <Form layout="vertical" onFinish={onFinishCreate}>
       <Form.Item label="Section" name="section" required>
@@ -169,14 +192,20 @@ const AddSection = () => {
       <Form.Item label="Batch" name="batch" required>
         <Input />
       </Form.Item>
-      <Form.Item label="Term /Acadamic/year" name="term" required>
+      <Form.Item label="Term / Academic Year" name="term" required>
         <Input />
       </Form.Item>
-      <Form.Item label="Department" name="department" required>
-        <Input />
+      <Form.Item label="Study Center" name="campusId" required>
+        <Select key="study center">
+          {studyCenters.map(center => (
+            <Option key={center.campusId} value={center.campusId}>
+              {center.centerName}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item>
-        <Button type="primary"  style={{  backgroundColor:'#4279A6' }} htmlType="submit">
+        <Button type="primary" style={{ backgroundColor: '#4279A6' }} htmlType="submit">
           Create
         </Button>
         <Button onClick={cancel}>Cancel</Button>
@@ -186,7 +215,7 @@ const AddSection = () => {
 
   const editModal = (
     <Modal
-      title="Edit Department"
+      title="Edit Section"
       visible={isEditModalVisible}
       onOk={handleEditOk}
       onCancel={handleEditCancel}
@@ -198,7 +227,7 @@ const AddSection = () => {
 
   const createModal = (
     <Modal
-      title="Create Department"
+      title="Create Section"
       visible={isCreateModalVisible}
       onOk={handleCreateOk}
       onCancel={handleCreateCancel}
@@ -208,29 +237,9 @@ const AddSection = () => {
     </Modal>
   );
 
-  const handleInputChange = (e, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = e.target.value;
-      setData(newData);
-    }
-  };
-
-  const edit = (key) => {
-    setEditingKey(key);
-    showEditModal();
-  };
-
-  const save = (key) => {
-    setEditingKey('');
-    setIsEditModalVisible(false);
-    setIsCreateModalVisible(false);
-  };
-
   return (
     <div>
-      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16,  backgroundColor:'#4279A6' }}>
+      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }}>
         Create New Section
       </Button>
       <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />

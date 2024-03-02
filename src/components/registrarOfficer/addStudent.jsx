@@ -9,11 +9,73 @@ export function AddStudent() {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [coursePreferences, setCoursePreferences] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
+  const [academicTranscripts, setAcademicTranscripts] = useState(null);
 
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [identificationCopy, setIdentificationCopy] = useState(null);
-  const [academicTranscripts, setAcademicTranscripts] = useState(null);
-  // const [startDate, setStartDate] = useState(new Date());
+  const initialFormData = {
+    studId: '',
+    fname: '',
+    mname: '',
+    lname: '',
+    dname: 0,
+    sex: '',
+    doB: '2024-02-28',
+    placeOfBirth: '',
+    nationality: '',
+    maritalStatus: '',
+    prevEducation: '',
+    prevInstitution: '',
+    prevMajorDepartment: '',
+    prevEducCgpa: 0,
+    serviceyear: 0,
+    program: '',
+    programType: '',
+    centerId: '',
+    zone: '',
+    woreda: '',
+    kebele: '',
+    town: '',
+    tel: '',
+    pobox: '',
+    email: '',
+    persontoBeContacted: '',
+    appDate: '2024-02-28',
+    approved: '',
+    approvedDate: '2024-02-28',
+    age: 0,
+    ageInyear: 0,
+    batch: '',
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(value)
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handler for form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Send POST request to the backend API
+      const response = await axios.post('http://your-backend-url/submit-form', formData);
+
+      // Handle response (e.g., show success message)
+      console.log(response.data);
+    } catch (error) {
+      // Handle error (e.g., show error message)
+      console.error(error);
+    }
+  };
+
 
   const [checkedItems, setCheckedItems] = useState({
     grade_8_ministry: false,
@@ -75,7 +137,7 @@ export function AddStudent() {
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <div class="mt-10 sm:mt-0">
           <div class="mt-5 md:mt-0 md:col-span-2">
-            <form action="#" method="POST">
+            <form onSubmit={handleSubmit}>
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
                   <Tabs
@@ -116,7 +178,7 @@ export function AddStudent() {
                     </TabList>
                     {/* <div class="grid grid-cols-6 gap-6"> */}
                     <TabPanel>
-                      <div class="grid grid-cols-6 mt-10">
+                      <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
                         <div class="col-span-6 sm:col-span-3">
                           <label
                             // for="full_name"
@@ -127,27 +189,34 @@ export function AddStudent() {
                           <div className="flex flex-wrap">
                             <input
                               type="text"
-                              name="first_name"
+                              name="fname"
+                              value={formData.fname}
                               id="first_name"
                               placeholder="First Name"
                               autocomplete="given-name"
-                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              onChange={handleInputChange}
+
+                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                             />
                             <input
                               type="text"
-                              name="middle_name"
+                              name="mname"
+                              value={formData.mname}
                               id="middle_name"
                               placeholder="Middle Name"
                               autocomplete="given-name"
-                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-400 rounded-md"
+                              onChange={handleInputChange}
+                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                             />
                             <input
                               type="text"
-                              name="last_name"
+                              name="lname"
+                              value={formData.lname}
                               id="last_name"
                               placeholder="Last Name"
                               autocomplete="family-name"
-                              class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                              onChange={handleInputChange}
+                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                             />
                           </div>
                         </div>
@@ -161,12 +230,10 @@ export function AddStudent() {
                               <select
                                 id="sex"
                                 name="sex"
-                                value={selectedGender}
-                                onChange={(e) =>
-                                  setSelectedGender(e.target.value)
-                                }
-                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                              >
+          value={formData.sex}
+          onChange={handleInputChange}
+                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                                >
                                 <option class="rounded-sm" value="">
                                   Select Gender
                                 </option>
@@ -183,10 +250,12 @@ export function AddStudent() {
                               </label>
                               <input
                                 type="date"
-                                name="date_of_birth"
+                                name="doB"
+                                value={formData.doB}
                                 id="date_of_birth"
-                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                              />
+                                onChange={handleInputChange}
+                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                                />
                             </div>
                             <div className="flex flex-col px-4">
                               <label
@@ -197,10 +266,12 @@ export function AddStudent() {
                               </label>
                               <input
                                 type="text"
-                                name="place_of_birth"
+                                name="placeOfBirth"
+                                value={formData.placeOfBirth}
+                                onChange={handleInputChange}
                                 id="place_of_birth"
-                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                              />
+                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                                />
                             </div>
                           </div>
                         </div>
@@ -215,11 +286,13 @@ export function AddStudent() {
                                 Nationality
                               </label>
                               <select
-                                id="country"
-                                name="country"
+                                id="nationality"
+                                name="nationality"
+                                value={formData.nationality}
+                                onChange={handleInputChange}
                                 autocomplete="country"
-                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                              >
+                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                                >
                                 <option>Ethiopian</option>
                                 <option>American</option>
                                 <option>Canada</option>
@@ -234,11 +307,13 @@ export function AddStudent() {
                                 Marital Status
                               </label>
                               <select
-                                id="marital_status"
-                                name="marital_status"
+                                id="maritalStatus"
+                                name="maritalStatus"
+                                value={formData.maritalStatus}
+                                onChange={handleInputChange}
                                 autocomplete="marital_status"
-                                class="m-1 p-3 bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                              >
+                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                                >
                                 <option>SINGLE</option>
                                 <option>Married</option>
                                 <option>Widowed</option>
@@ -250,7 +325,7 @@ export function AddStudent() {
                     </TabPanel>
 
                     <TabPanel>
-                      <div class="grid grid-cols-6 gap-6 mt-10">
+                      <div class="grid grid-cols-6 gap-6 mt-10 border-2 shadow-lg p-5">
                         <div class="col-span-6 md:col-span-3">
                           <label
                             for="zone"
@@ -261,10 +336,12 @@ export function AddStudent() {
                           <input
                             type="text"
                             name="zone"
+                            value={formData.zone}
+                            onChange={handleInputChange}
                             id="zone"
                             autocomplete="street-address"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                          />
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                            />
                         </div>
 
                         <div class="col-span-6 sm:col-span-6 lg:col-span-2">
@@ -277,9 +354,11 @@ export function AddStudent() {
                           <input
                             type="text"
                             name="kebele"
+                            value={formData.kebele}
+                            onChange={handleInputChange}
                             id="kebele"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                          />
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                            />
                         </div>
 
                         <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -292,9 +371,11 @@ export function AddStudent() {
                           <input
                             type="text"
                             name="town"
+                            value={formData.town}
+                            onChange={handleInputChange}
                             id="town"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
-                          />
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                            />
                         </div>
 
                         <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -306,10 +387,11 @@ export function AddStudent() {
                           </label>
                           <input
                             type="text"
-                            name="telephone"
-                            id="telephone"
-                            autocomplete="postal-code"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="tel"
+                            value={formData.tel}
+                            onChange={handleInputChange}                            id="telephone"
+                            autocomplete="Tel"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -321,10 +403,12 @@ export function AddStudent() {
                           </label>
                           <input
                             type="text"
-                            name="po-box"
+                            name="pobox"
+                            value={formData.pobox}
+                            onChange={handleInputChange}                            
                             id="po-box"
-                            autocomplete="Phone Number"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            autocomplete="Po-box"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div class="col-span-6 sm:col-span-4">
@@ -336,10 +420,12 @@ export function AddStudent() {
                           </label>
                           <input
                             type="email"
-                            name="email_address"
-                            id="email_address"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}                            
+                            id="email"
                             autocomplete="email"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -351,10 +437,12 @@ export function AddStudent() {
                           </label>
                           <input
                             type="text"
-                            name="emergency_contact_name"
+                            name="persontoBeContacted"
+                            value={formData.persontoBeContacted}
+                            onChange={handleInputChange}                            
                             id="emergency_contact_name"
                             autocomplete="emergency_contact_name"
-                            class="m-1 p-3 bg-blue-gray-50 w-full focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div class="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -369,14 +457,14 @@ export function AddStudent() {
                             name="emergency_contact_phone_number"
                             id="emergency_contact_phone_number"
                             autocomplete="emergency_contact_phone_number"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                       </div>
                     </TabPanel>
 
                     <TabPanel>
-                      <div class="grid grid-cols-6 gap-6 mt-10">
+                      <div class="grid grid-cols-6 gap-6 mt-10 border-2 shadow-lg p-5">
                         {/* Previous Educational Institution */}
                         <div className="col-span-6 sm:col-span-3">
                           <label
@@ -388,8 +476,10 @@ export function AddStudent() {
                           <input
                             type="text"
                             id="previous_education"
-                            name="previous_education"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="prevEducation"
+                            value={formData.prevEducation}
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -402,8 +492,10 @@ export function AddStudent() {
                           <input
                             type="text"
                             id="previous_educational_institution"
-                            name="previous_educational_institution"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="prevInstitution"
+                            value={formData.prevInstitution}
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -416,8 +508,10 @@ export function AddStudent() {
                           <input
                             type="text"
                             id="previous_major_department"
-                            name="previous_major_department"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="prevMajorDepartment"
+                            value={formData.prevMajorDepartment}
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -430,8 +524,10 @@ export function AddStudent() {
                           <input
                             type="number"
                             id="previous_education_cgpa"
-                            name="previous_education_cgpa"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="prevEducCgpa"
+                            value={formData.prevEducCgpa}
+                            onChange={handleInputChange}                            
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -444,17 +540,19 @@ export function AddStudent() {
                           <input
                             type="year"
                             id="service_year"
-                            name="service_year"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            name="serviceyear"
+                            value={formData.serviceyear}
+                            onChange={handleInputChange}                             
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
 
-                        <div className="col-span-6">
+                        <div className="col-span-6 p-4  shadow-md rounded-md">
                           <label className="block text-lg font-medium text-gray-700 mb-5">
                             Submitted Documents
                           </label>
                           <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            <div className="flex items-start">
+                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
                               <input
                                 type="checkbox"
                                 id="grade_8_ministry"
@@ -470,7 +568,7 @@ export function AddStudent() {
                               </label>
                             </div>
 
-                            <div className="flex items-start">
+                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
                               <input
                                 type="checkbox"
                                 id="grades_9_10_transcript"
@@ -486,7 +584,7 @@ export function AddStudent() {
                               </label>
                             </div>
 
-                            <div className="flex items-start">
+                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
                               <input
                                 type="checkbox"
                                 id="grade_10_national_exam"
@@ -502,7 +600,7 @@ export function AddStudent() {
                               </label>
                             </div>
 
-                            <div className="flex items-start">
+                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
                               <input
                                 type="checkbox"
                                 id="grades_11_12_transcript"
@@ -518,7 +616,7 @@ export function AddStudent() {
                               </label>
                             </div>
 
-                            <div className="flex items-start">
+                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
                               <input
                                 type="checkbox"
                                 id="grade_12_national_exam"
@@ -536,70 +634,10 @@ export function AddStudent() {
                           </div>
                         </div>
 
-                        {/* Previous Graduation Date (if applicable) */}
-                        {/* <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="previous_graduation_date"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Previous Graduation Date (if applicable)
-                          </label>
-                          <input
-                            type="date"
-                            name="date_of_previous_graduation"
-                            id="date_of_previous_graduation"
-                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                          />
-                        </div> */}
-                        {/* <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="student_id"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Student ID
-                          </label>
-                          <input
-                            type="text"
-                            id="student_id"
-                            name="student_id"
-                            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                          />
-                        </div> */}
-                        {/* Admission Date */}
-                        {/* <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="admission_date"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Admission Date
-                          </label>
-                          <input
-                            type="date"
-                            name="date_of_admission"
-                            id="date_of_admission"
-                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                          />
-                        </div> */}
-
-                        {/* Expected Graduation Date */}
-                        {/* <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="expected_graduation_date"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Expected Graduation Date
-                          </label>
-                          <input
-                            type="date"
-                            name="date_of_graduation"
-                            id="date_of_graduation"
-                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                          />
-                        </div> */}
                       </div>
                     </TabPanel>
                     <TabPanel>
-                      <div class="grid grid-cols-6 gap-6">
+                      <div class="grid grid-cols-6 gap-6 border-2 shadow-lg p-5">
                         {/* Program/Department */}
                         <div className="col-span-6 sm:col-span-3">
                           <label
@@ -610,9 +648,11 @@ export function AddStudent() {
                           </label>
                           <select
                             id="program_department"
-                            name="program_department"
+                            name="program"
+                            value={formData.program}
+                            onChange={handleInputChange}                             
                             autocomplete="program_department"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>Computer Science</option>
                             <option>Accounting</option>
@@ -629,9 +669,11 @@ export function AddStudent() {
                           </label>
                           <select
                             id="program_type"
-                            name="programtype"
+                            name="programType"
+                            value={formData.programType}
+                            onChange={handleInputChange}                             
                             autocomplete="program_type"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>Regular</option>
                             <option>Distance</option>
@@ -649,7 +691,7 @@ export function AddStudent() {
                             id="department"
                             name="department"
                             autocomplete="department"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>CS</option>
                             <option>CS</option>
@@ -667,7 +709,7 @@ export function AddStudent() {
                             id="study_center"
                             name="study_center"
                             autocomplete="study_center"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>CS</option>
                             <option>CS</option>
@@ -685,7 +727,7 @@ export function AddStudent() {
                             type="date"
                             name="application_date"
                             id="application_date"
-                            class="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -699,7 +741,7 @@ export function AddStudent() {
                             id="approved"
                             name="approved"
                             autocomplete="approved"
-                            class="m-1 p-3 w-full bg-blue-gray-50 focus:ring-indigo-300 focus:border-indigo-300 block shadow-sm sm:text-sm border-gray-600 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>Yes</option>
                             <option>No</option>
@@ -716,7 +758,7 @@ export function AddStudent() {
                             type="date"
                             name="approved_date"
                             id="approved_date"
-                            class="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
 
@@ -733,7 +775,7 @@ export function AddStudent() {
                             name="passport_photo"
                             accept="image/*"
                             onChange={handlePassportPhotoChange}
-                            className="mt-1 p-4 focus:ring-indigo-500 focus:border-indigo-500 block w-[40%] shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
 
@@ -763,6 +805,7 @@ export function AddStudent() {
                       display: "flex",
                       justifyContent: "space-between",
                       marginTop: "40px",
+                      padding:"10px"
                     }}
                   >
                     <button
@@ -771,7 +814,7 @@ export function AddStudent() {
                         display: currentTab === 0 ? "none" : "inline-flex",
                       }}
                       disabled={currentTab === 0}
-                      class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#4279A6] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       Previous
                     </button>
@@ -779,7 +822,7 @@ export function AddStudent() {
                       <button
                         onClick={handleNext}
                         style={{ marginLeft: "auto" }}
-                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#4279A6] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         Next
                       </button>

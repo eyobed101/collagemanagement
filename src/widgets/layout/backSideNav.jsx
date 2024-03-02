@@ -1,77 +1,86 @@
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
-import { useState , useEffect } from "react";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { ArrowForwardIos } from "@mui/icons-material";
+import { MenuItem } from "@mui/material";
 
 const initialActiveIndex = 0;
 
+const SubMenuItem = ({ item, onClick, subIndex, hoveredItemIndex, handleItemClick }) => (
+  <MenuItem
+    selected={true}
+    divider={true}
+    dense={true}
+    onClick={() => handleItemClick(subIndex, onClick)}
+    className={`flex items-center gap-4 px-1 capitalize w-[280px] h-[50px]  !hover:bg-[#4279A6]  ${
+      hoveredItemIndex === subIndex ? 'active' : ''
+    } !hover:bg-[#4279A6] `}
+    style={{
+      borderRadius: 30,
+      backgroundColor: hoveredItemIndex === subIndex ? '#4279A6' : null,
+      color: hoveredItemIndex === subIndex ? '#FFF' : '#4279A6',
+    }}
+  >
+    {item.icon}
+    {item.name}
+  </MenuItem>
+);
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [hoveredItemIndex, setHoveredItemIndex] = useState(null);
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
 
   const handleItemClick = (index, onClick) => {
     setActiveIndex(index);
     onClick();
-    setOpenSubMenuIndex(null); // Close the submenu when a menu item is clicked
-    setAnchorEl(null);
+    setShowSubMenu(false);
   };
-
-  const handleMenuOpen = (event, index) => {
-    event.stopPropagation();
-    setOpenSubMenuIndex(index);
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = (event) => {
-    console.log("closed");
-    setOpenSubMenuIndex(null);
-    setAnchorEl(null);
-  };
-
-  // const handleMouseLeave = () => {
-  //    setOpenSubMenuIndex(null);
-  //    setHoveredItemIndex(null);
-  //   // /  setAnchorEl(null)
-  // };
-
-  useEffect(() => {
-    const handleDocumentClick = (event) => {
-      if (
-        anchorEl &&
-        !anchorEl.contains(event.target) &&
-        !event.target.classList.contains("MuiButtonBase-root")
-      ) {
-        setOpenSubMenuIndex(null);
-      }
-    };
-  
-    document.body.addEventListener("click", handleDocumentClick);
-  
-    return () => {
-      document.body.removeEventListener("click", handleDocumentClick);
-    };
-  }, [anchorEl]);
-  
-  
-
-  const [hoveredItemIndex, setHoveredItemIndex] = useState(null);
 
   const handleMouseEnter = (index) => {
-    setHoveredItemIndex(index);
+    setShowSubMenu(true);
+    setOpenSubMenuIndex(index);
   };
 
   const handleMouseLeave = () => {
-        setHoveredItemIndex(null);
-    // setAnchorEl(null);
+    setShowSubMenu(false);
+    setHoveredItemIndex(null);
+    setOpenSubMenuIndex(null);
   };
 
+  const handleSubMenuMouseEnter = (index) => {
+    setHoveredItemIndex(index);
+  };
+
+  const handleSubMenuMouseLeave = () => {
+    setHoveredItemIndex(null);
+  };
+
+  const SubMenu = ({ subMenu, isOpen, onMouseLeave, activeIndex, handleItemClick, hoveredItemIndex }) => (
+    <div
+      className={`absolute top-0 left-full bg-[#4279A6] opacity-25 rounded-lg z-10`}
+      onMouseLeave={onMouseLeave}
+      style={{
+        transformOrigin: 'top left',
+        transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+      }}
+    >
+      {subMenu.map((item, subIndex) => (
+        <SubMenuItem
+          key={subIndex}
+          item={item}
+          subIndex={subIndex}
+          pageIndex={activeIndex}
+          handleItemClick={handleItemClick}
+          hoveredItemIndex={hoveredItemIndex}
+        />
+      ))}
+    </div>
+  );
   const { sidenavColor, sidenavType, openSidenav } = controller;
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
@@ -85,10 +94,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
         openSidenav ? "translate-x-0" : "-translate-x-80"
       } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-24px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
-      <div className={`relative`}>
+      <div className="relative">
         <Link
           to="/"
-          className="py-2 px-8 text-center"
+          className="py-2 px-8 text-center border-b-2 shadow-md bg-blue-gray-50"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -100,7 +109,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
             alt="Brand Logo"
             width={70}
             height={70}
-            style={{ marginBottom: "5px" }}
+            style={{ marginBottom: "5px", marginTop: "10px" }}
           />
           <Typography
             variant="h6"
@@ -138,7 +147,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
               <li key={name}>
                 {subMenu ? (
                   <>
-                    
+                    <div
+                      onMouseEnter={() => handleMouseEnter(pageIndex)}
+                      onMouseLeave={handleMouseLeave}
+                    >
                       <Button
                         variant="text"
                         style={{
@@ -157,7 +169,6 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           pageIndex === activeIndex ? "active" : ""
                         } border rounded-xl  `}
                         fullWidth
-                        onMouseEnter={(e) => handleMenuOpen(e, pageIndex)}
                       >
                         {icon}
                         <Typography
@@ -167,62 +178,18 @@ export function Sidenav({ brandImg, brandName, routes }) {
                           <span>{name}</span>
                           <ArrowForwardIos className="text-sm" />
                         </Typography>
-                        {openSubMenuIndex === pageIndex && (
-                          <div
-                            className="absolute top-0 right-0 w-full h-full bg-[#4279A6] opacity-25 rounded-lg z-10"
-                            onClick={handleMenuClose}
-                          ></div>
-                        )}
                       </Button>
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={openSubMenuIndex === pageIndex}
-                      onClose={handleMenuClose}
-                      // onMouseEnter={handleMenuClose}
-
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                    >
-                      {subMenu.map((item, subIndex) => (
-                        <MenuItem
-                          selected={true}
-                          divider={true}
-                          dense={true}
-                          //  disableGutters={true}
-                          key={subIndex}
-                          className={`flex items-center gap-4 px-1 capitalize w-[280px] h-[50px]  !hover:bg-[#4279A6]  ${
-                            pageIndex === activeIndex ? "active" : ""
-                          } !hover:bg-[#4279A6] `}
-                          onClick={() =>
-                            handleItemClick(pageIndex, item.onClick)
-                          }
-                          onMouseEnter={() => handleMouseEnter(subIndex)}
-                          //  onMouseLeave={handleMouseLeave}
-                          style={{
-                            borderRadius: 30,
-                            backgroundColor:
-                              hoveredItemIndex === subIndex ? "#4279A6" : null,
-                            color:
-                              hoveredItemIndex === subIndex
-                                ? "#FFF"
-                                : "#4279A6",
-                          }}
-                        >
-                          {item.icon}
-                          {item.name}
-                        </MenuItem>
-                      ))}
-                    </Menu>
+                      {showSubMenu && openSubMenuIndex === pageIndex && (
+                        <SubMenu
+                          subMenu={subMenu}
+                          isOpen={openSubMenuIndex === pageIndex}
+                          onMouseLeave={() => handleMouseLeave()}
+                        />
+                      )}
+                    </div>
                   </>
                 ) : (
                   <Button
-                    // variant={pageIndex === activeIndex ? "gradient" : "text"}
                     variant="text"
                     style={{
                       backgroundColor:
@@ -236,15 +203,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         ? "white"
                         : "blue-gray"
                     }
-                    // git clean --force && git reset --hard
                     className={`flex items-center gap-4 px-3  capitalize ${
                       pageIndex === activeIndex ? "active" : ""
                     } border rounded-xl`}
                     fullWidth
                     onClick={() => handleItemClick(pageIndex, onClick)}
-                    onMouseEnter={handleMouseLeave}
-
-                    // onMouseEnter={(e) => handleMenuClose()}
                   >
                     {icon}
                     <Typography

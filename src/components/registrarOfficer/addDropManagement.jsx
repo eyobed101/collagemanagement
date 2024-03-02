@@ -29,7 +29,6 @@ const AddDropManagement = () => {
     return acc;
   }, {});
 
-
   const uniqueTerms = Array.from(
     new Set(
       addDropTableData
@@ -54,10 +53,6 @@ const AddDropManagement = () => {
     )
   );
 
-
-  
-
- 
   const filteredStudents = addDropTableData.filter(
     (student) =>
       (!selectedDepartment || student.department === selectedDepartment) &&
@@ -112,7 +107,7 @@ const AddDropManagement = () => {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
       <div class="grid grid-cols-4 mt-10">
-        <div class="col-span-4 sm:col-span-2">
+        <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
             <div className="mr-5 mb-10 flex flex-col w-full">
               <label
@@ -123,7 +118,7 @@ const AddDropManagement = () => {
               </label>
               <select
                 id="departmentOption"
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
               >
@@ -143,7 +138,7 @@ const AddDropManagement = () => {
                 Student's Section{" "}
               </label>
               <select
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                 value={selectedSection}
                 onChange={(e) => setSelectedSection(e.target.value)}
               >
@@ -159,52 +154,49 @@ const AddDropManagement = () => {
             </div>
 
             <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[45%]">
-            <label
-          htmlFor="departmentOption"
-          className="block text-lg font-semibold mb-2 text-[#434343]"
-        >
-          Program{" "}
-        </label>
-        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
-          {selectedDepartment && selectedSection ? (
-            uniquePrograms.join(', ') || "Program Not Found"
-          ) : (
-            "Select Department and Section"
-          )}
-        </div>
+              <label
+                htmlFor="departmentOption"
+                className="block text-lg font-semibold mb-2 text-[#434343]"
+              >
+                Program{" "}
+              </label>
+              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+>
+                {selectedDepartment && selectedSection
+                  ? uniquePrograms.join(", ") || "Program Not Found"
+                  : "Select Department and Section"}
+              </div>
             </div>
 
-            <div className="mb-10 flex flex-col w-[100%] sm:w-[45%]">
-            <label
-          htmlFor="departmentOption"
-          className="block text-lg font-semibold mb-2 text-[#434343]"
-        >
-          Term/Academic Year{" "}
-        </label>
-        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
-          {selectedDepartment && selectedSection ? (
-            uniqueTerms.join(', ') || "Term Not Found"
-          ) : (
-            "Select Department and Section"
-          )}
-        </div>
+            <div className="mb-10 flex flex-col w-[100%] sm:w-[45%] ml-auto">
+              <label
+                htmlFor="departmentOption"
+                className="block text-lg font-semibold mb-2 text-[#434343]"
+              >
+                Term/Academic Year{" "}
+              </label>
+              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                {selectedDepartment && selectedSection
+                  ? uniqueTerms.join(", ") || "Term Not Found"
+                  : "Select Department and Section"}
+              </div>
             </div>
             <div className="flex flex-col w-full">
-              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
-                <label className="block text-lg font-semibold mr-5 text-[#434343]">
+              <div className="grid grid-cols-2 mb-10 border-2 p-2 rounded-md shadow-md border-[#a2a2a2]">
+                <label className="block text-lg font-semibold  text-[#434343]">
                   Number of Students
                 </label>
 
-                <label className="px-8 py-2 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
+                <label class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
                   {filteredStudents.length}
                 </label>
               </div>
-              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
-                <label className="block text-lg font-semibold text-[#434343] mr-5">
+              <div className="grid grid-cols-2 mb-10 border p-2 rounded-md border-[#a2a2a2]" >
+                <label className="block text-lg font-semibold text-[#434343] mr-4">
                   Today's Date{" "}
                 </label>
 
-                <label className="px-8 py-2 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
+                <label class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
                   {new Date(Date.now()).toLocaleDateString()}{" "}
                   {new Date(Date.now()).toLocaleTimeString()}
                 </label>
@@ -213,11 +205,11 @@ const AddDropManagement = () => {
           </div>
         </div>
 
-        <div class="col-span-4 sm:col-span-2 min-w-[300px]">
+        <div class="col-span-4 sm:col-span-2 min-w-[300px] border-2 shadow-md p-4 rounded-md">
           <h2 className="text-lg font-semibold mb-2 text-[#434343]">
             Students under selected Section
           </h2>
-          <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto h-full shadow-sm rounded-md">
+          <div className="border-2 border-[#C2C2C2] p-4 overflow-y-auto h-[90%] shadow-sm rounded-md">
             {selectedDepartment
               ? selectedSection
                 ? filteredStudents.map((student) => (
@@ -250,8 +242,8 @@ const AddDropManagement = () => {
       <div class="grid grid-cols-2 gap-2">
         <div class="col-span-2 sm:col-span-1">
           <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-            value={selectedOfferingDepartment}
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                value={selectedOfferingDepartment}
             onChange={(e) => setSelectedOfferingDepartment(e.target.value)}
           >
             <option value="">Select Department</option>
@@ -264,8 +256,8 @@ const AddDropManagement = () => {
 
         <div class="col-span-2 sm:col-span-1">
           <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-            value={selectedOfferingSection}
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                value={selectedOfferingSection}
             onChange={(e) => setSelectedOfferingSection(e.target.value)}
           >
             <option value="">Select Offering Section</option>

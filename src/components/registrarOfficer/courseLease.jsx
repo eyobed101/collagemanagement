@@ -49,7 +49,7 @@ const CourseLeaseManagement = () => {
           </h2>
           <div className="mb-4">
             <select
-              className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+              className="px-8 py-3 w-full bg-blue-gray-50 border-[2px] border-[#676767] text-black block shadow-md sm:text-sm rounded-md"
               value={givingDepartment}
               onChange={(e) => setGivingDepartment(e.target.value)}
             >
@@ -65,8 +65,9 @@ const CourseLeaseManagement = () => {
             <label className="block text-lg font-semibold mb-2 text-[#434343]">
               Courses
             </label>
+
             <select
-              className="px-8 py-3 w-full border-[2px] min-h-[200px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+              className="px-8 py-3 w-full border-[2px] min-h-[200px] border-[#C2C2C2] text-black block shadow-md sm:text-sm rounded-md"
               multiple
               value={givingCourses}
               onChange={(e) =>
@@ -81,11 +82,12 @@ const CourseLeaseManagement = () => {
                 </option>
               ))}
             </select>
+            
           </div>
           <div className="flex justify-between mt-5">
             <div className="flex">
               <button
-                className="px-4 py-3 bg-[#4279A6] text-white rounded"
+                className="px-4 py-3 border-2 border-[#676767] font-bold shadow-md rounded-md text-blue-gray-900 hover:bg-[#4279A6] hover:text-white"
                 onClick={handleClearSelected}
               >
                 Clear Selected Course
@@ -93,7 +95,7 @@ const CourseLeaseManagement = () => {
             </div>
             <div className="flex ml-auto">
               <button
-                className="px-4 py-3 bg-[#4279A6] text-white rounded"
+                className="px-4 py-3 border-2 border-[#676767] font-bold shadow-md rounded-md text-blue-gray-900 hover:bg-[#4279A6] hover:text-white"
                 onClick={handleAddCourse}
               >
                 Add Selected Courses
@@ -108,7 +110,7 @@ const CourseLeaseManagement = () => {
           </h2>
           <div className="mb-4">
             <select
-              className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+              className="px-8 py-3 w-full border-[2px] border-[#676767] bg-blue-gray-50  text-black block shadow-md sm:text-sm rounded-md"
               value={borrowingDepartment}
               onChange={(e) => setBorrowingDepartment(e.target.value)}
             >
@@ -124,9 +126,9 @@ const CourseLeaseManagement = () => {
             <label className="block text-lg font-semibold mb-2 text-[#434343]">
               Added Courses
             </label>
-            <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-sm rounded-md">
+            <div className="border-[2px] border-[#C2C2C2]  p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-md rounded-md">
               {borrowingCourses.map((borrowedCourse, index) => (
-                <li key={index} className="border mb-2 p-2 cursor-pointer text-black">
+                <li key={index} className="border mb-2 p-2  cursor-pointer text-black">
                   {borrowedCourse.courses.join(", ")} -{" "}
                   {borrowedCourse.courseType} - Prerequisites:{" "}
                   {borrowedCourse.prerequisites ? "Yes" : "No"}
@@ -142,13 +144,13 @@ const CourseLeaseManagement = () => {
               Clear Selected{" "}
             </button>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 mt-3">
             <label className="block text-lg font-semibold mb-2 text-[#434343]">
               Course Type
             </label>
-            <hr class="border-t-2 border-gray-300 shadow-md my-4" />
+            <hr class="border-t-2 border-[#676767] shadow-md my-4" />
             <div className="flex space-x-5 text-black">
-              <div className="flex items-center">
+              <div className="flex items-center px-6 py-2 border-2 border-[#959595] shadow-md rounded-sm">
                 <input
                   type="checkbox"
                   id="supportiveCheckbox"
@@ -158,7 +160,7 @@ const CourseLeaseManagement = () => {
                 />
                 <label htmlFor="supportiveCheckbox">Supportive</label>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center px-6 py-2 border-2 border-[#959595] shadow-md rounded-sm">
                 <input
                   type="checkbox"
                   id="commonCheckbox"
@@ -168,7 +170,7 @@ const CourseLeaseManagement = () => {
                 />
                 <label htmlFor="commonCheckbox">Common</label>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center px-6 py-2 border-2 border-[#959595] shadow-md rounded-sm">
                 <input
                   type="checkbox"
                   id="minorCheckbox"
@@ -184,7 +186,9 @@ const CourseLeaseManagement = () => {
             <label className="block text-lg font-semibold mb-2 text-[#434343]">
               Prerequisites
             </label>
-            <div className="flex items-center">
+            <hr class="border-t-2 border-[#676767] shadow-md my-4" />
+
+            <div className="flex items-center px-6 py-2 text-black border-2 border-[#959595] shadow-md rounded-sm w-32">
               <input
                 type="checkbox"
                 id="prerequisitesCheckbox"

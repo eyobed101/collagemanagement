@@ -3,18 +3,15 @@ import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 
 const StudentStatusManagement = () => {
-  
-
   const [students, setStudents] = useState(addDropTableData);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; 
+  const itemsPerPage = 5;
 
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterSection, setFilterSection] = useState("");
-
 
   const TableRow = styled.tr`
     background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
@@ -69,17 +66,20 @@ const StudentStatusManagement = () => {
   `;
 
   const StyledButton = styled.button`
-    padding: 8px 16px;
-    background-color: #EA8A31;
+    padding: 3px 16px;
+    border: 0.5px #4279A6 solid;
+    background-color: none;
     color: white;
-    border: none;
-    border-radius: 4px;
+    // border: none;
+    border-radius: 5px;
     cursor: pointer;
     font-family: "Arial", sans-serif; /* Specify your desired font type */
     font-size: 16px; /* Specify your desired font size */
+    color:#4279A6;
 
     &:hover {
-      background-color: #4278A6;
+      background-color: #4278a6;
+      color:white;
     }
   `;
 
@@ -91,7 +91,7 @@ const StudentStatusManagement = () => {
       "Withdrawl",
       "Re admision",
       "Warning",
-      "Dismissal"
+      "Dismissal",
     ];
 
     return (
@@ -115,7 +115,7 @@ const StudentStatusManagement = () => {
   };
 
   const handleOpenModal = (student) => {
-    console.log(student)
+    console.log(student);
     setSelectedStudent(student);
     setNewStatus(student.status);
     setIsModalOpen(true);
@@ -125,13 +125,11 @@ const StudentStatusManagement = () => {
     setSelectedStudent(null);
     setNewStatus("");
     setIsModalOpen(false);
-
   };
-  
+
   const handleUpdateStatus = (e) => {
     e.preventDefault();
 
-  
     if (selectedStudent) {
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
@@ -141,12 +139,16 @@ const StudentStatusManagement = () => {
         )
       );
     }
-  
+
     handleCloseModal();
   };
 
-  const uniqueDepartments = [...new Set(students.map((student) => student.department))];
-  const uniqueSections = [...new Set(students.map((student) => student.section))];
+  const uniqueDepartments = [
+    ...new Set(students.map((student) => student.department)),
+  ];
+  const uniqueSections = [
+    ...new Set(students.map((student) => student.section)),
+  ];
 
   const filteredStudents = students.filter((student) => {
     return (
@@ -154,8 +156,9 @@ const StudentStatusManagement = () => {
       (!filterSection || student.section === filterSection)
     );
   });
-  
-  const totalPages = itemsPerPage > 0 ? Math.ceil(filteredStudents.length / itemsPerPage) : 1;
+
+  const totalPages =
+    itemsPerPage > 0 ? Math.ceil(filteredStudents.length / itemsPerPage) : 1;
   const validPageNumber = Math.max(1, Math.min(currentPage, totalPages));
   const visibleStudents = filteredStudents.slice(
     (validPageNumber - 1) * itemsPerPage,
@@ -163,9 +166,9 @@ const StudentStatusManagement = () => {
   );
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
-      <div className="flex justify-start mt-4 space-x-4">
-        <div>
+    <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
+      <div className="flex flex-wrap justify-start mt-4">
+        <div style={{width:"25%", minWidth:"200px", marginRight:"20px"}}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
             Department
           </label>
@@ -182,7 +185,7 @@ const StudentStatusManagement = () => {
             ))}
           </select>
         </div>
-        <div>
+        <div style={{width:"25%", minWidth:"200px"}}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
             Section
           </label>
@@ -206,73 +209,79 @@ const StudentStatusManagement = () => {
           Apply Filters
         </button> */}
       </div>
-      <StyledTable>
-        <thead>
-          <tr>
-            <TableHeader>ID</TableHeader>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Department</TableHeader>
-            <TableHeader>Section</TableHeader>
-            <TableHeader>Program</TableHeader>
-            <TableHeader>Term</TableHeader>
-            <TableHeader>Status</TableHeader>
-            <TableHeader>Action</TableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {visibleStudents.map((student, index) => (
-            <TableRow key={index} isOdd={index % 2 !== 0}>
-              <TableCell>{student.id}</TableCell>
-              <TableCell>{student.name}</TableCell>
-              <TableCell>{student.department}</TableCell>
-              <TableCell>{student.section}</TableCell>
-              <TableCell>{student.program}</TableCell>
-              <TableCell>{student.term}</TableCell>
-              <TableCell>{student.status ? student.status : "Active"}</TableCell>
-              <TableCell>
-                <StyledButton onClick={() => handleOpenModal(student)}>
-                  Change Status
+      <div className="border-2 px-5 py-4 rounded-md shadow-md">
+        <StyledTable>
+          <thead className="border-2 px-5 py-4 rounded-md shadow-md">
+            <tr>
+              <TableHeader>ID</TableHeader>
+              <TableHeader>Name</TableHeader>
+              <TableHeader>Department</TableHeader>
+              <TableHeader>Section</TableHeader>
+              <TableHeader>Program</TableHeader>
+              <TableHeader>Term</TableHeader>
+              <TableHeader>Status</TableHeader>
+              <TableHeader>Action</TableHeader>
+            </tr>
+          </thead>
+          <tbody>
+            {visibleStudents.map((student, index) => (
+              <TableRow key={index} isOdd={index % 2 !== 0}>
+                <TableCell>{student.id}</TableCell>
+                <TableCell>{student.name}</TableCell>
+                <TableCell>{student.department}</TableCell>
+                <TableCell>{student.section}</TableCell>
+                <TableCell>{student.program}</TableCell>
+                <TableCell>{student.term}</TableCell>
+                <TableCell>
+                  {student.status ? student.status : "Active"}
+                </TableCell>
+                <TableCell>
+                  <StyledButton onClick={() => handleOpenModal(student)}>
+                    Change
+                  </StyledButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </tbody>
+        </StyledTable>
+
+        <div className="flex justify-between mt-4">
+          <div>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              className="px-4 py-2 bg-[#4279A6] text-white rounded"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Prev
+            </button>
+            <button
+              className="px-4 py-2 bg-[#4279A6] text-white rounded"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        {isModalOpen && (
+          <ModalOverlay isOpen={isModalOpen}>
+            <ModalWrapper isOpen={isModalOpen}>
+              <ModalForm />
+              <div>
+                <StyledButton onClick={(e) => handleUpdateStatus(e)}>
+                  Update Status
                 </StyledButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </tbody>
-      </StyledTable>
-
-      <div className="flex justify-between mt-4">
-        <div>
-          <span>Page {currentPage} of {totalPages}</span>
-        </div>
-        <div className="flex space-x-2">
-          <button
-            className="px-4 py-2 bg-[#4279A6] text-white rounded"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-          >
-            Prev
-          </button>
-          <button
-            className="px-4 py-2 bg-[#4279A6] text-white rounded"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-          >
-            Next
-          </button>
-        </div>
+              </div>
+            </ModalWrapper>
+          </ModalOverlay>
+        )}
       </div>
-
-      {isModalOpen && (
-  <ModalOverlay isOpen={isModalOpen}>
-    <ModalWrapper isOpen={isModalOpen}>
-      <ModalForm />
-      <div>
-        <StyledButton onClick={(e) => handleUpdateStatus(e)}>
-          Update Status
-        </StyledButton>
-      </div>
-    </ModalWrapper>
-  </ModalOverlay>
-)}
     </div>
   );
 };
