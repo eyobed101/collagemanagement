@@ -1,21 +1,32 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input,Popconfirm  } from 'antd';
-// import 'antd/dist/antd.css';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Input, Popconfirm, Select } from 'antd';
+import axios from 'axios';
+
+
+const { Option } = Select;
 
 const AddDepartment = () => {
-  const [data, setData] = useState([
-    {
-      key: '1',
-      departmentCode: 'D001',
-      departmentName: 'Computer Science',
-      programName: 'Bachelor of Science',
-    },
-    // Add more sample data as needed
-  ]);
-
+  const [data, setData] = useState([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [editingKey, setEditingKey] = useState('');
+
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5169/api/Departments', {
+      params: {
+        sortOrder: 'name desc',
+        pageNumber: 1,
+      },
+    })
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching department data:', error);
+      });
+  }, []);
 
   const cancel = () => {
     setEditingKey('');
@@ -26,18 +37,23 @@ const AddDepartment = () => {
   const columns = [
     {
       title: 'Department Code',
-      dataIndex: 'departmentCode',
-      key: 'departmentCode',
+      dataIndex: 'dcode',
+      key: 'dcode',
     },
     {
       title: 'Department Name',
-      dataIndex: 'departmentName',
-      key: 'departmentName',
+      dataIndex: 'dname',
+      key: 'dname',
     },
     {
-      title: 'Program Name',
-      dataIndex: 'programName',
-      key: 'programName',
+      title: 'Department Type',
+      dataIndex: 'depType',
+      key: 'depType',
+    },
+    {
+      title: 'Is Major',
+      dataIndex: 'major',
+      key: 'major',
     },
     {
       title: 'Action',
@@ -52,12 +68,13 @@ const AddDepartment = () => {
             <Button onClick={cancel}>Cancel</Button>
           </span>
         ) : (
-            <span>
+          <span>
             <Button onClick={() => edit(record.key)}>Edit</Button>
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <Button type="danger">Delete</Button>
             </Popconfirm>
-          </span>        );
+          </span>
+        );
       },
     },
   ];
@@ -99,18 +116,33 @@ const AddDepartment = () => {
   };
 
   const onFinishCreate = (values) => {
-    const newData = [...data];
-    const newKey = String(data.length + 1);
-    newData.push({ ...values, key: newKey });
-    setData(newData);
-    setIsCreateModalVisible(false);
+    const departmentCode = `D${Math.random().toString(36).substring(2, 8)}`;
+  
+    const newDepartment = {
+      dcode: departmentCode,
+      ...values,
+    };
+    console.log(newDepartment)
+  
+    axios.post('http://localhost:5169/api/Departments', newDepartment)
+      .then(response => {
+        console.log('Department created successfully:', response.data);
+        const newData = [...data];
+        const newKey = String(data.length + 1);
+        newData.push({ ...newDepartment, key: newKey });
+        setData(newData);
+        setIsCreateModalVisible(false);
+        
+      })
+      .catch(error => {
+        console.error('Error creating department:', error);
+      });
   };
 
   const handleDelete = (key) => {
     const newData = data.filter(item => item.key !== key);
     setData(newData);
   };
-
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -130,7 +162,7 @@ const AddDepartment = () => {
         <Input />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" style={{  backgroundColor:'#4279A6' }} htmlType="submit">
+        <Button type="primary" style={{ backgroundColor: '#4279A6' }} htmlType="submit">
           Save
         </Button>
         <Button onClick={cancel}>Cancel</Button>
@@ -140,17 +172,20 @@ const AddDepartment = () => {
 
   const createForm = (
     <Form layout="vertical" onFinish={onFinishCreate}>
-      <Form.Item label="Department Code" name="departmentCode" required>
+      <Form.Item label="Department Name" name="dname" required>
         <Input />
       </Form.Item>
-      <Form.Item label="Department Name" name="departmentName" required>
+      <Form.Item label="Department Type" name="depType" required>
         <Input />
       </Form.Item>
-      <Form.Item label="Program Name" name="programName" required>
-        <Input />
+      <Form.Item label="Is Major" name="major" required>
+        <Select>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
+        </Select>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" style={{  backgroundColor:'#4279A6' }} htmlType="submit">
+        <Button type="primary" style={{ backgroundColor: '#4279A6' }} htmlType="submit">
           Create
         </Button>
         <Button onClick={cancel}>Cancel</Button>
@@ -182,29 +217,9 @@ const AddDepartment = () => {
     </Modal>
   );
 
-  const handleInputChange = (e, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = e.target.value;
-      setData(newData);
-    }
-  };
-
-  const edit = (key) => {
-    setEditingKey(key);
-    showEditModal();
-  };
-
-  const save = (key) => {
-    setEditingKey('');
-    setIsEditModalVisible(false);
-    setIsCreateModalVisible(false);
-  };
-
   return (
     <div>
-      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16,  backgroundColor:'#4279A6' }}>
+      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
         Create New Department
       </Button>
       <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />
