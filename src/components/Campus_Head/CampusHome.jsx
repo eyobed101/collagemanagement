@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Modal, Input, Button } from 'antd';
 import CampusDash from './Campus_Dashboard';
+import axios from 'axios';
 
 
 const CampusHome = () =>{
@@ -10,25 +11,55 @@ const CampusHome = () =>{
   const [modifiedUserData, setModifiedUserData] = useState({});
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
+  const [employee, setEmployee] = useState();
+  const [loading , setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Employees');
+        setEmployee(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a style={{color:'black' , fontWeight:'bold'}}>{text}</a>,
+      title: "Employee ID",
+      dataIndex: "empId",
+      key: "empId",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span>{`${record.title} ${record.fname} ${record.mname} ${record.lname}`}</span>
+      ),
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
+      title: "Employee Type",
+      dataIndex: "empType",
+      key: "empType",
     },
     {
+      title: "Employee Position",
+      dataIndex: "empPosition",
+      key: "empPosition",
+    },
+    {
+      title: "Center",
+      dataIndex: "centerId",
+      key: "centerId",
+    },
+  {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
@@ -128,7 +159,9 @@ return (
          <p className="text-center text-[#344054] text-[24px] font-bold align-middle  mb-8 border-b-[#EAECF0] border-b-[2px]">
       Users Registeration
           </p> 
-      <Table columns={columns} dataSource={data}  style={{ marginTop: 20 }}  pagination={{ position: ["bottomCenter"] }} />;
+      <Table columns={columns} dataSource={employee}   loading={loading}
+              rowKey={(record) => record.empId}
+              pagination={{ pageSize: 10 }}/>;
       <Modal  
         title="Edit User"
         visible={isModalVisible}

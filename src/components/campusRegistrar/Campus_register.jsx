@@ -11,41 +11,24 @@ import Grid from "@mui/material/Grid";
 const { Option } = Select;
 
 const campuses = [
-  { id: 1, name: 'Campus 1' },
-  { id: 2, name: 'Campus 2' },
+  { id: 1, name: "Regular" },
+  { id: 2, name: "Extension" },
   // Add more campuses as needed
 ];
-const noUsers =[
-    {  id: 1 , name: 'Totalstudents' ,number: 4000 },
-    {  id: 2 , name: 'TotalStaff' ,number: 200 },
-    {  id: 3 , name: 'Graduated student this year' ,number: 400 },
-    {  id: 4 , name: 'No of applicants' ,number: 376 },
-]
+const noUsers = [
+  { id: 1, name: "Totalstudents", number: 4000 },
+  { id: 2, name: "TotalStaff", number: 200 },
+  { id: 3, name: "Graduated student this year", number: 400 },
+  { id: 4, name: "No of applicants", number: 376 },
+];
 
 const Acadamic = [
-    { id: 1, year:2011},
-    { id: 2, year: 2010 },
-    { id: 3, year: 2009 },
-    { id: 4, year: 2008 },
-    { id: 5, year: 2007 },
-    { id: 6, year: 2006 },
-    { id: 7, year: 2005 },
-    { id: 8, year: 2004 },
-    // Add more campuses as needed
-  ];
-const studentRecords = {
-  1: [
-    { id: 101, name: 'Student 1', cgpa :'3.8', acadamicYear :2011, department :'computerscience' ,curricula:"tot13" },
-    { id: 102, name: 'Student 2', cgpa :'2.8', acadamicYear :2010, department :'Electricalscience' ,curricula:"tot13" }, 
-    // Add more students for Campus 1
-  ],
-  2: [
-    { id: 201, name: 'Student 3', cgpa :'3.5', acadamicYear :2011, department :'informationscience' ,curricula:"tot13" },
-    { id: 202, name: 'Student 4', cgpa :'3.2', acadamicYear :2013, department :'computerscience' ,curricula:"tot13" },
-    // Add more students for Campus 2
-  ],
+  { id: 1, year: 'Degree' },
+  { id: 2, year: 'Masters' },
+  { id: 3, year: 'Doctrate' },
   // Add more campuses as needed
-};
+];
+
 
 
 
@@ -134,26 +117,29 @@ const CampusRegistrar = () => {
     setSelectedYear(value);
   };
 
-  const generateGraduateList = () => {
-    // Implement logic to generate graduate list based on selected campus and year
-    console.log('Generating graduate list...');
-    // handlelogout()
-  };
+ 
 
-  const checkPaymentStatus = () => {
-    // Implement logic to check payment status for selected campus
-    console.log('Checking payment status...');
-  };
-
+ 
   const getFilteredStudentRecords = (campus, year) => {
-    console.log(campus ,year)
-    console.log("test " ,studentRecords[1].filter(student => student.acadamicYear))
-    if (studentRecords[campus]) {
-      return studentRecords[campus].filter(student => student.acadamicYear === year);
-    } else {
-      return studentRecords[1];
+    console.log(campus, year);
+    console.log(
+      "test is kal ",
+       student.filter((stu) => stu.programType == campus  )
+    );
+    console.log("ggg ", campus)
+    if (campus,year) {
+      return student.filter((student) => student.programType == campus && student.program == year);
+      conso
+
+    } else if (campus) {
+      return student.filter(
+        (student) => student.programType == campus);
+    }
+   else {
+      return student;
     }
   };
+  
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator navigate={navigate}/> */}
@@ -190,11 +176,11 @@ const CampusRegistrar = () => {
           bordered={false}
           className="!rounded-[6px] border-[#EAECF0] border-[2px]"
           placeholder="--Select Campus ---"
-          style={{ width: 120 }}
+          style={{ width: 250 }}
           onChange={handleCampusChange}
         >
           {campuses?.map((item, i) => (
-            <Option key={item.id} value={item.id} lable={item.name}>
+            <Option key={item.id} value={item.name} lable={item.name}>
               {item.name}
             </Option>
           ))}

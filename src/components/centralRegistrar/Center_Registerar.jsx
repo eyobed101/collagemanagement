@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import {
   Space,
   Table,
@@ -13,6 +13,7 @@ import {
   Card,
 } from "antd";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
 // import SiderGenerator from "./Menu";
 
 import Grid from "@mui/material/Grid";
@@ -25,8 +26,8 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 const { Option } = Select;
 
 const campuses = [
-  { id: 1, name: "Campus 1" },
-  { id: 2, name: "Campus 2" },
+  { id: 1, name: "Regular" },
+  { id: 2, name: "Extension" },
   // Add more campuses as needed
 ];
 const noUsers = [
@@ -37,92 +38,12 @@ const noUsers = [
 ];
 
 const Acadamic = [
-  { id: 1, year: 2011 },
-  { id: 2, year: 2010 },
-  { id: 3, year: 2009 },
-  { id: 4, year: 2008 },
-  { id: 5, year: 2007 },
-  { id: 6, year: 2006 },
-  { id: 7, year: 2005 },
-  { id: 8, year: 2004 },
+  { id: 1, year: 'Degree' },
+  { id: 2, year: 'Masters' },
+  { id: 3, year: 'Doctrate' },
   // Add more campuses as needed
 ];
-const studentRecords = {
-  1: [
-    {
-      id: 101,
-      name: "Student 1",
-      cgpa: "3.8",
-      acadamicYear: 2011,
-      department: "computerscience",
-      curricula: "tot13",
-    },
-    {
-      id: 102,
-      name: "Student 2",
-      cgpa: "2.8",
-      acadamicYear: 2010,
-      department: "Electricalscience",
-      curricula: "tot13",
-    },
-    // Add more students for Campus 1
-  ],
-  2: [
-    {
-      id: 201,
-      name: "Student 3",
-      cgpa: "3.5",
-      acadamicYear: 2011,
-      department: "informationscience",
-      curricula: "tot13",
-    },
-    {
-      id: 202,
-      name: "Student 4",
-      cgpa: "3.2",
-      acadamicYear: 2013,
-      department: "computerscience",
-      curricula: "tot13",
-    },
-    // Add more students for Campus 2
-  ],
-  // Add more campuses as needed
-};
 
-const columns = [
-  {
-    title: (
-      <p className="font-jakarta font-[600] text-[16px] text-[#344054]">Name</p>
-    ),
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: <p className="font-jakarta  font-[600]">ID</p>,
-    key: "id",
-    dataIndex: "id",
-  },
-  {
-    title: <p className="font-jakarta  font-[600]">Grade</p>,
-    dataIndex: "cgpa",
-    key: "cgpa",
-  },
-  {
-    title: <p className="font-jakarta  font-[600]">Academic Year</p>,
-    dataIndex: "acadamicYear",
-    key: "acadamicYear",
-  },
-  {
-    title: <p className="font-jakarta  font-[600]">Department</p>,
-    dataIndex: "department",
-    key: "department",
-  },
-  {
-    title: <p className="font-jakarta  font-[600]">Curriculum</p>,
-    dataIndex: "curricula",
-    key: "curricula",
-  },
-];
 
 const CenterRegistrar = () => {
   //   const dispatch = useDispatch();
@@ -130,6 +51,65 @@ const CenterRegistrar = () => {
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [teachvalue, setTeachvalue] = useState([]);
+  const [student , setStudent] = useState([])
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Applicants');
+        setStudent(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const columns = [
+    {
+      title: (
+        <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
+          Name
+        </p>
+      ),
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <span>{`${record.fname} ${record.mname}`}</span>
+      ),
+ 
+    },
+    {
+      title: <p className="font-jakarta  font-[600]"> Student ID</p>,
+      key: "studId",
+      dataIndex: "studId",
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Program</p>,
+      dataIndex: "program",
+      key: "program"
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Approved </p>,
+      dataIndex: "approved",
+      key: "approved",
+    },
+    {
+      title: <p className="font-jakarta  font-[600]">Program Type</p>,
+      dataIndex: "programType",
+      key: "programType",
+    },
+    {
+        title: <p className="font-jakarta  font-[600]">Center ID</p>,
+        dataIndex: "centerId",
+        key: "centerId",
+      },
+  ];
 
   const handleView = (data) => {
     navigate("/view-student", { state: { data } });
@@ -144,31 +124,26 @@ const CenterRegistrar = () => {
     setSelectedYear(value);
   };
 
-  const generateGraduateList = () => {
-    // Implement logic to generate graduate list based on selected campus and year
-    console.log("Generating graduate list...");
-    // handlelogout()
-  };
-
-  const checkPaymentStatus = () => {
-    // Implement logic to check payment status for selected campus
-    console.log("Checking payment status...");
-  };
-
   const getFilteredStudentRecords = (campus, year) => {
     console.log(campus, year);
     console.log(
-      "test ",
-      studentRecords[1].filter((student) => student.acadamicYear)
+      "test is kal ",
+       student.filter((stu) => stu.programType == campus  )
     );
-    if (studentRecords[campus]) {
-      return studentRecords[campus].filter(
-        (student) => student.acadamicYear === year
-      );
-    } else {
-      return studentRecords[1];
+    console.log("ggg ", campus)
+    if (campus,year) {
+      return student.filter((student) => student.programType == campus && student.program == year);
+      conso
+
+    } else if (campus) {
+      return student.filter(
+        (student) => student.programType == campus);
+    }
+   else {
+      return student;
     }
   };
+  
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator navigate={navigate}/> */}
@@ -206,12 +181,12 @@ const CenterRegistrar = () => {
           <Select
             bordered={false}
             className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-            placeholder="--Select Campus ---"
-            style={{ width: 120 }}
+            placeholder="--Select Program ---"
+            style={{ width: 220 }}
             onChange={handleCampusChange}
           >
             {campuses?.map((item, i) => (
-              <Option key={item.id} value={item.id} lable={item.name}>
+              <Option key={item.id} value={item.name} lable={item.name}>
                 {item.name}
               </Option>
             ))}
@@ -220,8 +195,8 @@ const CenterRegistrar = () => {
             <Select
               bordered={false}
               className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-              style={{ width: 120 }}
-              placeholder="--Select Acadamic Year---"
+              style={{ width: 220 }}
+              placeholder="--Select Program Type---"
               onChange={handleYearChange}
             >
               {Acadamic?.map((item, i) => (
@@ -235,26 +210,8 @@ const CenterRegistrar = () => {
  </div>
  <div className="list-sub mb-10 ml-[1%]">
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
- <Grid item xs={12} sm={12} md={4}>
-          <Card
-            bordered={false}
-            className="w-[100%] min-h-[419px]"
-          >
-              <div className="flex flex-row justify-start align-bottom items-center">
-              {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-                <h1 className="text-base text-[#344054] font-normal"  >Graduate students</h1>
-            </div>
-            <div className="flex flex-row justify-start align-bottom items-center">
-            <h1 className="text-3xl text-[#344054]">10</h1>
-            <h4 className="text-base text-[#344054]">/ 50    </h4>
-                <FontAwesomeIcon className="pr-2  mb-2 ml-5 text-[red]" icon={faArrowDown} />
-                <h4 className="text-sm text-[red]" style={{marginLeft:-4}}>20%</h4>
-                </div>
-                <h4 className="text-base text-[#344054] font-normal  mb-5">Decreased on graduate Students</h4>
-            <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} />
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={12} md={8}>
+ 
+        <Grid item xs={12} sm={12} md={12}>
           <Card
             bordered={false}
             className="w-[100%] min-h-[419px]"

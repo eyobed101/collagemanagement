@@ -166,6 +166,7 @@ const EntryExam = () => {
       .then((values) => {
         const newData = [...dataSource];
         const index = newData.findIndex((item) => editingKey === item.key);
+  
         if (index > -1) {
           // Editing existing record
           const item = newData[index];
@@ -174,9 +175,29 @@ const EntryExam = () => {
           setEditingKey('');
         } else {
           // Adding new record
-          setDataSource([...newData, { ...values, key: uuid() }]);
+          const newRecord = {
+            studId: values.studId,
+            courseNo: values.courseNo,
+            result: parseInt(values.result),
+            testDate: values.testDate.format('YYYY-MM-DD'), // Format date as needed
+            resultDate: values.resultDate.format('YYYY-MM-DD'), // Format date as needed
+            status: values.status,
+            programType: values.programType,
+           };
+          setDataSource([...newData, newRecord]);
           setEditingKey('');
+  
+          // Make POST request to the API
+          console.log("post  ", newRecord);
+          axios.post('https://localhost:7032/api/EntryExams', newRecord)
+            .then(response => {
+              console.log('POST request successful:', response.data);
+            })
+            .catch(error => {
+              console.error('POST request failed:', error);
+            });
         }
+  
         setVisible(false);
         form.resetFields();
       })
@@ -184,15 +205,15 @@ const EntryExam = () => {
         console.error('Validation failed:', error);
       });
   };
-  
+
   const onFinish = (values) => {
     console.log('Received values:', values);
   };
 
   const handleSearch = (value) => {
-    const filteredData = dataSource.filter((record) =>
-      record.studId.includes(value)
-    );
+    const filteredData = dataSource.filter(record => record.studId.toLowerCase() === value.toLowerCase());
+
+    console.log("test " , value , filteredData);
     setDataSource(filteredData);
   };
 
@@ -265,7 +286,7 @@ const EntryExam = () => {
         <Form form={form} onFinish={onFinish}>
           <Form.Item
             label="Student ID"
-            name="studentId"
+            name="studId"
             rules={[{ required: true, message: 'Please input student ID!' }]}
           >
             <Input />
@@ -314,8 +335,8 @@ const EntryExam = () => {
             rules={[{ required: true, message: 'Please select program type!' }]}
           >
             <Select style={{ width: '100%' }}>
-              <Option value="Undergraduate">Undergraduate</Option>
-              <Option value="Postgraduate">Postgraduate</Option>
+              <Option value="Regular">Regular</Option>
+              <Option value="Extension">Extension</Option>
             </Select>
           </Form.Item>
         </Form>

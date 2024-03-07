@@ -693,26 +693,8 @@ var rangtimes =  undefined
 
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={4}>
-          <Card
-            bordered={false}
-            className="w-[100%] min-h-[419px]"
-          >
-              <div className="flex flex-row justify-start align-bottom items-center">
-              {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-                <h1 className="text-base text-[#344054] font-normal"  >Graduate students</h1>
-            </div>
-            <div className="flex flex-row justify-start align-bottom items-center">
-            <h1 className="text-3xl text-[#344054]">10</h1>
-            <h4 className="text-base text-[#344054]">/ 50    </h4>
-                <FontAwesomeIcon className="pr-2  mb-2 ml-5 text-[red]" icon={faArrowDown} />
-                <h4 className="text-sm text-[red]" style={{marginLeft:-4}}>20%</h4>
-                </div>
-                <h4 className="text-base text-[#344054] font-normal  mb-5">Decreased on graduate Students</h4>
-            <ChartTeacher title="" aspect={2 / 1} datas ={teachvalue} />
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={12} md={8}>
+        
+        <Grid item xs={12} sm={12} md={12}>
           <Card
             bordered={false}
             className="w-[100%] min-h-[419px]"
