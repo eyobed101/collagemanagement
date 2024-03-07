@@ -8,14 +8,51 @@ const { Option } = Select;
 const AddCourse = () => {
   const [form] = Form.useForm();
   const [tableData, setTableData] = useState([]);
+  const [data , setData] = useState([]);
 
-  const onFinish = (values) => {
-    const newData = {
-      key: Date.now(), // Using timestamp as key for uniqueness
-      ...values,
-    };
-    setTableData([...tableData, newData]);
-    form.resetFields(); // Reset form fields after submission
+  useEffect(() => {
+    axios.get('http://localhost:5169/api/Departments', {
+      params: {
+        sortOrder: 'name desc',
+        pageNumber: 1,
+      },
+    })
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching department data:', error);
+      });
+  }, []);
+
+  const onFinish = async (values) => {
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "courseNo": values.courseNo,
+        "courseName": values.courseName,
+        "creditHour": values.creditHour,
+        "acadTermLevel": values.acadTermLevel,
+        "acadYearLevel": values.acadYearLevel,
+        "dcode": parseInt(values.dcode), 
+        "hasPreReq": (values.hasPreReq  == true ?"Yes" :"No"),
+        "program": values.program,
+        "hasLab": (values.hasLab  == true ?"Yes" :"No"),
+        "courseOrder": values.courseOrder,
+        "conthr": values.contacthour,
+        "contacthour": values.contacthour ,
+        "thesis": (values.thesis == true ?"Yes" :"No" )
+      };
+      console.log("Response iss" , postData)
+      const response = await axios.post('https://localhost:7032/api/Courses', postData);
+      console.log('POST request successful:', response.data);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+// Reset form fields after submission
+}
   };
 
   useEffect(() => {
@@ -42,7 +79,16 @@ const AddCourse = () => {
     { title: 'Acad Term Level', dataIndex: 'acadTermLevel', key: 'acadTermLevel' },
     { title: 'Acad Year Level', dataIndex: 'acadYearLevel', key: 'acadYearLevel' },
     // { title: 'Course Order', dataIndex: 'courseOrder', key: 'courseOrder' },
-    { title: 'Department', dataIndex: 'department', key: 'department' },
+    {
+      title: 'Department',
+      dataIndex: 'dcode',
+      key: 'dcode',
+      render: (text, record) => {
+        // Assuming record.department contains the 'did' field
+        const departmentInfo = data.find((item) => item.did === record.dcode);
+        return departmentInfo ? departmentInfo.dname : text;
+      },
+    },
     { title: 'Program', dataIndex: 'program', key: 'program' },
     { title: 'Has Prereq', dataIndex: 'hasPreReq', key: 'hasPreReq' },
     { title: 'Has Lab', dataIndex: 'hasLab', key: 'hasLab' },
@@ -62,34 +108,40 @@ const AddCourse = () => {
       <Form.Item name="creditHour" label="Credit Hour" rules={[{ required: true }]}>
         <Input type="number" />
       </Form.Item>
-      <Form.Item name="contactHour" label="Contact Hour" rules={[{ required: true }]}>
+      <Form.Item name="contacthour" label="Contact Hour" rules={[{ required: true }]}>
         <Input type="number" />
       </Form.Item>
       <Form.Item name="courseOrder" label="Course Order" rules={[{ required: true }]}>
-        <Input />
+        <Input  type="number" />
+      </Form.Item>
+      <Form.Item name="thesis" label="Has Thesis" rules={[{ required: true }]}>
+        <Radio.Group>
+          <Radio value={true}>Yes</Radio>
+          <Radio value={false}>No</Radio>
+        </Radio.Group>
       </Form.Item>
     
     </Col>
     <Col span={12}>
     <Form.Item name="acadTermLevel" label="Acad Term Level" rules={[{ required: true }]}>
-        <Input />
+        <Input  type="number" />
       </Form.Item>
       <Form.Item name="acadYearLevel" label="Acad Year Level" rules={[{ required: true }]}>
-        <Input />
+        <Input type="number" />
       </Form.Item>
 
-      <Form.Item name="department" label="Department" rules={[{ required: true }]}>
+      <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
         <Select>
-          <Option value="Computer Science">Computer Science</Option>
-          <Option value="Accounting">Accounting</Option>
-          <Option value="Management">Management</Option>
+          <Option value="4">Computer Science</Option>
+          <Option value="3">Accounting</Option>
+          <Option value="5">Management</Option>
 
         </Select>
       </Form.Item>
       <Form.Item name="program" label="Program" rules={[{ required: true }]}>
         <Select>
-          <Option value="Regular">Regular</Option>
-          <Option value="Distance">Distance</Option>
+          <Option value="Degree">Degree</Option>
+          <Option value="Masters">Masters</Option>
         </Select>
       </Form.Item>
       <Form.Item name="hasPrereq" label="Has Prereq" rules={[{ required: true }]}>
@@ -104,6 +156,7 @@ const AddCourse = () => {
           <Radio value={false}>No</Radio>
         </Radio.Group>
       </Form.Item>
+     
     </Col>
   </Row>
   <Form.Item>

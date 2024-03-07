@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef } from 'react';
 import { Table, Button, Modal, Form, Input, Popconfirm, Select } from 'antd';
 import axios from 'axios';
+import moment from 'moment';
 
 
 const { Option } = Select;
@@ -12,20 +13,21 @@ const AddDepartment = () => {
   const [editingKey, setEditingKey] = useState('');
 
   const [departments, setDepartments] = useState([]);
+  const editFormRef = useRef(null); // Ref for accessing form instance
+
 
   useEffect(() => {
-    axios.get('http://localhost:5169/api/Departments', {
-      params: {
-        sortOrder: 'name desc',
-        pageNumber: 1,
-      },
-    })
+    const fetchData = async () => {
+    await axios.get('https://localhost:7032/api/Departments')
       .then(response => {
         setData(response.data);
       })
       .catch(error => {
         console.error('Error fetching department data:', error);
       });
+    }
+
+    fetchData();
   }, []);
 
   const cancel = () => {
@@ -69,7 +71,7 @@ const AddDepartment = () => {
           </span>
         ) : (
           <span>
-            <Button onClick={() => edit(record.key)}>Edit</Button>
+            <Button onClick={() => edit(record)}>Edit</Button>
             <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
               <Button type="danger">Delete</Button>
             </Popconfirm>
@@ -79,15 +81,26 @@ const AddDepartment = () => {
     },
   ];
 
-  const showEditModal = () => {
+  const edit = (record) => {
+    console.log(record)
+     // form.setFieldsValue(record);
+    setEditingKey(record.did);
+    // handleOk();  
     setIsEditModalVisible(true);
+    editFormRef.current.setFieldsValue(record);
+
+
   };
+
+
+
 
   const showCreateModal = () => {
     setIsCreateModalVisible(true);
   };
 
   const handleEditOk = () => {
+
     setIsEditModalVisible(false);
   };
 
@@ -103,34 +116,48 @@ const AddDepartment = () => {
     setIsCreateModalVisible(false);
   };
 
-  const onFinishEdit = (values) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => item.key === editingKey);
+  const onFinishEdit = async(values) => {
+    const updatedData = data.map((item) =>
+      item.did === editingKey ? { ...item, ...values } : item
+    );
+    const postData = {
+      "did": editingKey,
+      "dcode": values.dcode,
+      "dname": values.dname,   
+      "depType": values.depType, 
+      "major": values.major,      
+      "createdDate": moment(Date.now()).format('YYYY-MM-DD'),      
+     };
 
-    if (index > -1) {
-      newData[index] = { ...newData[index], ...values };
-      setData(newData);
-      setEditingKey('');
-      setIsEditModalVisible(false);
-    }
+     console.log("test ", postData);
+      await axios.put('https://localhost:7032/api/Departments/'+ editingKey, postData)
+      .then(response => {
+        console.log('Department updated successfully:', response.data);
+        setData(updatedData);
+        setEditingKey('');
+        setIsEditModalVisible(false);
+        
+      })
+      .catch(error => {
+        console.error('Error creating department:', error);
+      });
+       
   };
 
-  const onFinishCreate = (values) => {
-    const departmentCode = `D${Math.random().toString(36).substring(2, 8)}`;
+  const onFinishCreate = async (values) => {
+    const departmentCode = Math.floor(Math.random() * 100);
+  
   
     const newDepartment = {
-      dcode: departmentCode,
+      did: departmentCode,
       ...values,
     };
     console.log(newDepartment)
   
-    axios.post('http://localhost:5169/api/Departments', newDepartment)
+    await axios.post('https://localhost:7032/api/Departments', newDepartment)
       .then(response => {
         console.log('Department created successfully:', response.data);
-        const newData = [...data];
-        const newKey = String(data.length + 1);
-        newData.push({ ...newDepartment, key: newKey });
-        setData(newData);
+        setData(newDepartment);
         setIsCreateModalVisible(false);
         
       })
@@ -148,18 +175,29 @@ const AddDepartment = () => {
 
   const editForm = (
     <Form
-      layout="vertical"
-      onFinish={onFinishEdit}
-      initialValues={data.find((item) => item.key === editingKey)}
-    >
-      <Form.Item label="Department Code" name="departmentCode" required>
+    ref={editFormRef}
+    layout="vertical"
+    onFinish={onFinishEdit}
+    initialValues={data.find((item) => item.did === editingKey)}
+  >
+      <Form.Item label="Department Code" name="dcode" required>
+        <Input defaultValue={data.dcode} placeholder={data.dcode} />
+      </Form.Item>
+      <Form.Item label="Department Name" name="dname" required>
         <Input />
       </Form.Item>
-      <Form.Item label="Department Name" name="departmentName" required>
-        <Input />
+      <Form.Item label="Department Type" name="depType" required>
+      <Select>
+          <Option value="Major">Major</Option>
+          <Option value="Supportive">Supportive</Option>
+          <Option value="Common">Common</Option>
+        </Select>
       </Form.Item>
-      <Form.Item label="Program Name" name="programName" required>
-        <Input />
+      <Form.Item label="Is Major" name="major" required>
+        <Select>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
+        </Select>
       </Form.Item>
       <Form.Item>
         <Button type="primary" style={{ backgroundColor: '#4279A6' }} htmlType="submit">
@@ -172,11 +210,18 @@ const AddDepartment = () => {
 
   const createForm = (
     <Form layout="vertical" onFinish={onFinishCreate}>
+       <Form.Item label="Department Code" name="dcode" required>
+        <Input />
+      </Form.Item>
       <Form.Item label="Department Name" name="dname" required>
         <Input />
       </Form.Item>
       <Form.Item label="Department Type" name="depType" required>
-        <Input />
+      <Select>
+          <Option value="Major">Major</Option>
+          <Option value="Supportive">Supportive</Option>
+          <Option value="Common">Common</Option>
+        </Select>
       </Form.Item>
       <Form.Item label="Is Major" name="major" required>
         <Select>

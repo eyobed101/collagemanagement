@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd';
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
-
+import axios from 'axios';
 
 const { Option } = Select;
 
@@ -10,9 +10,8 @@ const mockData = [
   {
     key: '1',
     studentId: '2021001',
-    studentName: 'Kalkidan Misganaw',
     courseNo: 'CSE101',
-    result: 'A',
+    result: '69',
     testDate: moment('2022-01-15'),
     resultDate: moment('2022-01-20'),
     status: 'Pass',
@@ -21,9 +20,8 @@ const mockData = [
   {
     key: '2',
     studentId: '2021002',
-    studentName: 'Eyobed Elias',
     courseNo: 'MAT201',
-    result: 'B+',
+    result: '89',
     testDate: moment('2022-02-10'),
     resultDate: moment('2022-02-15'),
     status: 'Pass',
@@ -32,9 +30,8 @@ const mockData = [
   {
     key: '3',
     studentId: '2021003',
-    studentName: 'Exodus Tesfaye',
-    courseNo: 'PHY203',
-    result: 'B',
+    courseNo: 'PHY2013',
+    result: '74',
     testDate: moment('2022-02-10'),
     resultDate: moment('2022-02-15'),
     status: 'Pass',
@@ -43,39 +40,45 @@ const mockData = [
   {
     key: '4',
     studentId: '2021004',
-    studentName: 'Wondemagegn Zewdu',
-    courseNo: 'INFO204',
-    result: 'A',
+    courseNo: 'INTRO2012',
+    result: '46',
     testDate: moment('2022-02-10'),
     resultDate: moment('2022-02-15'),
-    status: 'Pass',
+    status: 'Fail',
     programType: 'Undergraduate',
   },
-
   // Add more mock data as needed
 ];
 
 const Remedial = () => {
   const [visible, setVisible] = useState(false);
-  const [dataSource, setDataSource] = useState(mockData);
-  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record) => record.key === editingKey;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Remedials');
+        setDataSource(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const columns = [
     {
       title: 'Student ID',
-      dataIndex: 'studentId',
+      dataIndex: 'studId',
       editable: true,
 
-    },
-    {
-        title: 'Student Name',
-        dataIndex: 'studentName',
-        editable: true,
-  
     },
     {
       title: 'Course No',
@@ -134,7 +137,10 @@ const Remedial = () => {
             <Button type="link" size="small" onClick={() => edit(record)}  style={{ marginRight: 8 , color: '#4279A6' }}>
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+            <Popconfirm title="Sure to delete?" 
+            okText="Yes" cancelText="No"
+            okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
+            onConfirm={() => handleDelete(record)}>
               <Button type="link" danger size="small"  style={{ marginRight: 8 , color: 'red' }}>
                 Delete
               </Button>
@@ -153,29 +159,64 @@ const Remedial = () => {
     setVisible(false);
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => editingKey === item.key);
-        if (index > -1) {
-          // Editing existing record
-          const item = newData[index];
-          newData.splice(index, 1, { ...item, ...values });
-          setDataSource(newData);
-          setEditingKey('');
-        } else {
-          // Adding new record
-          setDataSource([...newData, { ...values, key: uuid() }]);
-          setEditingKey('');
-        }
-        setVisible(false);
-        form.resetFields();
-      })
-      .catch((error) => {
-        console.error('Validation failed:', error);
-      });
+  const handleOk = async () => {
+    const values = form.getFieldsValue();
+
+    // Log the values to the console
+    console.log('Form values:', values);
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "studId": values.studId,
+        "courseNo": values.courseNo,
+        "result":parseInt(values.result),          
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
+        "status": values.status,
+        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "programType": values.programType,   
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.post('https://localhost:7032/api/Remedials', postData);
+      console.log('POST request successful:', response.data);
+
+      setDataSource(response.data)
+
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
+  };
+
+
+  const handleEdit = async () => {
+    const values = form.getFieldsValue();
+    console.log('Form Edit :', values);
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "studId": values.studId,
+        "courseNo": values.courseNo,
+        "result":parseInt(values.result),          
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
+        "status": values.status,
+        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "programType": values.programType,   
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.put('https://localhost:7032/api/Remedials', postData);
+      console.log('Put request successful:', response.data);
+      setDataSource(response.data)
+
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
   };
   
   const onFinish = (values) => {
@@ -183,21 +224,29 @@ const Remedial = () => {
   };
 
   const handleSearch = (value) => {
-    const filteredData = mockData.filter((record) =>
-      record.studentId.includes(value)
-    );
+    const filteredData = dataSource.filter(record => record.studId.toLowerCase() === value.toLowerCase());
     setDataSource(filteredData);
   };
 
   const edit = (record) => {
-    form.setFieldsValue(record);
-    setEditingKey(record.key);
-    setVisible(true); // Open the modal for editing
+
+    const testDate = moment(record.testDate, 'YYYY-MM-DD');
+    const resultDate = moment(record.resultDate, 'YYYY-MM-DD'); 
+
+    form.setFieldsValue({
+      ...record,
+      testDate: testDate,
+      resultDate : resultDate
+    });
+    // form.setFieldsValue(record);
+    setEditingKey(record.studId);
+    // handleOk();  
+    setVisible(true)  // Open the modal for editing
   };
 
 
   const save = (key) => {
-    form.validateFields().then((values) => {
+    form.validateFields().then(async(values) => {
       const newData = [...dataSource];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -207,6 +256,8 @@ const Remedial = () => {
           testDate: moment(values.testDate),
           resultDate: moment(values.resultDate),
         };
+        const response = await axios.put('https://localhost:7032/api/Remedials', newData);
+        console.log('PUT request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');
       }
@@ -217,8 +268,11 @@ const Remedial = () => {
     setEditingKey('');
   };
 
-  const handleDelete = (key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
+  const handleDelete = async (record) => {
+    console.log('delete', record)
+    const response = await axios.put('https://localhost:7032/api/Remedials', record);
+    console.log('Delete request successful:', response.data);
+    const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);
   };
 
@@ -226,7 +280,7 @@ const Remedial = () => {
         <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
     <div className="list-header mb-2 ml-100">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Student Remedial</h1>
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%]">Remedial </h1>
     </div>
     <div className="list-sub mb-10 ml-[2%] ">
      {/* {handleGrade()} */}
@@ -235,41 +289,30 @@ const Remedial = () => {
         Add Record
       </Button>
       <div className="list-filter">
-
-      <Select
-        placeholder="Select Student ID"
-        className="!rounded-[6px] border-[#4279A6] border-[2px]"
-        onChange={value => setSelectedStudentId(value)}
-        style={{ width: "70%", marginBottom: 16 , marginTop:10 }}
-      >
-        {/* Option items for each student ID */}
-        {mockData.map(student => (
-          <Option key={student.studentId} value={student.studentId}>
-            {student.studentId}
-          </Option>
-        ))}
-      </Select>
-      {/* <Input.Search
+      <Input.Search
         placeholder="Search by Student ID"
         onSearch={handleSearch}
         style={{ width: "30%", marginBottom: 16, marginLeft: 16 }}
-      /> */}
+      />
       </div>
       </div>
-      <Table 
+           <Table 
       style={{ marginTop: 20 , color: '#4279A6' }}
-      dataSource={selectedStudentId ? dataSource.filter(student => student.studentId === selectedStudentId) : null} columns={columns} />
+      dataSource={dataSource} columns={columns} 
+      bordered  loading={loading}
+      rowKey={(record) => record.studId}
+      pagination={{ pageSize: 10 }} />
       <Modal
         title={editingKey ? 'Edit Record' : 'Create Record'}
         visible={visible}
         onCancel={handleCancel}
-        onOk={handleOk}
+        onOk={editingKey ? handleEdit : handleOk}
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
           <Form.Item
             label="Student ID"
-            name="studentId"
+            name="studId"
             rules={[{ required: true, message: 'Please input student ID!' }]}
           >
             <Input />
@@ -293,14 +336,14 @@ const Remedial = () => {
             name="testDate"
             rules={[{ required: true, message: 'Please select test date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange} />
+            <DatePicker style={{ width: '100%' }} onChange={onchange} defaultValue={moment()} />
           </Form.Item>
           <Form.Item
             label="Result Date"
             name="resultDate"
             rules={[{ required: true, message: 'Please select result date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange}  />
+            <DatePicker style={{ width: '100%' }} onChange={onchange} defaultValue={moment()} />
           </Form.Item>
           <Form.Item
             label="Status"
@@ -310,6 +353,7 @@ const Remedial = () => {
             <Select style={{ width: '100%' }}>
               <Option value="Pass">Pass</Option>
               <Option value="Fail">Fail</Option>
+              <Option value="Pending">Pending</Option>
             </Select>
           </Form.Item>
           <Form.Item
@@ -318,8 +362,8 @@ const Remedial = () => {
             rules={[{ required: true, message: 'Please select program type!' }]}
           >
             <Select style={{ width: '100%' }}>
-              <Option value="Undergraduate">Undergraduate</Option>
-              <Option value="Postgraduate">Postgraduate</Option>
+              <Option value="Regular">Regular</Option>
+              <Option value="Extension">Extension</Option>
             </Select>
           </Form.Item>
         </Form>
