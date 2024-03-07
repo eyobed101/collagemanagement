@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+// import { Transition } from "@headlessui/react";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
+
+const generateStudentId = () => {
+  const prefix = "STUD";
+  const currentYear = new Date().getFullYear().toString().slice(-2);
+  const randomNumber = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, "0");
+
+  const studentId = `${prefix}${currentYear}${randomNumber}`;
+  return studentId;
+};
 
 export function AddStudent() {
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -14,68 +27,236 @@ export function AddStudent() {
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [identificationCopy, setIdentificationCopy] = useState(null);
   const initialFormData = {
-    studId: '',
-    fname: '',
-    mname: '',
-    lname: '',
+    studId: "",
+    fname: "",
+    mname: "",
+    lname: "",
     dname: 0,
-    sex: '',
-    doB: '2024-02-28',
-    placeOfBirth: '',
-    nationality: '',
-    maritalStatus: '',
-    prevEducation: '',
-    prevInstitution: '',
-    prevMajorDepartment: '',
+    sex: "",
+    sectionId: "",
+    termId: "",
+    doB: "2024-02-28",
+    placeOfBirth: "",
+    nationality: "",
+    maritalStatus: "",
+    prevEducation: "",
+    prevInstitution: "",
+    prevMajorDepartment: "",
     prevEducCgpa: 0,
     serviceyear: 0,
-    program: '',
-    programType: '',
-    centerId: '',
-    zone: '',
-    woreda: '',
-    kebele: '',
-    town: '',
-    tel: '',
-    pobox: '',
-    email: '',
-    persontoBeContacted: '',
-    appDate: '2024-02-28',
-    approved: '',
-    approvedDate: '2024-02-28',
+    program: "",
+    programType: "",
+    centerId: "",
+    zone: "",
+    woreda: "",
+    kebele: "",
+    town: "",
+    tel: "",
+    pobox: "",
+    email: "",
+    persontoBeContacted: "",
+    appDate: "2024-02-28",
+    approved: "",
+    approvedDate: "2024-02-28",
     age: 0,
     ageInyear: 0,
-    batch: '',
+    batch: "",
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  // let [data, setData] = useState({});
+  const [departments, setDepartments] = useState([]);
+  const [dep, setDep] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [studyCenters, setStudyCenters] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [terms, setTerms] = useState([]);
+  const [loadingTerms, setLoadingTerms] = useState(true);
+  const [loadingCenters, setLoadingCenters] = useState(true);
+  const [spining, setSpining] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+        );
+        setDepartments(response.data);
+        console.log(departments);
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    const fetchSections = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/Section");
+        setSections(response.data);
+        console.log(sections);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+
+    const fetchStudyCenters = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/StudyCenters"
+        );
+        setStudyCenters(response.data);
+        setLoadingCenters(false);
+      } catch (error) {
+        console.error("Error fetching study centers:", error);
+      }
+    };
+
+    const fetchTerms = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/Terms");
+        setTerms(response.data);
+        setLoadingTerms(false);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+        setLoadingTerms(false);
+      }
+    };
+
+    fetchDepartments();
+    fetchStudyCenters();
+    fetchSections();
+    fetchTerms();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(value)
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    if (name === "dname") {
+      const selectedDepartment = departments.find(
+        (department) => department.dcode === value
+      );
+      console.log(selectedDepartment.did);
+
+      if (selectedDepartment) {
+        setDep(selectedDepartment.did);
+        setFormData((prevData) => ({
+          ...prevData,
+          dname: selectedDepartment.did,
+        }));
+      }
+    } else if (name === "centerId") {
+      const selectedCenter = studyCenters.find(
+        (center) => center.CenterId === value
+      );
+      console.log(selectedCenter.CenterId);
+
+      if (selectedCenter) {
+        setFormData((prevData) => ({
+          ...prevData,
+          centerId: selectedCenter.CenterId,
+        }));
+      }
+    } else if (name === "sectionId") {
+      const selectedSection = sections.find(
+        (section) => section.sectionId === value
+      );
+      if (selectedSection) {
+        setFormData((prevData) => ({
+          ...prevData,
+          sectionId: selectedSection.sectionId,
+        }));
+      }
+    } else if (name === "termId") {
+      const selectedTerm = terms.find((term) => term.termId === value);
+      if (selectedTerm) {
+        setFormData((prevData) => ({
+          ...prevData,
+          termId: selectedTerm.termId,
+        }));
+      }
+    } else {
+      console.log(value);
+      setFormData((prevData) => ({
+        ...prevData,
+
+        [name]: value,
+      }));
+    }
   };
 
   // Handler for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSpining(true);
+
+    let getStudentID = generateStudentId();
+
+    const data = {
+      StudId: getStudentID,
+      Fname: formData.fname,
+      Mname: formData.mname,
+      Lname: formData.lname,
+      Dname: formData.dname,
+      Sex: formData.sex,
+      SectionId: formData.sectionId,
+      TermId: formData.termId,
+      DoB: formData.doB,
+      PlaceOfBirth: formData.placeOfBirth,
+      Nationality: formData.nationality,
+      MaritalStatus: formData.maritalStatus,
+      PrevEducation: formData.prevEducation,
+      PrevInstitution: formData.prevInstitution,
+      PrevMajorDepartment: formData.prevMajorDepartment,
+      PrevEducCgpa: formData.prevEducCgpa,
+      Serviceyear: formData.serviceyear,
+      Program: formData.program,
+      ProgramType: formData.programType,
+      CenterId: formData.centerId,
+      Zone: formData.zone,
+      Woreda: formData.woreda,
+      Kebele: formData.kebele,
+      Town: formData.town,
+      Tel: formData.tel,
+      Pobox: formData.pobox,
+      Email: formData.email,
+      PersontoBeContacted: formData.persontoBeContacted,
+      AppDate: formData.appDate,
+      Approved: formData.approved,
+      ApprovedDate: formData.approvedDate,
+      Age: formData.age,
+      AgeInyear: formData.ageInyear,
+      Batch: formData.batch,
+    };
+
+    const { SectionId, TermId, ...restFormData } = data;
+
+    console.log("data", data);
+
+    const apiUrl = "http://localhost:5169/api/Applicants";
 
     try {
-      // Send POST request to the backend API
-      const response = await axios.post('http://your-backend-url/submit-form', formData);
+      const response = await axios.post(apiUrl, restFormData, {
+        params: {
+          SectionID: SectionId,
+          TermId: TermId,
+        },
+      });
 
-      // Handle response (e.g., show success message)
+      setSuccess(true);
+      setError(null);
+      setFormData(initialFormData);
+      // setData({});
       console.log(response.data);
     } catch (error) {
-      // Handle error (e.g., show error message)
+      setSuccess(false);
+      setError(error.message);
       console.error(error);
+    } finally {
+      setSpining(false);
     }
   };
-
 
   const [checkedItems, setCheckedItems] = useState({
     grade_8_ministry: false,
@@ -130,7 +311,10 @@ export function AddStudent() {
   };
 
   // Sample array of courses
-  const availableCourses = ["Course A", "Course B", "Course C", "Course D"];
+
+  const activeTerms = terms.filter(
+    (term) => new Date(term.endDate) > new Date()
+  );
 
   return (
     <>
@@ -148,7 +332,6 @@ export function AddStudent() {
                       style={{
                         width: "100%",
                         borderBottom: "2px solid #ccc",
-                        
                       }}
                     >
                       {[
@@ -163,10 +346,10 @@ export function AddStudent() {
                             color: index === currentTab ? "#FFF" : "#000",
                             fontSize: "15px",
                             padding: "15px",
-                            margin:"4px",
+                            margin: "4px",
                             flex: 1,
                             textAlign: "center",
-                            borderRadius:"5px",
+                            borderRadius: "5px",
                             fontWeight: 500,
                             backgroundColor:
                               index === currentTab ? "#4279A6" : "transparent",
@@ -179,154 +362,159 @@ export function AddStudent() {
                     {/* <div class="grid grid-cols-6 gap-6"> */}
                     <TabPanel>
                       <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
-                        <div class="col-span-6 sm:col-span-3">
+                        <div className="col-span-6 md:col-span-3 mx-2 my-2">
                           <label
                             // for="full_name"
                             class="block text-sm font-medium text-gray-700"
                           >
-                            Full Name
+                            First Name
                           </label>
-                          <div className="flex flex-wrap">
-                            <input
-                              type="text"
-                              name="fname"
-                              value={formData.fname}
-                              id="first_name"
-                              placeholder="First Name"
-                              autocomplete="given-name"
-                              onChange={handleInputChange}
-
-                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
-                            <input
-                              type="text"
-                              name="mname"
-                              value={formData.mname}
-                              id="middle_name"
-                              placeholder="Middle Name"
-                              autocomplete="given-name"
-                              onChange={handleInputChange}
-                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
-                            <input
-                              type="text"
-                              name="lname"
-                              value={formData.lname}
-                              id="last_name"
-                              placeholder="Last Name"
-                              autocomplete="family-name"
-                              onChange={handleInputChange}
-                              class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
-                          </div>
+                          <input
+                            type="text"
+                            name="fname"
+                            value={formData.fname}
+                            id="first_name"
+                            placeholder="First Name"
+                            autocomplete="given-name"
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 md:col-span-3 mx-2 my-2">
+                          <label
+                            // for="full_name"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Middle Name
+                          </label>
+                          <input
+                            type="text"
+                            name="mname"
+                            value={formData.mname}
+                            id="middle_name"
+                            placeholder="Middle Name"
+                            autocomplete="given-name"
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 md:col-span-3 mx-2 my-2">
+                          <label
+                            // for="full_name"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Last Name
+                          </label>
+                          <input
+                            type="text"
+                            name="lname"
+                            value={formData.lname}
+                            id="last_name"
+                            placeholder="Last Name"
+                            autocomplete="family-name"
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
                         </div>
 
-                        <div className="col-span-6 sm:col-span-3">
-                          <div className="flex flex-wrap justify-between">
-                            <div className="flex flex-col px-4">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Sex
-                              </label>
-                              <select
-                                id="sex"
-                                name="sex"
-          value={formData.sex}
-          onChange={handleInputChange}
-                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                                >
-                                <option class="rounded-sm" value="">
-                                  Select Gender
-                                </option>
-                                <option value="Female">Female</option>
-                                <option value="Male">Male</option>
-                              </select>
-                            </div>
-                            <div className="flex flex-col px-4">
-                              <label
-                                for="date_of_birth"
-                                class="block text-sm font-medium text-gray-700"
-                              >
-                                Date of Birth
-                              </label>
-                              <input
-                                type="date"
-                                name="doB"
-                                value={formData.doB}
-                                id="date_of_birth"
-                                onChange={handleInputChange}
-                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                                />
-                            </div>
-                            <div className="flex flex-col px-4">
-                              <label
-                                for="place_of_birth"
-                                class="block text-sm font-medium text-gray-700"
-                              >
-                                Place of Birth
-                              </label>
-                              <input
-                                type="text"
-                                name="placeOfBirth"
-                                value={formData.placeOfBirth}
-                                onChange={handleInputChange}
-                                id="place_of_birth"
-                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                                />
-                            </div>
-                          </div>
+                        <div className="col-span-6 md:col-span-3 mx-2 my-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Sex
+                          </label>
+                          <select
+                            id="sex"
+                            name="sex"
+                            value={formData.sex}
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option class="rounded-sm" value="">
+                              Select Gender
+                            </option>
+                            <option value="F">Female</option>
+                            <option value="M">Male</option>
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3 mx-2 my-2">
+                          <label
+                            for="date_of_birth"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Date of Birth
+                          </label>
+                          <input
+                            type="date"
+                            name="doB"
+                            value={formData.doB}
+                            id="date_of_birth"
+                            onChange={handleInputChange}
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3 mx-2 my-2">
+                          <label
+                            for="place_of_birth"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Place of Birth
+                          </label>
+                          <input
+                            type="text"
+                            name="placeOfBirth"
+                            value={formData.placeOfBirth}
+                            onChange={handleInputChange}
+                            id="place_of_birth"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
                         </div>
 
-                        <div class="col-span-6 md:col-span-3">
-                          <div className="flex flex-wrap justify-between">
-                            <div className="flex flex-col py-4 w-[50%]">
-                              <label
-                                for="country"
-                                class="block text-sm font-medium text-gray-700"
-                              >
-                                Nationality
-                              </label>
-                              <select
-                                id="nationality"
-                                name="nationality"
-                                value={formData.nationality}
-                                onChange={handleInputChange}
-                                autocomplete="country"
-                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                                >
-                                <option>Ethiopian</option>
-                                <option>American</option>
-                                <option>Canada</option>
-                                <option>Mexico</option>
-                              </select>
-                            </div>
-                            <div className="flex flex-col py-4 w-[50%]">
-                              <label
-                                for="marital_status"
-                                class="block text-sm font-medium text-gray-700"
-                              >
-                                Marital Status
-                              </label>
-                              <select
-                                id="maritalStatus"
-                                name="maritalStatus"
-                                value={formData.maritalStatus}
-                                onChange={handleInputChange}
-                                autocomplete="marital_status"
-                                class="m-1 p-3 bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                                >
-                                <option>SINGLE</option>
-                                <option>Married</option>
-                                <option>Widowed</option>
-                              </select>
-                            </div>
-                          </div>
+                        <div class="col-span-6 md:col-span-3 mx-2">
+                          <label
+                            for="country"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Nationality
+                          </label>
+                          <select
+                            id="nationality"
+                            name="nationality"
+                            value={formData.nationality}
+                            onChange={handleInputChange}
+                            autocomplete="country"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option>Ethiopian</option>
+                            <option>American</option>
+                            <option>Canada</option>
+                            <option>Mexico</option>
+                          </select>
+                        </div>
+                        <div class="col-span-6 md:col-span-3 mx-2">
+                          <label
+                            for="marital_status"
+                            class="block text-sm font-medium text-gray-700"
+                          >
+                            Marital Status
+                          </label>
+                          <select
+                            id="maritalStatus"
+                            name="maritalStatus"
+                            value={formData.maritalStatus}
+                            onChange={handleInputChange}
+                            autocomplete="marital_status"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option>SINGLE</option>
+                            <option>Married</option>
+                            <option>Widowed</option>
+                          </select>
                         </div>
                       </div>
                     </TabPanel>
 
                     <TabPanel>
-                      <div class="grid grid-cols-6 gap-6 mt-10 border-2 shadow-lg p-5">
-                        <div class="col-span-6 md:col-span-3">
+                      <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
+                        <div class="col-span-6 md:col-span-3 mx-2 my-2">
                           <label
                             for="zone"
                             class="block text-sm font-medium text-gray-700"
@@ -341,10 +529,10 @@ export function AddStudent() {
                             id="zone"
                             autocomplete="street-address"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
+                          />
                         </div>
 
-                        <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                        <div class="col-span-6 md:col-span-3 mx-2 my-2">
                           <label
                             for="kebele"
                             class="block text-sm font-medium text-gray-700"
@@ -358,10 +546,10 @@ export function AddStudent() {
                             onChange={handleInputChange}
                             id="kebele"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
+                          />
                         </div>
 
-                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        <div class="col-span-6 sm:col-span-3 m-2">
                           <label
                             for="town"
                             class="block text-sm font-medium text-gray-700"
@@ -375,10 +563,10 @@ export function AddStudent() {
                             onChange={handleInputChange}
                             id="town"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                            />
+                          />
                         </div>
 
-                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        <div class="col-span-6 md:col-span-3 m-2">
                           <label
                             for="telephone"
                             class="block text-sm font-medium text-gray-700"
@@ -389,12 +577,13 @@ export function AddStudent() {
                             type="text"
                             name="tel"
                             value={formData.tel}
-                            onChange={handleInputChange}                            id="telephone"
+                            onChange={handleInputChange}
+                            id="telephone"
                             autocomplete="Tel"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
-                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        <div class="col-span-6 md:col-span-3 m-2">
                           <label
                             for="po-box"
                             class="block text-sm font-medium text-gray-700"
@@ -405,13 +594,13 @@ export function AddStudent() {
                             type="text"
                             name="pobox"
                             value={formData.pobox}
-                            onChange={handleInputChange}                            
+                            onChange={handleInputChange}
                             id="po-box"
                             autocomplete="Po-box"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
-                        <div class="col-span-6 sm:col-span-4">
+                        <div class="col-span-6 md:col-span-3 m-2">
                           <label
                             for="email_address"
                             class="block text-sm font-medium text-gray-700"
@@ -422,13 +611,13 @@ export function AddStudent() {
                             type="email"
                             name="email"
                             value={formData.email}
-                            onChange={handleInputChange}                            
+                            onChange={handleInputChange}
                             id="email"
                             autocomplete="email"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
-                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        <div class="col-span-6 md:col-span-3 m-2">
                           <label
                             for="emergency_contact_name"
                             class="block text-sm font-medium text-gray-700"
@@ -439,13 +628,13 @@ export function AddStudent() {
                             type="text"
                             name="persontoBeContacted"
                             value={formData.persontoBeContacted}
-                            onChange={handleInputChange}                            
+                            onChange={handleInputChange}
                             id="emergency_contact_name"
                             autocomplete="emergency_contact_name"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
-                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                        <div class="col-span-6 md:col-span-3 m-2">
                           <label
                             for="emergency_contact_phone_number"
                             class="block text-sm font-medium text-gray-700"
@@ -464,7 +653,7 @@ export function AddStudent() {
                     </TabPanel>
 
                     <TabPanel>
-                      <div class="grid grid-cols-6 gap-6 mt-10 border-2 shadow-lg p-5">
+                      <div class="grid grid-cols-6 gap-4 mt-10 border-2 shadow-lg p-5 mx-2">
                         {/* Previous Educational Institution */}
                         <div className="col-span-6 sm:col-span-3">
                           <label
@@ -526,7 +715,7 @@ export function AddStudent() {
                             id="previous_education_cgpa"
                             name="prevEducCgpa"
                             value={formData.prevEducCgpa}
-                            onChange={handleInputChange}                            
+                            onChange={handleInputChange}
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
@@ -542,7 +731,7 @@ export function AddStudent() {
                             id="service_year"
                             name="serviceyear"
                             value={formData.serviceyear}
-                            onChange={handleInputChange}                             
+                            onChange={handleInputChange}
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
@@ -633,7 +822,6 @@ export function AddStudent() {
                             </div>
                           </div>
                         </div>
-
                       </div>
                     </TabPanel>
                     <TabPanel>
@@ -650,14 +838,15 @@ export function AddStudent() {
                             id="program_department"
                             name="program"
                             value={formData.program}
-                            onChange={handleInputChange}                             
+                            onChange={handleInputChange}
                             autocomplete="program_department"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
-                            <option>Computer Science</option>
-                            <option>Accounting</option>
-                            <option>Marketing</option>
-                            <option>Business Management</option>
+                            <option value="">Select Program</option>
+
+                            <option value="Degree">Degree</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="Masters">Masters</option>
                           </select>
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -665,37 +854,22 @@ export function AddStudent() {
                             htmlFor="program_type"
                             className="block text-sm font-medium text-gray-700"
                           >
-                            Program/Department
+                            Program Type
                           </label>
                           <select
                             id="program_type"
                             name="programType"
                             value={formData.programType}
-                            onChange={handleInputChange}                             
+                            onChange={handleInputChange}
                             autocomplete="program_type"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
-                            <option>Regular</option>
-                            <option>Distance</option>
-                            <option>Night</option>
-                          </select>
-                        </div>
-                        <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="department"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Department
-                          </label>
-                          <select
-                            id="department"
-                            name="department"
-                            autocomplete="department"
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          >
-                            <option>CS</option>
-                            <option>CS</option>
-                            <option>CS</option>
+                            <option value="">Program Types</option>
+
+                            <option value="Regular">Regular</option>
+                            <option value="Distance">Distance</option>
+                            <option value="Extension">Extension</option>
+                            <option value="Night">Night</option>
                           </select>
                         </div>
                         <div className="col-span-6 sm:col-span-3">
@@ -707,15 +881,122 @@ export function AddStudent() {
                           </label>
                           <select
                             id="study_center"
-                            name="study_center"
-                            autocomplete="study_center"
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                            name="centerId"
+                            value={formData.centerId}
+                            onChange={handleInputChange}
+                            autoComplete="study_center"
+                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
-                            <option>CS</option>
-                            <option>CS</option>
-                            <option>CS</option>
+                            <option value="">All Study Centers</option>
+
+                            {loadingCenters ? (
+                              <option>Loading study centers...</option>
+                            ) : (
+                              studyCenters.map((center) => (
+                                <option
+                                  key={center.CenterId}
+                                  value={center.CenterId}
+                                >
+                                  {center.CenterName}
+                                </option>
+                              ))
+                            )}
                           </select>
                         </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="department"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Department
+                          </label>
+                          <select
+                            id="department"
+                            name="dname"
+                            value={formData.dcode}
+                            onChange={handleInputChange}
+                            autoComplete="department"
+                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option value="">All Depatiments</option>
+
+                            {loading ? (
+                              <option>Loading departments...</option>
+                            ) : (
+                              departments.map((department) => (
+                                <option
+                                  key={department.did}
+                                  value={department.dcode}
+                                >
+                                  {department.dname}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="section"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Section
+                          </label>
+                          <select
+                            id="section"
+                            name="sectionId"
+                            value={formData.sectionId}
+                            onChange={handleInputChange}
+                            autoComplete="department"
+                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option value="">All Sections</option>
+
+                            {loading ? (
+                              <option>Loading sections...</option>
+                            ) : (
+                              sections
+                                .filter((section) => dep === section.dcode)
+                                .map((section) => (
+                                  <option
+                                    key={section.sectionId}
+                                    value={section.sectionId}
+                                  >
+                                    {section.sectionName}
+                                  </option>
+                                ))
+                            )}
+                          </select>
+                        </div>
+
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="term"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Term
+                          </label>
+                          <select
+                            id="term"
+                            name="termId"
+                            value={formData.termId}
+                            onChange={handleInputChange}
+                            autoComplete="term"
+                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          >
+                            <option value="">All Terms</option>
+
+                            {loadingTerms ? (
+                              <option>Loading terms...</option>
+                            ) : (
+                              activeTerms.map((term) => (
+                                <option key={term.termId} value={term.termId}>
+                                  {term.name} - {term.acadYear}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                        </div>
+
                         <div className="col-span-6 sm:col-span-3">
                           <label
                             htmlFor="application_date"
@@ -725,11 +1006,31 @@ export function AddStudent() {
                           </label>
                           <input
                             type="date"
-                            name="application_date"
+                            name="appDate"
+                            value={formData.appDate}
+                            onChange={handleInputChange}
                             id="application_date"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
+
+                        <div className="col-span-6 sm:col-span-3">
+                          <label
+                            htmlFor="approved_date"
+                            className="block text-sm font-medium text-gray-700"
+                          >
+                            Approved Date
+                          </label>
+                          <input
+                            type="date"
+                            name="approvedDate"
+                            value={formData.approvedDate}
+                            onChange={handleInputChange}
+                            id="approved_date"
+                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                          />
+                        </div>
+
                         <div className="col-span-6 sm:col-span-3">
                           <label
                             htmlFor="approved"
@@ -740,26 +1041,14 @@ export function AddStudent() {
                           <select
                             id="approved"
                             name="approved"
+                            value={formData.approved}
+                            onChange={handleInputChange}
                             autocomplete="approved"
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           >
                             <option>Yes</option>
                             <option>No</option>
                           </select>
-                        </div>
-                        <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="approved_date"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Approved Date
-                          </label>
-                          <input
-                            type="date"
-                            name="approved_date"
-                            id="approved_date"
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          />
                         </div>
 
                         <div className="col-span-6 sm:col-span-3">
@@ -805,7 +1094,7 @@ export function AddStudent() {
                       display: "flex",
                       justifyContent: "space-between",
                       marginTop: "40px",
-                      padding:"10px"
+                      padding: "10px",
                     }}
                   >
                     <button
@@ -831,6 +1120,34 @@ export function AddStudent() {
                         type="submit"
                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
+                        {loading && (
+                          <svg
+                            className="animate-spin absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 mr-3"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M16 4s-4 1-4 4"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M22 12h-6M18 12a6 6 0 01-6 6H6"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 20V12"
+                            />
+                          </svg>
+                        )}
                         Submit
                       </button>
                     )}
@@ -838,6 +1155,92 @@ export function AddStudent() {
                 </div>
               </div>
             </form>
+            {/* {spining && <div className="loading-spinner">Loading...</div>} */}
+            {success && (
+              <div
+                id="alert-border-3"
+                class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+                role="alert"
+              >
+                <svg
+                  class="flex-shrink-0 w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <div class="ms-3 text-sm font-medium">
+                  Submission successful!
+                </div>
+                <button
+                  type="button"
+                  class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                  data-dismiss-target="#alert-border-3"
+                  aria-label="Close"
+                >
+                  <span class="sr-only">Dismiss</span>
+                  <svg
+                    class="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                </button>
+              </div>
+            )}
+
+            {error && (
+              <div
+                id="alert-border-2"
+                class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
+                role="alert"
+              >
+                <svg
+                  class="flex-shrink-0 w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                </svg>
+                <div class="ms-3 text-sm font-medium">Error: {error}</div>
+                <button
+                  type="button"
+                  class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                  data-dismiss-target="#alert-border-2"
+                  aria-label="Close"
+                >
+                  <span class="sr-only">Dismiss</span>
+                  <svg
+                    class="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

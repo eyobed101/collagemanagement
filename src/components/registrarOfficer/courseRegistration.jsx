@@ -6,6 +6,8 @@ import axios from "axios";
 const StudentCourseRegistration = () => {
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState({});
+  const [sectionStudEnroll, setSectionStudEnroll] = useState([])
+  const [secCourseAss, setSecCourseAss] = useState([])
   const [program, setProgram] = useState("");
   const [batch, setBatch] = useState("");
   const [term, setTerm] = useState("");
@@ -27,7 +29,28 @@ const StudentCourseRegistration = () => {
       }
     };
 
+    const fetchSectionStudentEnroll = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/SectionStudEnroll");
+        setSectionStudEnroll(response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+
+    }
+    const fetchSecCourseAss = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/SecCourseAssgts");
+        setSecCourseAss(response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+
+    }
+
     fetchSections();
+    fetchSectionStudentEnroll();
+    fetchSecCourseAss();
   }, []);
 
   const handleSectionChange = (event) => {
@@ -50,6 +73,7 @@ const StudentCourseRegistration = () => {
   };
 
   const handleClearSelectedCourses = () => {
+    
     const updatedCourses = coursesUnderSection.filter(
       (course) => !selectedCourses.includes(course)
     );
@@ -73,7 +97,7 @@ const StudentCourseRegistration = () => {
             onChange={handleSectionChange}
           >
    
-            <option data={JSON.stringify({})} value="">Select Section</option>
+            <option value="">Select Section</option>
                 {sections?.map(
                   (section) => (
                     <option key={section.sectionID} data={JSON.stringify(section)} value={section.sectionName}>
@@ -137,12 +161,12 @@ const StudentCourseRegistration = () => {
             Students Under Selected Section
           </h2>
           <div className="border-2 border-[#676767] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-md rounded-md">
-            {selectedSection.sectionId ? selectedSection.sectionStudEnrolls.map((student, index) => (
+            {selectedSection.sectionId ? sectionStudEnroll.filter((section) => section.sectionId === selectedSection.sectionId).map((student, index) => (
               <div
                 key={index}
                 className="border mb-2 p-2 cursor-pointer text-black"
               >
-                {student}
+                {student.studId}
               </div>
             )):"Section has not been selected"}
           </div>
@@ -153,7 +177,7 @@ const StudentCourseRegistration = () => {
             Courses Under This Section
           </h2>
           <div className="border-2 border-[#676767] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-md rounded-md">
-            {selectedSection.sectionId ? selectedSection.secCourseAssgts.map((course, index) => (
+            {selectedSection.sectionId ? secCourseAss.filter((section) => section.sectionId === selectedSection.sectionId).map((course, index) => (
               <div
                 key={index}
                 // className="border mb-2 p-2 cursor-pointer text-black"
@@ -162,7 +186,7 @@ const StudentCourseRegistration = () => {
                   selectedCourses.includes(course) ? 'bg-gray-300' : ''
                 }`}
               >
-                {course}
+                {course.courseNo}
               </div>
             )): "Section has not been selected" }
           </div>
@@ -176,7 +200,7 @@ const StudentCourseRegistration = () => {
               Number of Students:
             </label>
             <div className="text-lg font-semibold border px-5">
-              {selectedSection.sectionId ? selectedSection.sectionStudEnrolls.length:"0"}
+              {selectedSection.sectionId ? sectionStudEnroll.filter((section) => section.sectionId === selectedSection.sectionId).length:"0"}
             </div>
           </div>
           <div className="flex justify-between mb-4 border border-[#676767] rounded-md shadow-md p-2 mr-4">
@@ -184,7 +208,7 @@ const StudentCourseRegistration = () => {
               Number of Courses:
             </label>
             <div className="text-lg font-semibold border px-5">
-              {selectedSection.sectionId ? selectedSection.secCourseAssgts.length : "0"}
+              {selectedSection.sectionId ? secCourseAss.filter((section) => section.sectionId === selectedSection.sectionId).length : "0"}
             </div>
           </div>
           <div className="flex justify-between mb-4 border border-[#676767] rounded-md shadow-md p-2 mr-4">

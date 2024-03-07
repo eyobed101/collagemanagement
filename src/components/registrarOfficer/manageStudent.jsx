@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
+import axios from "axios";
 
 const StudentStatusManagement = () => {
-  const [students, setStudents] = useState(addDropTableData);
+  const [students, setStudents] = useState([]);
+  const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [studStatus, setStudStatus] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("");
@@ -12,6 +19,75 @@ const StudentStatusManagement = () => {
 
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterSection, setFilterSection] = useState("");
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+        );
+        setDepartments(response.data);
+        console.log(departments);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    const fetchSections = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/Section");
+        setSections(response.data);
+        console.log(sections);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+    const fetchSectionStudentEnroll = async () => {
+      try {
+        const response = await axios.get("http://localhost:5169/api/SectionStudEnroll");
+        setSectionStudEnroll(response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+
+    }
+
+    const fetchApplicants = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/Applicants"
+        );
+        setStudents(response.data);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+      }
+    };
+    const fetchStudentStatus = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/Applicants"
+        );
+        setStudStatus(response.data);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+      }
+    };
+
+    fetchDepartments();
+    fetchSections();
+    fetchApplicants();
+    fetchStudentStatus();
+    fetchSectionStudentEnroll();
+  }, []);
+
+  const handleSectionChange = (event) => {
+    const selectedData = event.target.options[
+      event.target.selectedIndex
+    ].getAttribute("data");
+
+    setSelectedSection({
+      ...JSON.parse(selectedData),
+    });
+  };
 
   const TableRow = styled.tr`
     background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
@@ -67,7 +143,7 @@ const StudentStatusManagement = () => {
 
   const StyledButton = styled.button`
     padding: 3px 16px;
-    border: 0.5px #4279A6 solid;
+    border: 0.5px #4279a6 solid;
     background-color: none;
     color: white;
     // border: none;
@@ -75,11 +151,11 @@ const StudentStatusManagement = () => {
     cursor: pointer;
     font-family: "Arial", sans-serif; /* Specify your desired font type */
     font-size: 16px; /* Specify your desired font size */
-    color:#4279A6;
+    color: #4279a6;
 
     &:hover {
       background-color: #4278a6;
-      color:white;
+      color: white;
     }
   `;
 
@@ -115,7 +191,6 @@ const StudentStatusManagement = () => {
   };
 
   const handleOpenModal = (student) => {
-    console.log(student);
     setSelectedStudent(student);
     setNewStatus(student.status);
     setIsModalOpen(true);
@@ -168,38 +243,52 @@ const StudentStatusManagement = () => {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
       <div className="flex flex-wrap justify-start mt-4">
-        <div style={{width:"25%", minWidth:"200px", marginRight:"20px"}}>
+        <div style={{ width: "25%", minWidth: "200px", marginRight: "20px" }}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Department
+            Select Department
           </label>
           <select
             className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
-            value={filterDepartment}
-            onChange={(e) => setFilterDepartment(e.target.value)}
+            value={selectedDepartment ? selectedDepartment.dname : ""}
+            onChange={(e) =>
+              setSelectedDepartment(
+                departments.find((dept) => dept.dname === e.target.value)
+              )
+            }
           >
             <option value="">Select Department</option>
-            {uniqueDepartments.map((department) => (
-              <option key={department} value={department}>
-                {department}
+            {departments.map((dept, index) => (
+              <option key={index} value={dept.dname}>
+                {dept.dname}
               </option>
             ))}
           </select>
         </div>
-        <div style={{width:"25%", minWidth:"200px"}}>
+        <div style={{ width: "25%", minWidth: "200px" }}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
             Section
           </label>
           <select
             className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
-            value={filterSection}
-            onChange={(e) => setFilterSection(e.target.value)}
+            onChange={handleSectionChange}
           >
             <option value="">Select Section</option>
-            {uniqueSections.map((section) => (
-              <option key={section} value={section}>
-                {section}
-              </option>
-            ))}
+
+            {selectedDepartment ? (
+              sections
+                .filter((section) => section.dcode === selectedDepartment.did)
+                .map((section) => (
+                  <option
+                    key={section.sectionId}
+                    value={section.sectionName}
+                    data={JSON.stringify(section)}
+                  >
+                    {section.sectionName}
+                  </option>
+                ))
+            ) : (
+              <option disabled>Select a Department first</option>
+            )}
           </select>
         </div>
         {/* <button
@@ -224,17 +313,19 @@ const StudentStatusManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {visibleStudents.map((student, index) => (
+            {sectionStudEnroll.filter((stud) => stud.sectionId === selectedSection.sectionId).filter((student) =>
+    studStatus.some((status) => status.studId === student.studId)
+  ).map((student, index) => (
               <TableRow key={index} isOdd={index % 2 !== 0}>
-                <TableCell>{student.id}</TableCell>
-                <TableCell>{student.name}</TableCell>
-                <TableCell>{student.department}</TableCell>
-                <TableCell>{student.section}</TableCell>
+                <TableCell>{student.studId}</TableCell>
+                {/* <TableCell>{student.fname}{" "}{student.mname}</TableCell>
+                <TableCell>{departments.filter((dept)=> student.dname === dept.did).map((dep)=> dep.dname)}</TableCell>
+                <TableCell>{}</TableCell>
                 <TableCell>{student.program}</TableCell>
-                <TableCell>{student.term}</TableCell>
+                <TableCell>{student.batch}</TableCell>
                 <TableCell>
                   {student.status ? student.status : "Active"}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <StyledButton onClick={() => handleOpenModal(student)}>
                     Change
