@@ -1,13 +1,22 @@
 // src/components/AddDropManagement.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import addDropTableData from "@/data/addrop";
 import courseTableData from "@/data/courses";
+import axios from "axios";
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedOffDepartment, setSelectedOffDepartment] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
+  const [selectedOffSection, setSelectedOffSection] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
   const [selectedTerm, setSelectedTerm] = useState("");
+  const [departments, setDepartiment] = useState([]);
+  const [offDepartments, setOffDepartiment] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [offSections, setOffSections] = useState([]);
+  const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
 
   const [selectedOfferingDepartment, setSelectedOfferingDepartment] = useState(
     ""
@@ -17,6 +26,63 @@ const AddDropManagement = () => {
   const [coursesToDrop, setCoursesToDrop] = useState([]);
 
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleStudentSelection = (student) => {
+    setSelectedStudent(student);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const departmentsResponse = await axios.get(
+          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+        );
+        setDepartiment(departmentsResponse.data);
+        setOffDepartiment(departmentsResponse.data);
+        console.log(departmentsResponse.data);
+
+        const sectionsResponse = await axios.get(
+          "http://localhost:5169/api/Section"
+        );
+        setSections(sectionsResponse.data);
+        setOffSections(sectionsResponse.data);
+        console.log(sectionsResponse.data);
+
+        const sectionStudEnrollResponse = await axios.get(
+          "http://localhost:5169/api/SectionStudEnroll"
+        );
+        setSectionStudEnroll(sectionStudEnrollResponse.data);
+        console.log(sectionStudEnrollResponse.data);
+
+        const fetchCourses = await axios.get("http://localhost:5169/api/SecCourseAssgts");
+        setCourses(fetchCourses.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSectionChange = (event) => {
+    const selectedData = event.target.options[
+      event.target.selectedIndex
+    ].getAttribute("data");
+
+    setSelectedSection({
+      ...JSON.parse(selectedData),
+    });
+  };
+  const handleOffSectionChange = (event) => {
+    const selectedData = event.target.options[
+      event.target.selectedIndex
+    ].getAttribute("data");
+
+    setSelectedOffSection({
+      ...JSON.parse(selectedData),
+    });
+  };
 
   const departmentOptions = Array.from(
     new Set(addDropTableData.map((student) => student.department))
@@ -28,7 +94,6 @@ const AddDropManagement = () => {
     }
     return acc;
   }, {});
-
 
   const uniqueTerms = Array.from(
     new Set(
@@ -54,10 +119,6 @@ const AddDropManagement = () => {
     )
   );
 
-
-  
-
- 
   const filteredStudents = addDropTableData.filter(
     (student) =>
       (!selectedDepartment || student.department === selectedDepartment) &&
@@ -112,7 +173,7 @@ const AddDropManagement = () => {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
       <div class="grid grid-cols-4 mt-10">
-        <div class="col-span-4 sm:col-span-2">
+        <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
             <div className="mr-5 mb-10 flex flex-col w-full">
               <label
@@ -123,15 +184,20 @@ const AddDropManagement = () => {
               </label>
               <select
                 id="departmentOption"
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                value={selectedDepartment ? selectedDepartment.dname : ""}
+                onChange={(e) =>
+                  setSelectedDepartment(
+                    departments.find((dept) => dept.dname === e.target.value)
+                  )
+                }
               >
                 <option value="">Select Department</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Accounting">Accounting</option>
-                <option value="Psychology">Psychology</option>
+                {departments.map((dept, index) => (
+                  <option key={index} value={dept.dname}>
+                    {dept.dname}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -143,68 +209,79 @@ const AddDropManagement = () => {
                 Student's Section{" "}
               </label>
               <select
-                className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-                value={selectedSection}
-                onChange={(e) => setSelectedSection(e.target.value)}
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                // value={selectedSection}
+                onChange={handleSectionChange}
               >
                 <option value="">Select Section</option>
-                {sectionOptionsByDepartment[selectedDepartment]?.map(
-                  (section) => (
-                    <option key={section} value={section}>
-                      {section}
-                    </option>
-                  )
+
+                {selectedDepartment ? (
+                  sections
+                    .filter(
+                      (section) => section.dcode === selectedDepartment.did
+                    )
+                    .map((section) => (
+                      <option
+                        key={section.sectionId}
+                        value={section.sectionName}
+                        data={JSON.stringify(section)}
+                      >
+                        {section.sectionName}
+                      </option>
+                    ))
+                ) : (
+                  <option disabled>Select a Department first</option>
                 )}
               </select>
             </div>
 
             <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[45%]">
-            <label
-          htmlFor="departmentOption"
-          className="block text-lg font-semibold mb-2 text-[#434343]"
-        >
-          Program{" "}
-        </label>
-        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
-          {selectedDepartment && selectedSection ? (
-            uniquePrograms.join(', ') || "Program Not Found"
-          ) : (
-            "Select Department and Section"
-          )}
-        </div>
+              <label
+                htmlFor="departmentOption"
+                className="block text-lg font-semibold mb-2 text-[#434343]"
+              >
+                Program{" "}
+              </label>
+              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                {selectedDepartment && selectedSection
+                  ? selectedSection.program || "Program Not Found"
+                  : "Select Department and Section"}
+              </div>
             </div>
 
-            <div className="mb-10 flex flex-col w-[100%] sm:w-[45%]">
-            <label
-          htmlFor="departmentOption"
-          className="block text-lg font-semibold mb-2 text-[#434343]"
-        >
-          Term/Academic Year{" "}
-        </label>
-        <div className="px-8 py-3 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
-          {selectedDepartment && selectedSection ? (
-            uniqueTerms.join(', ') || "Term Not Found"
-          ) : (
-            "Select Department and Section"
-          )}
-        </div>
+            <div className="mb-10 flex flex-col w-[100%] sm:w-[45%] ml-auto">
+              <label
+                htmlFor="departmentOption"
+                className="block text-lg font-semibold mb-2 text-[#434343]"
+              >
+                Term/Academic Year{" "}
+              </label>
+              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                {selectedDepartment && selectedSection
+                  ? selectedSection.acadYear || "Term Not Found"
+                  : "Select Department and Section"}
+              </div>
             </div>
             <div className="flex flex-col w-full">
-              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
-                <label className="block text-lg font-semibold mr-5 text-[#434343]">
+              <div className="grid grid-cols-2 mb-10 border-2 px-2 rounded-md shadow-md border-[#a2a2a2]">
+                <label className="block text-lg font-semibold  text-[#434343]">
                   Number of Students
                 </label>
 
-                <label className="px-8 py-2 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
-                  {filteredStudents.length}
+                <label class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                  {sectionStudEnroll
+                    .filter(
+                      (section) =>
+                        section.sectionId === selectedSection.sectionId
+                    ).length}
                 </label>
               </div>
-              <div className="grid grid-cols-2 mb-10 mr-10 border p-2 rounded-md">
-                <label className="block text-lg font-semibold text-[#434343] mr-5">
+              <div className="grid grid-cols-2 mb-10 border px-2 rounded-md border-[#a2a2a2]">
+                <label className="block text-lg font-semibold text-[#434343] mr-4">
                   Today's Date{" "}
                 </label>
 
-                <label className="px-8 py-2 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md">
+                <label class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
                   {new Date(Date.now()).toLocaleDateString()}{" "}
                   {new Date(Date.now()).toLocaleTimeString()}
                 </label>
@@ -213,67 +290,97 @@ const AddDropManagement = () => {
           </div>
         </div>
 
-        <div class="col-span-4 sm:col-span-2 min-w-[300px]">
-          <h2 className="text-lg font-semibold mb-2 text-[#434343]">
-            Students under selected Section
-          </h2>
-          <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto h-full shadow-sm rounded-md">
-            {selectedDepartment
-              ? selectedSection
-                ? filteredStudents.map((student) => (
-                    <div
-                      key={student.id}
-                      className={`border mb-2 p-2 cursor-pointer text-black${
-                        selectedUser && selectedUser.id === student.id
-                          ? "bg-blue-100"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setSelectedUser(
-                          selectedUser === student ? null : student
-                        );
-                        setCoursesToAdd([]);
-                        setCoursesToDrop([]);
-                      }}
-                    >
-                      {student.id} - {student.name}
-                    </div>
-                  ))
-                : "No section selected"
-              : "No department selected"}
-          </div>
-        </div>
+        <div className="col-span-4 sm:col-span-2 min-w-[300px] border-2 shadow-md p-4 rounded-md">
+      <h2 className="text-lg font-semibold mb-2 text-[#434343]">
+        Students under selected Section
+      </h2>
+      <div className="border-2 border-[#C2C2C2] p-4 overflow-y-auto h-[60%] shadow-sm rounded-md">
+        {selectedDepartment ? (
+          selectedSection ? (
+            sectionStudEnroll
+              .filter((section) => section.sectionId === selectedSection.sectionId)
+              .map((student, index) => (
+                <div
+                  key={index}
+                  className={`border mb-2 p-2 cursor-pointer text-black ${selectedStudent === student ? 'bg-gray-300' : ''}`}
+                  onClick={() => handleStudentSelection(student)}
+                >
+                  {student.studId}
+                </div>
+              ))
+          ) : (
+            "No section selected"
+          )
+        ) : (
+          "No department selected"
+        )}
+      </div>
+    </div>
       </div>
 
       <hr class="border-t-2 border-gray-300 shadow-md my-4" />
 
       <div class="grid grid-cols-2 gap-2">
         <div class="col-span-2 sm:col-span-1">
-          <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-            value={selectedOfferingDepartment}
-            onChange={(e) => setSelectedOfferingDepartment(e.target.value)}
-          >
-            <option value="">Select Department</option>
-            <option value="Computer Science">Computer Science</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Accounting">Accounting</option>
-            <option value="Psychology">Psychology</option>
-          </select>
+        <label
+                for="departmentOff"
+                className="block text-lg font-semibold text-[#434343] mb-2"
+              >
+                Offering Departiment{" "}
+              </label>
+              <select
+                id="departmentOff"
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                value={selectedOffDepartment ? selectedOffDepartment.dname : ""}
+                onChange={(e) =>
+                  setSelectedOffDepartment(
+                    offDepartments.find((dept) => dept.dname === e.target.value)
+                  )
+                }
+              >
+                <option value="">Select Department</option>
+                {offDepartments.map((dept, index) => (
+                  <option key={index} value={dept.dname}>
+                    {dept.dname}
+                  </option>
+                ))}
+              </select>
+        
         </div>
 
         <div class="col-span-2 sm:col-span-1">
-          <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm  rounded-md"
-            value={selectedOfferingSection}
-            onChange={(e) => setSelectedOfferingSection(e.target.value)}
-          >
-            <option value="">Select Offering Section</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="D">D</option>
-            <option value="C">C</option>
-          </select>
+        <label
+                for="sectionOff"
+                className="block text-lg font-semibold text-[#434343] mb-2"
+              >
+                Offering Section{" "}
+              </label>
+              <select
+                id="sectionOff"
+                class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                onChange={handleOffSectionChange}
+
+              >
+                <option value="">Select Section</option>
+
+                {selectedOffDepartment ? (
+                  offSections
+                    .filter(
+                      (section) => section.dcode === selectedOffDepartment.did
+                    )
+                    .map((section) => (
+                      <option
+                        key={section.sectionId}
+                        value={section.sectionName}
+                        data={JSON.stringify(section)}
+                      >
+                        {section.sectionName}
+                      </option>
+                    ))
+                ) : (
+                  <option disabled>Select Offering Department first</option>
+                )}
+              </select>
         </div>
       </div>
 
@@ -284,11 +391,11 @@ const AddDropManagement = () => {
               Courses
             </h2>
             <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto max-h-48 min-h-[200px] shadow-sm rounded-md">
-              {selectedOfferingDepartment
-                ? selectedOfferingSection
-                  ? filteredCourses.map((course) => (
-                      <div key={course.id} className="border p-4 mb-2">
-                        {course.id} - {course.name}
+              {selectedOffDepartment
+                ? selectedOffSection
+                  ? courses.filter((course) => course.sectionId === selectedOffSection.sectionId).map((course) => (
+                      <div key={course.sectionId} className="border p-4 mb-2">
+                        {course.sectionId} - {course.courseNo}
                       </div>
                     ))
                   : "No offering section selected"

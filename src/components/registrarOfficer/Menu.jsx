@@ -16,6 +16,7 @@ import CourseLeaseManagement from "./courseLease";
 import StudentCourseRegistration from "./courseRegistration";
 import StudentCourseExemption from "./studentExemption";
 import StudentStatusManagement from "./manageStudent";
+import MainMenu from "./menuTest";
 
 import {
   Configurator,
@@ -405,7 +406,7 @@ const RegistrarOfficerSiderGenerator = () => {
           {isAddStudent ? <AddStudent /> : null}
           {isAddDrop ? <AddDropManagement /> : null}
           {isCourseRegistration ? <StudentCourseRegistration /> : null}
-          {isGradeEntry ? <GradeEntry /> : null}
+          {isGradeEntry ? <MainMenu /> : null}
           {isCourseLease ? <CourseLeaseManagement /> : null}
           {isCourseExemption ? <StudentCourseExemption /> : null}
           {isStudentStatus ? <StudentStatusManagement /> : null}
