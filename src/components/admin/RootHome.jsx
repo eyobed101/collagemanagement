@@ -1,12 +1,12 @@
 import React, { useState , useEffect} from "react";
-import { Space, Table, Tag, Card, Select ,Modal , Input ,Button } from "antd";
+import { Space, Table, Tag, Card, Select ,Modal , Input ,Button , Popconfirm} from "antd";
 import Grid from "@mui/material/Grid";
 import axios from 'axios';
 
 
 // import ChartStudent from "../../graph/studentGraph/Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DatePicker } from "antd";
+import { DatePicker ,Form } from "antd";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 // import Icon from "react-eva-icons";
@@ -30,12 +30,16 @@ const RootHome = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedUser1, setSelectedUser1] = useState(null);
   const [isModalVisible1, setIsModalVisible1] = useState(false);
-  const [modifiedUserData1, setModifiedUserData1] = useState({});
-  const [isDeleteModalVisible1, setIsDeleteModalVisible1] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studyCenters, setStudyCenters] = useState([]);
   const [employee, setEmployee] = useState([]);
- 
+  const [form] = Form.useForm();
+  const [editingKey, setEditingKey] = useState('');
+
+
+
+  const isEditing = (record) => record.key === editingKey;
+
 
 
 
@@ -162,20 +166,136 @@ const RootHome = () => {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record) => (
-        <>
-          <Button type="link" onClick={() => handleEditUser1(record)}>
-            Edit
-          </Button>
-          <Button type="link" onClick={() => handleDeleteUser1(record)}>
-            Delete
-          </Button>
-        </>
-      ),
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Button type="primary" size="small"  onClick={() => save(record.key)} style={{ marginRight: 8 , color: '#4279A6' }}>
+              Save
+            </Button>
+            <Button size="small" onClick={cancelEditing}>
+              Cancel
+            </Button>
+          </span>
+        ) : (
+          <span>
+            <Button type="link" size="small" onClick={() => edit(record)}  style={{ marginRight: 8 , color: '#4279A6' }}>
+              Edit
+            </Button>
+            <Popconfirm title="Sure to delete?" 
+             okText="Yes" cancelText="No"
+             okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
+            onConfirm={() => handleDelete(record)}>
+              <Button type="link" danger size="small"  style={{ marginRight: 8 , color: 'red' }}>
+                Delete
+              </Button>
+            </Popconfirm>
+          </span>
+        );
+      },
     },
   ];
   
+
+
+  const handleCancel = () => {
+    setIsModalVisible1(false)
+    setEditingKey('');
+  };
   
+
+  const handleEdit =  () => {
+    form.validateFields().then(async(values) => {
+      const updatedDataSource = studyCenters.map((record) => {
+        if (record.CenterId === values.CenternId) {
+          return { ...record, ...values };
+        }
+        return record;
+      });
+
+
+    try {
+      console.log('Form Edit :', updatedDataSource);
+      console.log('values Edit :', values);
+      // Make a POST request to the API endpoint
+      const postData = {
+        "centerId": values.CenterId,
+        "centerName": values.CenterName,
+        "regionalCenterName":values.RegionalCenterName,          
+        "region": values.Region,
+        "currentCenterThis": values.CurrentCenterThis,
+        "centerType": values.CenterType    
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.put('https://localhost:7032/api/StudyCenters', postData);
+      console.log('Put request successful:', response.data);
+
+      setStudyCenters(updatedDataSource)
+      // console.log("start " , moment(startDate).format('YYYY-MM-DD'))
+      setIsModalVisible1(false)
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
+  });
+
+  };
+
+
+  
+  const edit = (record) => {
+
+    console.log("weyne ",record)
+    form.setFieldsValue(record);
+    setEditingKey(record.CenterId);
+    // handleOk();  
+    setIsModalVisible1(true) // Open the modal for editing
+  };
+
+  const save = (key) => {
+    form.validateFields().then(async(values) => {
+      const newData = [...studyCenters];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        newData[index] = {
+          ...newData[index],
+          ...values,
+          // resultDate: moment(values.resultDate),
+        };
+        const response = await axios.put('https://localhost:7032/api/StudyCenters', newData);
+        console.log('Put request successful:', response.data);
+        setStudyCenters(newData);
+        setEditingKey('');
+      }
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingKey('');
+  };
+
+
+
+  const handleDelete = async (record) => {
+    console.log('delete', record)
+    const postData = {
+      "centerId": record.CenterId,
+      "centerName": record.CenterName,
+      "regionalCenterName":record.RegionalCenterName,          
+      "region": record.Region,
+      "currentCenterThis": record.CurrentCenterThis,
+      "centerType": record.CenterType  
+     };
+     console.log('delete', postData)
+    const response = await axios.delete('https://localhost:7032/api/StudyCenters', postData);
+    console.log('Delete request successful:', response.data);
+
+    const newData = studyCenters.filter((item) => item.key !== record.key);
+    setStudyCenters(newData);
+  };
+
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
@@ -188,17 +308,6 @@ const RootHome = () => {
     setIsDeleteModalVisible(true);
   };
 
-  
-  const handleEditUser1 = (user) => {
-    setSelectedUser1(user);
-    setModifiedUserData1({ ...user });
-    setIsModalVisible1(true);
-  };
-
-  const handleDeleteUser1 = (user) => {
-    setSelectedUser1(user);
-    setIsDeleteModalVisible1(true);
-  };
 
   const handleModalOk = () => {
     // Handle your logic to update the user data
@@ -231,41 +340,12 @@ const RootHome = () => {
     setIsDeleteModalVisible(false);
     setSelectedUser(null);
   };
-
-  const handleModalOk1 = () => {
-    // Handle your logic to update the user data
-    // For demonstration purposes, I'm updating the data in state
-    const updatedData = studyCenters.map((user) =>
-      user.key === selectedUser1.key ? { ...user, ...modifiedUserData } : user
-    );
-    setStudyCenters(updatedData);
-    setIsModalVisible1(false);
-    setSelectedUser1(null);
-    setModifiedUserData1({});
-  };
-  
-  const handleModalCancel1 = () => {
-    setIsModalVisible1(false);
-    setSelectedUser1(null);
-    setModifiedUserData1({});
+  const onFinish = (values) => {
+    console.log('Received values:', values);
   };
 
-  const handleDeleteModalOk1 = () => {
-    // Handle your logic to delete the user data
-    // For demonstration purposes, I'm updating the data in state
-    const updatedData = studyCenters.filter((user) => user.key !== selectedUser1.key);
-    setStudyCenters(updatedData);
-    setIsDeleteModalVisible1(false);
-    setSelectedUser1(null);
-  };
-
-  const handleDeleteModalCancel1 = () => {
-    setIsDeleteModalVisible1(false);
-    setSelectedUser1(null);
-  };
 
   
-
 
   const Dates = [
     {
@@ -596,44 +676,64 @@ const RootHome = () => {
         <p>Are you sure you want to delete {selectedUser?.name}?</p>
       </Modal>
 
-      <Modal  
-        title="Edit Center"
-        visible={isModalVisible1}
-        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-        onOk={handleModalOk1}
-        onCancel={handleModalCancel1}
-      >
-        <label>Name:</label>
-        <Input
-          value={modifiedUserData1.name}
-          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, name: e.target.value })}
-        />
-        <label>ID :</label>
-        <Input
-          value={modifiedUserData1.id}
-          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, id: e.target.value })}
-        />
-        <label>Location:</label>
-        <Input
-          value={modifiedUserData1.location}
-          onChange={(e) => setModifiedUserData1({ ...modifiedUserData1, location: e.target.value })}
-        />
-         <label>Password:</label>
-        <Input
-          value={modifiedUserData.password}
-          onChange={(e) => setModifiedUserData({ ...modifiedUserData, password: e.target.value })}
-        />
-      </Modal>
-
       <Modal
-        title="Delete Campus"
-        visible={isDeleteModalVisible1}
+        title={editingKey ? 'Edit Record' : 'Create Record'}
+        visible={isModalVisible1}
+        onCancel={handleCancel}
+        onOk={editingKey ? handleEdit : handleCancel}
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-        onOk={handleDeleteModalOk1}
-        onCancel={handleDeleteModalCancel1}
       >
-        <p>Are you sure you want to delete {selectedUser1?.name}?</p>
-      </Modal>
+        <Form form={form} onFinish={onFinish}>
+          <Form.Item
+            label="Center ID"
+            name="CenterId"
+            rules={[{ required: true, message: 'Please input center ID!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Center Name"
+            name="CenterName"
+            rules={[{ required: true, message: 'Please input center Name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Regional Center Name"
+            name="RegionalCenterName"
+            rules={[{ required: true, message: 'Please input regional center this!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Region"
+            name="Region"
+            rules={[{ required: true, message: 'Please select region!' }]}
+          >
+          <Input />
+          </Form.Item>
+          <Form.Item
+            label="Current Center This"
+            name="CurrentCenterThis"
+            rules={[{ required: true, message: 'Please select current center This' }]}
+           >
+              <Select style={{ width: '100%' }}>
+              <Option value="Yes">yes</Option>
+              <Option value="No">No</Option>
+            </Select>
+           </Form.Item>
+          <Form.Item
+            label="Center Type"
+            name="CenterType"
+            rules={[{ required: true, message: 'Please select center type!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="Regular">Regular</Option>
+              <Option value="Extension">Extension</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>               
     </div>
   );
 };

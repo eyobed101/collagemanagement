@@ -380,7 +380,7 @@ const AddSection = () => {
             name="dcode"
             rules={[{ required: true, message: 'Please select department!' }]}
            >
-              <Select key="centerId">
+              <Select key="dcodeId">
           {department.map(department => (
             <Option key={department.did} value={department.did}>
               {department.dname}

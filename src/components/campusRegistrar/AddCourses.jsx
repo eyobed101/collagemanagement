@@ -11,18 +11,17 @@ const AddCourse = () => {
   const [data , setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5169/api/Departments', {
-      params: {
-        sortOrder: 'name desc',
-        pageNumber: 1,
-      },
-    })
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching department data:', error);
-      });
+    const fetchDepartments = async () => {
+      await axios.get('https://localhost:7032/api/Departments')
+        .then(response => {
+          setData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching department data:', error);
+        });
+
+    };
+    fetchDepartments();
   }, []);
 
   const onFinish = async (values) => {
@@ -131,11 +130,12 @@ const AddCourse = () => {
       </Form.Item>
 
       <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-        <Select>
-          <Option value="4">Computer Science</Option>
-          <Option value="3">Accounting</Option>
-          <Option value="5">Management</Option>
-
+      <Select key="dcode">
+          {data.map(department => (
+            <Option key={department.did} value={department.did}>
+              {department.dname}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item name="program" label="Program" rules={[{ required: true }]}>
