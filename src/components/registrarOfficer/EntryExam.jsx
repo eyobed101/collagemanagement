@@ -1,62 +1,20 @@
 import React, { useState , useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd';
+import { Table, Button, Modal, Form, Input,DatePicker,  Select, Popconfirm } from 'antd';
 import moment from 'moment';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
 
+
 const { Option } = Select;
-
-const mockData = [
-  {
-    key: '1',
-    studentId: '2021001',
-    courseNo: 'CSE101',
-    result: 'A',
-    testDate: moment('2022-01-15'),
-    resultDate: moment('2022-01-20'),
-    status: 'Pass',
-    programType: 'Undergraduate',
-  },
-  {
-    key: '2',
-    studentId: '2021002',
-    courseNo: 'MAT201',
-    result: 'B+',
-    testDate: moment('2022-02-10'),
-    resultDate: moment('2022-02-15'),
-    status: 'Pass',
-    programType: 'Undergraduate',
-  },
-  {
-    key: '3',
-    studentId: '2021003',
-    courseNo: 'PHY203',
-    result: 'B',
-    testDate: moment('2022-02-10'),
-    resultDate: moment('2022-02-15'),
-    status: 'Pass',
-    programType: 'Undergraduate',
-  },
-  {
-    key: '4',
-    studentId: '2021004',
-    courseNo: 'INFO204',
-    result: 'A',
-    testDate: moment('2022-02-10'),
-    resultDate: moment('2022-02-15'),
-    status: 'Pass',
-    programType: 'Undergraduate',
-  },
-  // Add more mock data as needed
-];
-
 const EntryExam = () => {
   const [visible, setVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -141,7 +99,10 @@ const EntryExam = () => {
             <Button type="link" size="small" onClick={() => edit(record)}  style={{ marginRight: 8 , color: '#4279A6' }}>
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+            <Popconfirm title="Sure to delete?" 
+             okText="Yes" cancelText="No"
+             okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
+            onConfirm={() => handleDelete(record)}>
               <Button type="link" danger size="small"  style={{ marginRight: 8 , color: 'red' }}>
                 Delete
               </Button>
@@ -158,52 +119,69 @@ const EntryExam = () => {
 
   const handleCancel = () => {
     setVisible(false);
+    setEditingKey('');
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => editingKey === item.key);
-  
-        if (index > -1) {
-          // Editing existing record
-          const item = newData[index];
-          newData.splice(index, 1, { ...item, ...values });
-          setDataSource(newData);
-          setEditingKey('');
-        } else {
-          // Adding new record
-          const newRecord = {
-            studId: values.studId,
-            courseNo: values.courseNo,
-            result: parseInt(values.result),
-            testDate: values.testDate.format('YYYY-MM-DD'), // Format date as needed
-            resultDate: values.resultDate.format('YYYY-MM-DD'), // Format date as needed
-            status: values.status,
-            programType: values.programType,
-           };
-          setDataSource([...newData, newRecord]);
-          setEditingKey('');
-  
-          // Make POST request to the API
-          console.log("post  ", newRecord);
-          axios.post('https://localhost:7032/api/EntryExams', newRecord)
-            .then(response => {
-              console.log('POST request successful:', response.data);
-            })
-            .catch(error => {
-              console.error('POST request failed:', error);
-            });
-        }
-  
-        setVisible(false);
-        form.resetFields();
-      })
-      .catch((error) => {
-        console.error('Validation failed:', error);
-      });
+  const handleEdit = async () => {
+    const values = form.getFieldsValue();
+    console.log('Form Edit :', values);
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "studId": values.studId,
+        "courseNo": values.courseNo,
+        "result":parseInt(values.result),          
+        "testDate": moment(startDate).format('YYYY-MM-DD'),
+        "status": values.status,
+        "resultDate": moment(endDate).format('YYYY-MM-DD'),
+        "programType": values.programType,   
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.put('https://localhost:7032/api/EntryExams', postData);
+      console.log('Put request successful:', response.data);
+
+      // setDataSource(response.data)
+      console.log("start " , moment(startDate).format('YYYY-MM-DD'))
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
+  };
+
+  const handleOk = async() => {
+    const values = form.getFieldsValue();
+
+    // Log the values to the console
+    console.log('Form values:', values);
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "studId": values.studId,
+        "courseNo": values.courseNo,
+        "result":parseInt(values.result),          
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
+        "status": values.status,
+        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "programType": values.programType,   
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.post('https://localhost:7032/api/EntryExams', postData);
+      console.log('POST request successful:', response.data);
+
+ 
+
+      setDataSource(response.data)
+
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
   };
 
   const onFinish = (values) => {
@@ -218,14 +196,23 @@ const EntryExam = () => {
   };
 
   const edit = (record) => {
-    form.setFieldsValue(record);
-    setEditingKey(record.key);
-    setVisible(true); // Open the modal for editing
+    const testDate = moment(record.testDate, 'YYYY-MM-DD');
+    const resultDate = moment(record.resultDate, 'YYYY-MM-DD'); 
+
+    form.setFieldsValue({
+      ...record,
+      testDate: testDate,
+      resultDate : resultDate
+    });
+    // form.setFieldsValue(record);
+    setEditingKey(record.studId);
+    // handleOk();  
+    setVisible(true)  // Open the modal for editing
   };
 
 
   const save = (key) => {
-    form.validateFields().then((values) => {
+    form.validateFields().then(async(values) => {
       const newData = [...dataSource];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -235,6 +222,8 @@ const EntryExam = () => {
           testDate: moment(values.testDate),
           resultDate: moment(values.resultDate),
         };
+        const response = await axios.put('https://localhost:7032/api/EntryExams', newData);
+        console.log('Put request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');
       }
@@ -245,8 +234,17 @@ const EntryExam = () => {
     setEditingKey('');
   };
 
-  const handleDelete = (key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
+  const handleChange = (value, dateString) => {
+    // Your custom logic or validation here
+    console.log(value, dateString);
+  };
+
+  const handleDelete = async (record) => {
+    console.log('delete', record)
+    const response = await axios.put('https://localhost:7032/api/EntryExams', record);
+    console.log('Delete request successful:', response.data);
+
+    const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);
   };
 
@@ -280,7 +278,7 @@ const EntryExam = () => {
         title={editingKey ? 'Edit Record' : 'Create Record'}
         visible={visible}
         onCancel={handleCancel}
-        onOk={handleOk}
+        onOk={editingKey ? handleEdit : handleOk}
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
@@ -310,14 +308,19 @@ const EntryExam = () => {
             name="testDate"
             rules={[{ required: true, message: 'Please select test date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange} />
+            <div style={{borderWidth:1 , height:30, padding:4 }}>
+            <DatePicker  style={{ width: '100%' }} formate="DD-MM-YYYY" onChange={(date) => setStartDate(date)} />
+            </div>
           </Form.Item>
           <Form.Item
             label="Result Date"
             name="resultDate"
             rules={[{ required: true, message: 'Please select result date!' }]}
+           
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange}  />
+            <div style={{borderWidth:2 , height:30, padding:4, borderRadius:'15%' }}>
+            <DatePicker  style={{ width: '100%' }} formate="DD-MM-YYYY" onChange={(date) => setEndDate(date)} />
+            </div>
           </Form.Item>
           <Form.Item
             label="Status"
