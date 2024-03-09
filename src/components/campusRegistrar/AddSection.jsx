@@ -15,11 +15,19 @@ const AddSection = () => {
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
+  const [createDate, setCreateDate] = useState(null);
   const [endDate, setEndDate] = useState(new Date());
 
 
   const isEditing = (record) => record.key === editingKey;
+
+  const onChangeEnd = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setCreateDate(dateString);
+
+   };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -162,7 +170,8 @@ const AddSection = () => {
 
   const handleCancel = () => {
     setVisible(false);
-    setEditingKey('');
+    setEditingKey(null);
+    form.resetFields();
   };
 
   const handleEdit =  () => {
@@ -179,14 +188,15 @@ const AddSection = () => {
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        "sectionId": updatedDataSource.sectionId,
-        "campusId": updatedDataSource.campusId,
-        "sectionName":updatedDataSource.sectionName,          
-        "dateCreated": moment(updatedDataSource.dateCreated).format('YYYY-MM-DD'),
-        "acadYear": updatedDataSource.acadYear,
-        "program": updatedDataSource.program,
-        "dcode": parseInt(updatedDataSource.dcode),
-        "programType": updatedDataSource.programType,   
+        "sectionId": values.sectionId,
+        "campusId": values.campusId,
+        "sectionName":values.sectionName,          
+        "dateCreated": moment(values.dateCreated).format('YYYY-MM-DD'),
+        "acadYear": values.acadYear,
+        "program": values.program,
+        "programType": values.programType, 
+        "dcode": parseInt(values.dcode),
+  
        };
       console.log("Response iss" , postData)
       const response = await axios.put('https://localhost:7032/api/Section', postData);
@@ -194,7 +204,6 @@ const AddSection = () => {
 
       // setDataSource(response.data)
       // console.log("start " , moment(startDate).format('YYYY-MM-DD'))
-      setVisible(false);
       
 
       // You can handle success, e.g., show a success message or redirect to another page
@@ -202,6 +211,10 @@ const AddSection = () => {
       console.error('POST request failed:', error);
     }
   });
+
+  form.resetFields();
+  setVisible(false);
+
 
   };
 
@@ -216,7 +229,7 @@ const AddSection = () => {
         "sectionId": values.sectionId,
         "campusId": values.campusId,
         "sectionName":values.sectionName,          
-        "dateCreated": moment(values.dateCreated).format('YYYY-MM-DD'),
+        "dateCreated": moment(createDate).format('YYYY-MM-DD'),
         "acadYear": values.acadYear,
         "program": values.program,
         "dcode": values.dcode,
@@ -231,6 +244,8 @@ const AddSection = () => {
       setDataSource(response.data)
 
       setVisible(false);
+      form.resetFields();
+
       
 
       // You can handle success, e.g., show a success message or redirect to another page
@@ -251,16 +266,15 @@ const AddSection = () => {
   };
 
   const edit = (record) => {
-    const testDate = moment(record.testDate, 'YYYY-MM-DD');
-    const resultDate = moment(record.resultDate, 'YYYY-MM-DD'); 
+    console.log("edit " , record)
+    const dateCreated = moment(record.dateCreated, 'YYYY-MM-DD');
 
     form.setFieldsValue({
       ...record,
-      testDate: testDate,
-      resultDate : resultDate
+      dateCreated: dateCreated,
     });
     // form.setFieldsValue(record);
-    setEditingKey(record.studId);
+    setEditingKey(record.sectionId);
     // handleOk();  
     setVisible(true)  // Open the modal for editing
   };
@@ -371,9 +385,9 @@ const AddSection = () => {
             name="dateCreated"
             rules={[{ required: true, message: 'Please select date created!' }]}
           >
-            <div style={{borderWidth:1 , height:30, padding:4 }}>
-            <DatePicker  style={{ width: '100%' }} formate="DD-MM-YYYY"  />
-            </div>
+                   <DatePicker
+         value={createDate && moment(createDate)} 
+            style={{ width: '100%' }} onChange={onChangeEnd}  />
           </Form.Item>
           <Form.Item
             label="Department"
