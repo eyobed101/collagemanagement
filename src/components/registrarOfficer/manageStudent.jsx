@@ -281,7 +281,7 @@ const StudentStatusManagement = () => {
             Select Department
           </label>
           <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             value={selectedDepartment ? selectedDepartment.dname : ""}
             onChange={(e) =>
               setSelectedDepartment(
@@ -302,7 +302,7 @@ const StudentStatusManagement = () => {
             Section
           </label>
           <select
-            className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             onChange={handleSectionChange}
           >
             <option value="">Select Section</option>
@@ -336,12 +336,12 @@ const StudentStatusManagement = () => {
           <thead className="border-2 px-5 py-4 rounded-md shadow-md">
             <tr>
               <TableHeader>ID</TableHeader>
-              <TableHeader>Name</TableHeader>
-              <TableHeader>Department</TableHeader>
-              <TableHeader>Section</TableHeader>
+              <TableHeader>Full Name</TableHeader>
+              <TableHeader>Gender</TableHeader>
               <TableHeader>Program</TableHeader>
-              <TableHeader>Term</TableHeader>
-              <TableHeader>Status</TableHeader>
+              <TableHeader>Previous Status</TableHeader>
+              <TableHeader>Current Status</TableHeader>
+              <TableHeader>Change Reason</TableHeader>
               <TableHeader>Action</TableHeader>
             </tr>
           </thead>
@@ -351,13 +351,14 @@ const StudentStatusManagement = () => {
   ).map((status, index) => (
     <TableRow key={index} isOdd={index % 2 !== 0}>
       <TableCell>{status.studId}</TableCell>
-      <TableCell>{students.filter((studt) => studt.studId === status.studId).map((studd) => studd.fname)}</TableCell>
-      <TableCell>{selectedDepartment.dname}</TableCell>
-      <TableCell>{selectedSection.sectionName}</TableCell>
+      <TableCell>{students.filter((studt) => studt.studId === status.studId).map((studd) => `${studd.fname} ${studd.mname} ${studd.lname}`)}</TableCell>
+      <TableCell>{students.filter((studt) => studt.studId === status.studId).map((studd) => studd.sex)}</TableCell>
       <TableCell>{students.filter((studt) => studt.studId === status.studId).map((studd) => studd.program)}</TableCell>
-      <TableCell>{students.filter((studt) => studt.studId === status.studId).map((studd) => studd.acadYear)}</TableCell>
+      <TableCell> {status.prevStatus ? status.prevStatus : " "}</TableCell>
+      
+      <TableCell>{status.currentStatus ? status.currentStatus : " "}</TableCell>
       <TableCell>
-        {status.currentStatus ? status.currentStatus : " "}
+        {status.changeReason ? status.changeReason : " "}
       </TableCell>
       <TableCell>
         <StyledButton onClick={() => handleOpenModal(status)}>
