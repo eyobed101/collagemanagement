@@ -129,6 +129,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(true)
+   
+    setIsStudentStatus(false)
   }
 
   const handleAddStudent = () => {
@@ -218,6 +220,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(false)
+    setIsStudentStatus(false)
   }
 
   const handleExitExam =() =>{
@@ -231,6 +234,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(true)
     setIsRemedial(false)
     setIsCourseTaken(false)
+    setIsStudentStatus(false)
   }
   const handleCourseExemption = () => {
     setIsAddStudent(false);
@@ -240,6 +244,11 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false);
     setIsCourseExemption(true)
     setIsStudentStatus(false)
+    setIsStudentStatus(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
+    setIsStudentStatus(false)
+
 
 
   };
@@ -270,6 +279,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(true)
     setIsCourseTaken(false)
+    setIsStudentStatus(false)
+
   }
 
   const handlelogout = () => {
