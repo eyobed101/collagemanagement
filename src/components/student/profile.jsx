@@ -21,12 +21,37 @@ import {
 import { Link } from "react-router-dom";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Profile() {
+
+  const [students, setStudents] = useState([]);
+  
+
+
+  useEffect(() => {
+    const fetchApplicant = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5169/api/Applicants"
+        );
+        setStudents(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+
+    fetchApplicant();
+
+  }, []);
+
+
   return (
     <>
       <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover	bg-center">
-        <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
+        <div className="absolute inset-0 h-full w-full bg-[#4279A6]/75" />
       </div>
       <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
         <CardBody className="p-4">
@@ -41,13 +66,15 @@ export function Profile() {
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Tilahun Haile Taddesse
+                  {/* Tilahun Haile Taddesse */}
+                  {students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.fname} ${std.mname} ${std.lname}`)}
                 </Typography>
                 <Typography
                   variant="small"
                   className="font-normal text-blue-gray-600"
                 >
-                Regular Student -  ET099241
+                {students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.programType} Student - ${std.studId}`)}
+
                 </Typography>
               </div>
             </div>
@@ -87,49 +114,51 @@ export function Profile() {
                         <div class="grid md:grid-cols-2 text-sm">
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">First Name</div>
-                                <div class="px-4 py-2">Tilahun</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.fname)}
+</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Middle Name</div>
-                                <div class="px-4 py-2">Haile</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.mname)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Last Name</div>
-                                <div class="px-4 py-2">Taddesse</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.lname)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Student ID</div>
-                                <div class="px-4 py-2">ET099241</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.studId)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Gender</div>
-                                <div class="px-4 py-2">Male</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.sex)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Contact No.</div>
-                                <div class="px-4 py-2">+11 998001001</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.tel)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Current Address</div>
-                                <div class="px-4 py-2">Wello Sefer, Kirkos - Addis Ababa</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.zone} ${std.woreda} ${std.town}`)}
+</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Citizen</div>
-                                <div class="px-4 py-2">Ethiopian</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.nationality)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Permanant Address</div>
-                                <div class="px-4 py-2">Wello Sefer, Kirkos - Addis Ababa</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.zone} ${std.woreda} ${std.town}`)}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Email.</div>
                                 <div class="px-4 py-2">
-                                    <a class="text-blue-800" href="mailto:jane@example.com">tilahun1taddesse@gmail.com</a>
+                                    <a class="text-blue-800" href="mailto:jane@example.com">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.email)}</a>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Birthday</div>
-                                <div class="px-4 py-2">Feb 06, 1998</div>
+                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.doB)}</div>
                             </div>
                         </div>
                     </div>

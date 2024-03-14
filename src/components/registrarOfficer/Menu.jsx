@@ -40,7 +40,7 @@ import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-ic
 import EntryExam from "./EntryExam";
 import ExitExam from "./ExitExam";
 import Remedial from "./Remedial";
-import StudentCourses from "./CourseTaken";
+import StudentCourses from "./manageStudent";
 import { Avatar, List } from "@mui/material";
 
 const icon = {
