@@ -1,115 +1,99 @@
 import React, { useState , useEffect} from 'react';
-import { Table, Button, Input, DatePicker, Popconfirm, Select } from 'antd';
+import { Table, Button, Input, DatePicker, Popconfirm, Select , Modal , Form} from 'antd';
 import moment from 'moment';
+import axios from 'axios';
 
 const AddTerm = () => {
   const [data, setData] = useState([
-    {
-      key: '1',
-      termId: 'T001',
-      termName: 'Term 1',
-      academicYear: '2022-2023',
-      startDate: moment('2022-09-01'),
-      endDate: moment('2022-12-31'),
-    },
+   
     // Add more sample data as needed
   ]);
-
+  const [loading , setLoading]= useState(false)
   const [editingKey, setEditingKey] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [form] = Form.useForm();
   const [studyCenters, setStudyCenters] = useState([]);
-
-
+  
 
   useEffect(() => {
-    axios.get('http://localhost:5169/api/Terms')
-      .then(response => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/Terms');
         setData(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching term data:', error);
-      });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } 
+    };
 
-      axios.get('http://localhost:5169/api/StudyCenters')
-      .then(response => {
+    fetchData();
+  }, []);
+
+  
+  useEffect(() => {
+  
+    const SetData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7032/api/StudyCenters');
         setStudyCenters(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching study center data:', error);
-      });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } 
+    };
+
+    SetData();
   }, []);
 
   const isEditing = (record) => record.key === editingKey;
 
-  const handleCenterChange = (value, record) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index].selectedCenterId = value;
-      setData(newData);
-    }
-  };
-
   const columns = [
     {
-      title: 'Study Center',
-      dataIndex: 'selectedCenterId',
+      title: 'Term ID',
+      dataIndex: 'termId',
       editable: true,
-      render: (text, record) => (
-        isEditing(record) ? (
-          <Select
-            style={{ width: '100%' }}
-            defaultValue={text}
-            onChange={(value) => handleCenterChange(value, record)}
-          >
-            {studyCenters.map(center => (
-              <Option key={center.CenterId} value={center.CenterId}>{center.CenterName}</Option>
-            ))}
-          </Select>
-        ) : (
-          studyCenters.find(center => center.CenterId === text)?.CenterName
-        )
-      ),
+      // render: (text, record) => renderCell(text, record, 'termId'),
     },
     
     {
       title: 'Term Name',
       dataIndex: 'name',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'name'),
+      // render: (text, record) => renderCell(text, record, 'name'),
     },
     {
       title: 'Academic Year',
-      dataIndex: 'academicYear',
+      dataIndex: 'acadYear',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'academicYear'),
+      // render: (text, record) => renderCell(text, record, 'academicYear'),
     },
     {
       title: 'Start Date',
       dataIndex: 'startDate',
+      render: (date) => moment(date).format('YYYY-MM-DD'),
       editable: true,
-      render: (_, record) => (
-        <DatePicker
-          value={moment(record.startDate)}
-          onChange={(date) => handleDateChange(date, record, 'startDate')}
-        />
-      ),
+      // render: (_, record) => (
+      //   <DatePicker
+      //     // value={moment(record.startDate)}
+      //     onChange={(date) => handleDateChange(date, record, 'startDate')}
+      //   />
+      // ),
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
+      render: (date) => moment(date).format('YYYY-MM-DD'),
       editable: true,
-      render: (_, record) => (
-        <DatePicker
-          value={moment(record.endDate)}
-          onChange={(date) => handleDateChange(date, record, 'endDate')}
-        />
-      ),
+      // render: (_, record) => (
+      //   <DatePicker
+      //     // value={moment(record.endDate)}
+      //     onChange={(date) => handleDateChange(date, record, 'endDate')}
+      //   />
+      // ),
     },
     {
       title: 'Center ID',
       dataIndex: 'centerId',
       editable: true,
-      render: (text, record) => renderCell(text, record, 'centerId'),
+      // render: (text, record) => renderCell(text, record, 'centerId'),
     },
     {
       title: 'Action',
@@ -121,12 +105,15 @@ const AddTerm = () => {
             <Button type="primary" style={{ backgroundColor: '#4279A6' }} onClick={() => save(record.key)}>
               Save
             </Button>
-            <Button onClick={cancel}>Cancel</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
           </span>
         ) : (
           <span>
-            <Button onClick={() => edit(record.key)}>Edit</Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+            <Button onClick={() => edit(record)}>Edit</Button>
+            <Popconfirm title="Sure to delete?" 
+             okText="Yes" cancelText="No"
+             okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
+            onConfirm={() => handleDelete(record)}>
               <Button type="danger">Delete</Button>
             </Popconfirm>
           </span>
@@ -135,111 +122,218 @@ const AddTerm = () => {
     },
   ];
 
-  const handleAdd = () => {
-    const newData = {
-      key: String(data.length + 1),
-      termId: '',
-      termName: '',
-      academicYear: '',
-      startDate: moment(),
-      endDate: moment(),
-    };
-    setData([...data, newData]);
-    setEditingKey(newData.key);
+ 
+  const handleCancel = () => {
+    setVisible(false);
   };
 
-  const handleDelete = (key) => {
-    const newData = data.filter(item => item.key !== key);
-    setData(newData);
+  const handleEdit = async () => {
+    const values = form.getFieldsValue();
+    console.log('Form Edit :', values);
+    try {
+      // Make a POST request to the API endpoint
+      const newRecord = {
+        "termId": values.termId,
+        "name": values.name,
+        "acadYear": values.acadYear,
+        "startDate":moment(values.startDate).format('YYYY-MM-DD'), // Format date as needed
+        "endDate":moment(values.endDate).format('YYYY-MM-DD'), // Format date as needed
+        "program": values.program,
+        "programType": values.programType,
+        "centerId":values.centerId, //
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.put('https://localhost:7032/api/Terms', newRecord);
+      console.log('Put request successful:', response.data);
+
+      setData(response.data)
+
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
+  };
+
+  const handleOk = async() => {
+    const values = form.getFieldsValue();
+
+    // Log the values to the console
+    console.log('Form values:', values);
+    try {
+      // Make a POST request to the API endpoint
+      const newRecord = {
+        "termId": values.termId,
+        "name": values.name,
+        "acadYear": values.acadYear,
+        "startDate":moment(values.startDate).format('YYYY-MM-DD'), // Format date as needed
+        "endDate":moment(values.endDate).format('YYYY-MM-DD'), // Format date as needed
+        "program": values.program,
+        "programType": values.programType,
+        "centerId":values.centerId, //
+       };
+      console.log("Response iss" , newRecord)
+      const response = await axios.post('https://localhost:7032/api/Terms/Terms', newRecord);
+      console.log('POST request successful:', response.data);
+
+      setData(response.data)
+
+      setVisible(false);
+      
+
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+    }
   };
 
 
-  const edit = (key) => {
-    setEditingKey(key);
+ 
+
+  const onFinish = (values) => {
+    console.log('Received values:', values);
   };
 
-  const cancel = () => {
+ 
+
+  const edit = (record) => {
+    console.log(record)
+    const startDate = moment(record.startDate, 'YYYY-MM-DD');
+    const endDate = moment(record.endDate, 'YYYY-MM-DD'); 
+
+    form.setFieldsValue({
+      ...record,
+      startDate: startDate,
+      endDate : endDate
+    });
+    // form.setFieldsValue(record);
+    setEditingKey(record.studId);
+    // handleOk();  
+    setVisible(true) 
+  };
+
+
+  const save = (key) => {
+    form.validateFields().then(async(values) => {
+      const newData = [...dataSource];
+      const index = newData.findIndex((item) => key === item.key);
+      if (index > -1) {
+        newData[index] = {
+          ...newData[index],
+          ...values,
+          startDate: moment(values.startDate),
+          endDate: moment(values.endDate),
+        };
+        const response = await axios.put('https://localhost:7032/api/Terms', newData);
+        console.log('Put request successful:', response.data);
+        setData(newData);
+        setEditingKey('');
+      }
+    });
+  };
+
+  const cancelEditing = () => {
     setEditingKey('');
   };
 
-  // const save = (key) => {
-  //   const newData = [...data];
-  //   const index = newData.findIndex((item) => key === item.key);
-  //   const item = newData[index];
-  //   newData.splice(index, 1, { ...item, ...{ key }, ...{ endDate: moment(item.endDate) } });
-  //   setData(newData);
-  //   setEditingKey('');
-  // };
+  const handleDelete = async (record) => {
+    console.log('delete', record)
+    const response = await axios.put('https://localhost:7032/api/Terms', record);
+    console.log('Delete request successful:', response.data);
 
-  const renderCell = (text, record, dataIndex, centerNameIndex, inputType = 'text') => {
-  const editing = isEditing(record);
-
-  const dateValue = record[dataIndex] && record[dataIndex].date;
-
-  return editing ? (
-    <div>
-      {inputType === 'date' ? (
-        <DatePicker
-          style={{ width: '100%' }}
-          defaultValue={dateValue ? moment(dateValue) : null}
-          onChange={(date) => handleDateChange(date, record, dataIndex)}
-          picker='date'
-        />
-      ) : inputType === 'select' ? (
-        <Select
-          style={{ width: '100%' }}
-          defaultValue={text}
-          onChange={(value) => handleCenterChange(value, record)}
-        >
-          {studyCenters.map(center => (
-            <Option key={center.CenterId} value={center.CenterId}>{center.CenterName}</Option>
-          ))}
-        </Select>
-      ) : (
-        <Input value={text} onChange={(e) => handleInputChange(e, record, dataIndex)} />
-      )}
-    </div>
-  ) : (
-    inputType === 'date' ? (
-      dateValue ? moment(dateValue).format('YYYY-MM-DD') : ''
-    ) : inputType === 'select' ? (
-      studyCenters.find(center => center.CenterId === text)?.CenterName
-    ) : (
-      text
-    )
-  );
-};
-
-  const handleInputChange = (e, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = e.target.value;
-  
-      if (dataIndex === 'startDate' || dataIndex === 'endDate') {
-        newData[index][dataIndex] = moment(e.target.value, 'YYYY-MM-DD');
-      }
-  
-      setData(newData);
-    }
+    const newData = data.filter((item) => item.key !== record.key);
+    setDataSource(newData);
   };
-  const handleDateChange = (date, record, dataIndex) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => record.key === item.key);
-    if (index > -1) {
-      newData[index][dataIndex] = date;
-      setData(newData);
-    }
+
+  const showModal = () => {
+    setVisible(true);
   };
 
   return (
     <div>
-      <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
+      <Button onClick={showModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
         Add New Term
       </Button>
-      <Table dataSource={term} columns={columns}  bordered  loading={loading}
+      <Table dataSource={data} columns={columns}  bordered  
       rowKey={(record) => record.termId}
       pagination={{ pageSize: 10 }} />
+       <Modal
+        title={editingKey ? 'Edit Record' : 'Create Record'}
+        visible={visible}
+        onCancel={handleCancel}
+        onOk={editingKey ? handleEdit : handleOk}
+        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
+      >
+        <Form form={form} onFinish={onFinish}>
+          <Form.Item
+            label="Term ID"
+            name="termId"
+            rules={[{ required: true, message: 'Please input term ID!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: 'Please input Name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Acadamic Year"
+            name="acadYear"
+            rules={[{ required: true, message: 'Please input Acadamic Year' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Start Date"
+            name="startDate"
+            rules={[{ required: true, message: 'Please select Start date!' }]}
+          >
+            <DatePicker style={{ width: '100%' }} onChange={onchange} />
+          </Form.Item>
+          <Form.Item
+            label="End Date"
+            name="endDate"
+            rules={[{ required: true, message: 'Please select End date!' }]}
+          >
+            <DatePicker style={{ width: '100%' }} onChange={onchange}  />
+          </Form.Item>
+          <Form.Item
+            label="Program"
+            name="program"
+            rules={[{ required: true, message: 'Please select Program!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="Degree">Degree</Option>
+              <Option value="Masters">Masters</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="Program Type"
+            name="programType"
+            rules={[{ required: true, message: 'Please select program type!' }]}
+          >
+            <Select style={{ width: '100%' }}>
+              <Option value="Regular">Regular</Option>
+              <Option value="Extension">Extension</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Study Center" name="centerId" required>
+        <Select key="centerId">
+          {studyCenters.map(center => (
+            <Option key={center.CenterId} value={center.CenterId}>
+              {center.CenterId}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+        </Form>
+      </Modal>
      
         </div>
   );

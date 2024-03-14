@@ -1,8 +1,8 @@
-import React, { useState , useEffect } from 'react';
-import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm } from 'antd';
-import { v4 as uuidv4 } from 'uuid';
-// import SiderGenerator from './Menu';
+import React, { useState , useEffect , useRef } from 'react';
+import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm , DatePicker } from 'antd';
+
 import axios from 'axios';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -11,15 +11,43 @@ const Curriculum = () => {
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCurriculumModalVisible, setIsCurriculumModalVisible] = useState(false);
-  const [isCourseModalVisible, setIsCourseModalVisible] = useState(false);
-  const [curriculums, setCurriculums] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [currculumName , setCurrculumName] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState([]);
-  const [isEditCourseModalVisible, setIsEditCourseModalVisible] = useState(false);
-  const [selectedCurriculum, setSelectedCurriculum] = useState(null);
   const [isEditCurriculumModalVisible, setIsEditCurriculumModalVisible] = useState(false);
   const [curriculum , setCurriculum] = useState([])
+  const [data , setData] = useState([]);
+  const [studyCenters, setStudyCenters] = useState([]);
+  const [editingKey, setEditingKey] = useState('');
+  const [startDate , setStartDate] = useState(new Date());
+  // Ref for accessing form instance
+
+
+  useEffect(() => {
+
+    const fetchDepartments =() =>{
+    axios.get('https://localhost:7032/api/Departments')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching department data:', error);
+      });
+
+    }
+
+    const fetchStudyCenters = () =>{
+      axios.get('https://localhost:7032/api/StudyCenters')
+      .then(response => {
+        setStudyCenters(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching study center data:', error);
+      });
+
+    }
+    fetchDepartments()
+    fetchStudyCenters()
+
+     
+  }, []);
 
   const showCurriculumModal = () => {
     setIsCurriculumModalVisible(true);
@@ -40,95 +68,109 @@ const Curriculum = () => {
     fetchData();
   }, []);
 
-  const showCourseModal = (curriculumName) => {
-    setIsCourseModalVisible(true);
-    setCurrculumName(curriculumName.name); // Set the curriculum name in the state
-    console.log("are you ",curriculumName.name);
-    // form.resetFields(); 
-  };
+  const isEditing = (record) => record.key === editingKey;
+
 
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
     setIsCurriculumModalVisible(false);
-    setIsCourseModalVisible(false);
-  };
+  }; 
 
-  const handleEditCourse = (course) => {
-    setSelectedCourse(course);
-    setIsEditCourseModalVisible(true);
-  };
-  
-  // Update the handleCourseOk function to edit the selected course
-  const handleEditCourseOk = () => {
-    const updatedCourses = courses.map((course) =>
-      course.id === selectedCourse.id ? { ...course, ...form.getFieldsValue() } : course
-    );
-  
-    setCourses(updatedCourses);
-    form.resetFields();
-    setIsEditCourseModalVisible(false);
-  };
+  const handleCurriculumOk = async () => {
+    const values = form.getFieldsValue();
 
-  const handleEditCurriculum = (curriculum) => {
-    setSelectedCurriculum(curriculum);
-    setIsEditCurriculumModalVisible(true);
-  };
-  
-  // Update the handleCurriculumOk function to edit the selected curriculum
-  const handleEditCurriculumOk = () => {
-    const updatedCurriculums = curriculums.map((curriculum) =>
-      curriculum.id === selectedCurriculum.id ? { ...curriculum, ...form.getFieldsValue() } : curriculum
-    );
-  
-    setCurriculums(updatedCurriculums);
-    form.resetFields();
-    setIsEditCurriculumModalVisible(false);
-  };
+    // Log the values to the console
+    console.log('Form values:', values);
+    try {
+      // Make a POST request to the API endpoint
+      const postData = {
+        "courseNo": values.courseNo,
+        "dcode": parseInt(values.dcode), 
+        "programType": values.programType,
+        "approvedDate":moment(values.approvedDate).format('YYYY-MM-DD'), 
+        "effectiveSdate": moment(values.effectiveSdate).format('YYYY-MM-DD'),
+        "effectiveEdate": moment(values.effectiveEdate).format('YYYY-MM-DD'),
+        "campusId": values.campusId ,
+       };
+      console.log("Response iss" , postData)
+      const response = await axios.post('https://localhost:7032/api/Curricula', postData);
+      console.log('POST request successful:', response.data);
+      
+ 
+      // You can handle success, e.g., show a success message or redirect to another page
+    } catch (error) {
+      console.error('POST request failed:', error);
+// Reset form fields after submission
+}
 
-  
 
-  const handleCurriculumOk = () => {
-    const newCurriculum = {
-      id: uuidv4(),
-      name: `Curriculum ${Math.floor(Math.random() * 1000)}`,
-      year: form.getFieldValue('year'),
-      program: form.getFieldValue('program'),
-      section: form.getFieldValue('section'),
-      department: form.getFieldValue('department'),
-    };
-  
-    setCurriculums((prevCurriculums) => [...prevCurriculums, newCurriculum]);
-  
-    form.resetFields();
-    setIsCurriculumModalVisible(false);
+showCurriculumModal(false);
+setEditingKey(null)
   };    
 
-  const handleCourseOk = () => {
-    const newCourse = {
-      id: uuidv4(),
-      curriculumName: currculumName,
-      courseName: form.getFieldValue('courseName'),
-      courseType: form.getFieldValue('courseType'),
-    };
-  
-    setCourses((prevCurriculums) => [...prevCurriculums, newCourse]);
-  
-    form.resetFields();
-    setIsCourseModalVisible(false);
+ 
+
+  const handleDelete = async (record) => {
+    console.log("handle   ", record)
+    const postData = {
+      "courseNo": record.courseNo,
+      "dcode": parseInt(record.dcode), 
+      "programType": record.programType,
+      "approvedDate":moment(record.approvedDate).format('YYYY-MM-DD'), 
+      "effectiveSdate": moment(record.effectiveSdate).format('YYYY-MM-DD'),
+      "effectiveEdate": moment(record.effectiveEdate).format('YYYY-MM-DD'),
+      "campusId": record.campusId ,
+     };
+
+     const response = await axios.delete('https://localhost:7032/api/Curricula', postData);
+     console.log('Delete request successful:', response.data);
+
   };
 
-  const handleDelete = (key) => {
-    console.log("handle   ", key)
-    const newData = courses.filter(item => item.id !== key.id);
-    setCourses(newData);
+  const edit = (record) => {
+    console.log(record)
+    const approvedDate = moment(record.approvedDate, 'YYYY-MM-DD');
+    const effectiveSdate = moment(record.effectiveSdate, 'YYYY-MM-DD');
+    const effectiveEdate = moment(record.effectiveEdate, 'YYYY-MM-DD'); 
+
+    form.setFieldsValue({
+      ...record,
+      approvedDate: approvedDate,
+      effectiveSdate: effectiveSdate,
+      effectiveEdate: effectiveEdate,
+    });
+    // form.setFieldsValue(record);
+    setEditingKey(record.courseNo);
+
+    // handleOk();
+    setIsCurriculumModalVisible(true)
+
+
+    console.log("okay ",record)
   };
+
+  const onchange = (date, dateString) => {
+    console.log(dateString);
+    // Handle date changes as needed
+  };
+
 
   const columns = [
     {
       title: 'Course No',
       dataIndex: 'courseNo',
       key: 'courseNo',
+    },
+    {
+      title: 'Department',
+      dataIndex: 'dcode',
+      key: 'dcode',
+      render: (text, record) => {
+        // Assuming record.department contains the 'did' field
+        const departmentInfo = data.find((item) => item.did === record.dcode);
+        return departmentInfo ? departmentInfo.dname : text;
+      },
     },
     {
       title: 'Approved Date',
@@ -156,178 +198,144 @@ const Curriculum = () => {
       key: 'campusId',
     },
     {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-          <Space size="middle">
-            <Button onClick={() => showCourseModal(record)}>Add Curricula based on Id</Button>
-          </Space>
-        ),
-      },
-  ];
-  const courseColumns = [
-    {
-      title: 'Curriculum Name',
-      dataIndex: 'curriculumName',
-      key: 'curriculumName',
-    },
-    {
-      title: 'Course Name',
-      dataIndex: 'courseName',
-      key: 'courseName',
-    },
-    {
-      title: 'Course Type',
-      dataIndex: 'courseType',
-      key: 'courseType',
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-          <Space size="middle">
-            <Button onClick={() => handleEditCourse(record)}>Edit</Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+      title: 'Action',
+      dataIndex: 'action',
+      render: (_, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Button type="primary" style={{ backgroundColor: '#4279A6' }} onClick={() => save(record.key)}>
+              Save
+            </Button>
+            <Button onClick={handleCancel}>Cancel</Button>
+          </span>
+        ) : (
+          <span>
+            <Button onClick={() => edit(record)}>Edit</Button>
+            <Popconfirm title="Sure to delete?" 
+             okText="Yes" cancelText="No"
+             okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
+            onConfirm={() => handleDelete(record)}>
               <Button type="danger">Delete</Button>
             </Popconfirm>
-          </Space>
-        ),
+          </span>
+        );
       },
+    },
   ];
+
+  const handleEdit = async(values) => {
+
+    form.validateFields().then(async(values) => {
+      const updatedDataSource = curriculum.map((record) => {
+        if (record.courseNo === values.courseNo) {
+          return { ...record, ...values };
+        }
+        return record;
+      });
+
+
+    console.log('Form Edit :', updatedDataSource);
+    const postData = {
+      "courseNo": values.courseNo,
+      "dcode": parseInt(values.dcode), 
+      "programType": values.programType,
+      "approvedDate":moment(values.approvedDate).format('YYYY-MM-DD'), 
+      "effectiveSdate": moment(values.effectiveSdate).format('YYYY-MM-DD'),
+      "effectiveEdate": moment(values.effectiveEdate).format('YYYY-MM-DD'),
+      "campusId": values.campusId ,
+     };
+       
+     const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
+     const url = `https://localhost:7032/api/Curricula/${encodeURIComponent(values.dcode)}/${encodeURIComponent(testDate)}/${encodeURIComponent(values.campusId)}`
+     console.log("test ", postData , testDate);
+      await axios.put(url, postData)
+      .then(response => {
+        console.log('Department updated successfully:', response.data);
+        setData(updatedData);
+        setEditingKey('');
+        setIsEditCurriculumModalVisible(false);
+        
+      })
+      .catch(error => {
+        console.error('Error creating department:', error);
+      });
+     setIsCurriculumModalVisible(false)
+     setEditingKey(null)
+    });
+  };
 
   return (
     <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
           {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-sub mb-10 ml-[2%]">
    <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
-        Curriculum and Course List
+        Curriculum List
       </p>
       <Button type="primary" style={{ background: "#4279A6", }} onClick={showCurriculumModal}>
         New Curriculum
       </Button>
 
-      <Modal title="Create New Curriculum" visible={isCurriculumModalVisible}
+      <Modal 
+      title = {editingKey ? 'Edit Curriculum' : 'Create New Curriculum'}
+      visible={isCurriculumModalVisible}
       okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-      onOk={handleCurriculumOk} onCancel={handleCancel}>
-        <Form form={form} onFinish={handleCurriculumOk} layout="vertical">
-          <Form.Item label="Year" name="year" rules={[{ required: true, message: 'Please select a year' }]}>
-            <Select>
-              <Option value="2023">2023</Option>
-              <Option value="2024">2024</Option>
-              <Option value="2025">2025</Option>
-            </Select>
+      onOk={editingKey ? handleEdit : handleCurriculumOk} onCancel={handleCancel}>
+        <Form form={form} onFinish={editingKey ? handleEdit : handleCurriculumOk} layout="vertical">
+        <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item
+            label="Approved Date"
+            name="approvedDate"
+            rules={[{ required: true, message: 'Please select Approved date!' }]}
+          >
+            <DatePicker style={{ width: '100%' }}  onChange={onchange} />
           </Form.Item>
-
-          <Form.Item label="Program" name="program" rules={[{ required: true, message: 'Please select a program' }]}>
-            <Select>
-              <Option value="Bachelor">Bachelor</Option>
-              <Option value="Master">Master</Option>
-            </Select>
+      <Form.Item
+            label="Effective Start Date"
+            name="effectiveSdate"
+            rules={[{ required: true, message: 'Please select Start date!' }]}
+          >
+            <DatePicker style={{ width: '100%' }}  onChange={onchange}  />
           </Form.Item>
-
-          <Form.Item label="Section" name="section" rules={[{ required: true, message: 'Please select a section' }]}>
-            <Select>
-              <Option value="A">A</Option>
-              <Option value="B">B</Option>
-            </Select>
+          <Form.Item
+            label="Effective End Date"
+            name="effectiveEdate"
+            rules={[{ required: true, message: 'Please select End date!' }]}
+          >
+            <DatePicker style={{ width: '100%' }}   onChange={onchange} />
           </Form.Item>
-
-          <Form.Item label="Department" name="department" rules={[{ required: true, message: 'Please select a department' }]}>
-            <Select>
-              <Option value="Computer Science">Computer Science</Option>
-              <Option value="Electrical Engineering">Electrical Engineering</Option>
-            </Select>
-          </Form.Item>
+          <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
+          <Select key="dcode">
+          {data.map(center => (
+            <Option key={center.did} value={center.did}>
+              {center.dname}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item name="programType" label="Program Type" rules={[{ required: true }]}>
+        <Select>
+          <Option value="Regular">Regular</Option>
+          <Option value="Distance">Distance</Option>
+        </Select>
+      </Form.Item>
+      <Form.Item label="Study Center" name="campusId" required>
+        <Select key="centerId">
+          {studyCenters.map(center => (
+            <Option key={center.CenterId} value={center.CenterId}>
+              {center.CenterId}
+            </Option>
+          ))}
+        </Select>
+        </Form.Item>
         </Form>
       </Modal>
-
-      <Modal title="Add Courses to Curriculum" visible={isCourseModalVisible} 
-      onOk={handleCourseOk} onCancel={handleCancel}
-      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-      >
-        <Form form={form} onFinish={handleCourseOk} layout="vertical">
-          <Form.Item label="Curriculum Name" name="curriculumName">
-            <Input value={currculumName} placeholder={currculumName} disabled />
-          </Form.Item>
-
-          <Form.Item label="Course Name" name="courseName" rules={[{ required: true, message: 'Please enter a course name' }]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Course Type" name="courseType" rules={[{ required: true, message: 'Please select a course type' }]}>
-            <Select>
-              <Option value="Major">Major</Option>
-              <Option value="Common">Common</Option>
-              {/* Add more course types as needed */}
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-      title="Edit Curriculum"
-      visible={isEditCurriculumModalVisible}
-      onOk={handleEditCurriculumOk}
-      onCancel={() => setIsEditCurriculumModalVisible(false)}
-      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-
-    >
-      <Form form={form} layout="vertical">
-        <Form.Item name="year" label="Academic Year">
-        <Select>
-              <Option value="2023">2023</Option>
-              <Option value="2024">2024</Option>
-              <Option value="2025">2025</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item name="program" label="Program">
-        <Select>
-              <Option value="Bachelor">Bachelor</Option>
-              <Option value="Master">Master</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item name="section" label="Section">
-        <Select>
-              <Option value="A">A</Option>
-              <Option value="B">B</Option>
-            </Select>
-        </Form.Item>
-        <Form.Item name="department" label="Department">
-        <Select>
-              <Option value="Computer Science">Computer Science</Option>
-              <Option value="Electrical Engineering">Electrical Engineering</Option>
-            </Select>
-        </Form.Item>
-      </Form>
-    </Modal>
-
-    <Modal
-      title="Edit Course"
-      visible={isEditCourseModalVisible}
-      onOk={handleEditCourseOk}
-      onCancel={() => setIsEditCourseModalVisible(false)}
-      okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
-
-    >
-      <Form form={form} layout="vertical">
-        <Form.Item name="courseName" label="Course Name">
-          <Input placeholder="Enter Course Name" />
-        </Form.Item>
-        <Form.Item name="courseType" label="Course Type">
-        <Select>
-              <Option value="Major">Major</Option>
-              <Option value="Common">Common</Option>
-              {/* Add more course types as needed */}
-            </Select>
-        </Form.Item>
-        {/* Add other course-related fields as needed */}
-      </Form>
-    </Modal>
-
       <Table dataSource={curriculum} columns={columns}  bordered  loading={loading}
       rowKey={(record) => record.termId}
       pagination={{ pageSize: 10 }} />
-      <Table columns={courseColumns} dataSource={courses} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} />
+      {/* <Table columns={courseColumns} dataSource={courses} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} /> */}
 
     </div>
     </div>
