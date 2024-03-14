@@ -38,8 +38,8 @@ const icon = {
 
 const DepartSiderGenerator = () => {
   const [openKeys, setOpenKeys] = useState([]);
-  const [isDepartmentHead, setIsDepartmentHead] = useState(true);
-  const [isDepartmentCourse, setIsDepartmentCourse] = useState(false);
+  const [isDepartmentHead, setIsDepartmentHead] = useState(false);
+  const [isDepartmentCourse, setIsDepartmentCourse] = useState(true);
   const [isDepartmentAdmin, setIsDepartmentAdmin] = useState(false);
   
 
@@ -77,6 +77,11 @@ const DepartSiderGenerator = () => {
       title: "epartiment",
       pages: [
         {
+          icon: <BuildingLibraryIcon {...icon} />,
+          name: "Depatiment Course",
+          onClick: handleCDepartmentCourse,
+        },
+        {
           icon: <HomeIcon {...icon} />,
           name: "Departimen Admin",
           onClick: handleDepartmentAdmin,
@@ -85,11 +90,6 @@ const DepartSiderGenerator = () => {
           icon: <HomeIcon {...icon} />,
           name: "Departiment Head",
           onClick: handleDepartmentHead,
-        },
-        {
-          icon: <BuildingLibraryIcon {...icon} />,
-          name: "Depatiment Course",
-          onClick: handleCDepartmentCourse,
         },
         {
           icon: <MdLogout {...icon} />,

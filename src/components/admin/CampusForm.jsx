@@ -22,16 +22,22 @@ function CampusForm({ onSubmit }) {
 
 
   const handleSubmit = async () => {
+
+
     try {
       // Make a POST request to your server endpoint
-      const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter/', {
-        centerId: centerId, 
-        centerName: centerName,
-        regionalCenterName: regionalCenterName, // Add other properties as needed
-        region: region,
-        currentCenterThis: currentCenterThis,
-        centerType: centerType,
-      });
+
+      const postData = {
+        "centerId": centerId,
+        "centerName": centerName,
+        "regionalCenterName":regionalCenterName,          
+        "region": region,
+        "currentCenterThis": currentCenterThis,
+        "centerType": centerType 
+       };
+      console.log("Response iss" , postData)
+
+      const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter', postData);
 
       // Handle the response as needed
       console.log('Data successfully posted:', response.data);
@@ -110,27 +116,39 @@ function CampusForm({ onSubmit }) {
         <div className="w-full flex flex-col md:flex-row items-center gap-3">
           <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
             <MdWork className="text-gray-700 text-2xl" />
-            <input
+            <select
               type="text"
               required
               value={currentCenterThis}
-              onChange={(e) => setcurrentCenterThis(e.target.value)}
-              placeholder="Current Center  "
+              onChange={(e) => {
+                setcurrentCenterThis(e.target.value);
+                console.log(e.target.value); // Log the selected value
+              }}
+              placeholder="Current Center is this "
               className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
-            />
+            >
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+         </select>
           </div>
         </div>
         <div className="w-full flex flex-col md:flex-row items-center gap-3">
           <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
             <MdWork className="text-gray-700 text-2xl" />
-            <input
+            <select
               type="text"
               required
               value={centerType}
               onChange={(e) => setcenterType(e.target.value)}
               placeholder="Center Type "
               className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
-            />
+            >
+               <option value="Regular">Regular</option>
+               <option value="Extension">Extension</option>
+              <option value="Distance">Distance</option>
+              <option value="TVET">TVET</option>
+
+         </select>
           </div>
         </div>
         <div className="flex items-center w-full">

@@ -16,6 +16,22 @@ const EntryExam = () => {
   const [endDate, setEndDate] = useState(new Date());
 
 
+  const onChangeStart = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange ', dateString)
+    setStartDate(dateString);
+
+   };
+
+   const onChangeEnd = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setEndDate(dateString);
+
+   };
+
+
+
   const isEditing = (record) => record.key === editingKey;
 
   useEffect(() => {
@@ -131,9 +147,9 @@ const EntryExam = () => {
         "studId": values.studId,
         "courseNo": values.courseNo,
         "result":parseInt(values.result),          
-        "testDate": moment(startDate).format('YYYY-MM-DD'),
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(endDate).format('YYYY-MM-DD'),
+        "resultDate": moment(values.endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
@@ -162,9 +178,9 @@ const EntryExam = () => {
         "studId": values.studId,
         "courseNo": values.courseNo,
         "result":parseInt(values.result),          
-        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
+        "testDate": moment(startDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "resultDate": moment(endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
@@ -173,7 +189,7 @@ const EntryExam = () => {
 
  
 
-      setDataSource(response.data)
+      // setDataSource(response.data)
 
       setVisible(false);
       
@@ -241,11 +257,17 @@ const EntryExam = () => {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put('https://localhost:7032/api/EntryExams', record);
+    const response = await axios.delete('https://localhost:7032/api/EntryExams', record);
     console.log('Delete request successful:', response.data);
 
     const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);
+  };
+
+  const onChangeResult = (e) => {
+    const result = e.target.value;
+    const status = result > 50 ? 'Pass' : 'Fail';
+    form.setFieldsValue({ status });
   };
 
   return (
@@ -301,16 +323,17 @@ const EntryExam = () => {
             name="result"
             rules={[{ required: true, message: 'Please input result!' }]}
           >
-            <Input />
+          <Input onChange={onChangeResult} />
           </Form.Item>
           <Form.Item
             label="Test Date"
             name="testDate"
             rules={[{ required: true, message: 'Please select test date!' }]}
           >
-            <div style={{borderWidth:1 , height:30, padding:4 }}>
-            <DatePicker  style={{ width: '100%' }} formate="DD-MM-YYYY" onChange={(date) => setStartDate(date)} />
-            </div>
+            <DatePicker  style={{ width: '100%' }} 
+                                 value={startDate && moment(startDate)} 
+
+            onChange={onChangeStart} />
           </Form.Item>
           <Form.Item
             label="Result Date"
@@ -318,9 +341,10 @@ const EntryExam = () => {
             rules={[{ required: true, message: 'Please select result date!' }]}
            
           >
-            <div style={{borderWidth:2 , height:30, padding:4, borderRadius:'15%' }}>
-            <DatePicker  style={{ width: '100%' }} formate="DD-MM-YYYY" onChange={(date) => setEndDate(date)} />
-            </div>
+            <DatePicker  style={{ width: '100%' }}
+                     value={endDate && moment(endDate)} 
+
+            formate="DD-MM-YYYY" onChange={onChangeEnd} />
           </Form.Item>
           <Form.Item
             label="Status"
@@ -340,6 +364,7 @@ const EntryExam = () => {
             <Select style={{ width: '100%' }}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Extension</Option>
+              <Option value="Distance">Distance</Option>
             </Select>
           </Form.Item>
         </Form>

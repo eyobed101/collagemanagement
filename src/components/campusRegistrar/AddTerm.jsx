@@ -13,7 +13,24 @@ const AddTerm = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [studyCenters, setStudyCenters] = useState([]);
+  const [StartDate , setStartDate] = useState(null);
+  const [EndDate , setEndDate] = useState(null);
+
   
+
+  const onChangeStart = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange ', dateString)
+    setStartDate(dateString);
+
+   };
+
+   const onChangeEnd = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setEndDate(dateString);
+
+   };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,13 +153,13 @@ const AddTerm = () => {
         "termId": values.termId,
         "name": values.name,
         "acadYear": values.acadYear,
-        "startDate":moment(values.startDate).format('YYYY-MM-DD'), // Format date as needed
-        "endDate":moment(values.endDate).format('YYYY-MM-DD'), // Format date as needed
+        "startDate":moment(StartDate ,'YYYY-MM-DD').toISOString(), // Format date as needed
+        "endDate":moment(EndDate ,'YYYY-MM-DD').toISOString(), // Format date as needed
         "program": values.program,
         "programType": values.programType,
         "centerId":values.centerId, //
        };
-      console.log("Response iss" , postData)
+      console.log("Response iss" , newRecord)
       const response = await axios.put('https://localhost:7032/api/Terms', newRecord);
       console.log('Put request successful:', response.data);
 
@@ -168,8 +185,8 @@ const AddTerm = () => {
         "termId": values.termId,
         "name": values.name,
         "acadYear": values.acadYear,
-        "startDate":moment(values.startDate).format('YYYY-MM-DD'), // Format date as needed
-        "endDate":moment(values.endDate).format('YYYY-MM-DD'), // Format date as needed
+        "startDate":moment(StartDate).format('YYYY-MM-DD'), // Format date as needed
+        "endDate":moment(EndDate).format('YYYY-MM-DD'), // Format date as needed
         "program": values.program,
         "programType": values.programType,
         "centerId":values.centerId, //
@@ -209,7 +226,7 @@ const AddTerm = () => {
       endDate : endDate
     });
     // form.setFieldsValue(record);
-    setEditingKey(record.studId);
+    setEditingKey(record.termId);
     // handleOk();  
     setVisible(true) 
   };
@@ -293,14 +310,21 @@ const AddTerm = () => {
             name="startDate"
             rules={[{ required: true, message: 'Please select Start date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange} />
+            <DatePicker 
+                     value={StartDate && moment(StartDate)} 
+                     getPopupContainer={(trigger) => trigger.parentElement}
+
+
+            style={{ width: '100%' }} onChange={onChangeStart} />
           </Form.Item>
           <Form.Item
             label="End Date"
             name="endDate"
             rules={[{ required: true, message: 'Please select End date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange}  />
+            <DatePicker  
+         value={EndDate && moment(EndDate)} 
+            style={{ width: '100%' }} onChange={onChangeEnd}  />
           </Form.Item>
           <Form.Item
             label="Program"

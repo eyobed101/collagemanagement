@@ -7,8 +7,6 @@ import DepartmentCourse from './Deparment_Course';
 
 const { Option } = Select;
 
-
-
 const DepartmentAdmin = () => {
   const dispatch = useDispatch();
   const [isGrade,setIsGrade] = useState(true);

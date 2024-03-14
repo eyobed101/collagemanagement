@@ -56,6 +56,23 @@ const Remedial = () => {
   const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+
+  const onChangeStart = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange ', dateString)
+    setStartDate(dateString);
+
+   };
+
+   const onChangeEnd = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setEndDate(dateString);
+
+   };
 
   const isEditing = (record) => record.key === editingKey;
   useEffect(() => {
@@ -170,24 +187,25 @@ const Remedial = () => {
         "studId": values.studId,
         "courseNo": values.courseNo,
         "result":parseInt(values.result),          
-        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
+        "testDate": moment(startDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "resultDate": moment(endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
       const response = await axios.post('https://localhost:7032/api/Remedials', postData);
       console.log('POST request successful:', response.data);
 
-      setDataSource(response.data)
 
-      setVisible(false);
       
 
       // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
       console.error('POST request failed:', error);
     }
+
+    setVisible(false);
+
   };
 
 
@@ -202,21 +220,22 @@ const Remedial = () => {
         "result":parseInt(values.result),          
         "testDate": moment(values.testDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(values.resultDate).format('YYYY-MM-DD'),
+        "resultDate": moment(values.endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
       const response = await axios.put('https://localhost:7032/api/Remedials', postData);
       console.log('Put request successful:', response.data);
-      setDataSource(response.data)
+      // setDataSource(response.data)
 
-      setVisible(false);
       
 
       // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
       console.error('POST request failed:', error);
     }
+    setVisible(false);
+
   };
   
   const onFinish = (values) => {
@@ -276,6 +295,12 @@ const Remedial = () => {
     setDataSource(newData);
   };
 
+  const onChangeResult = (e) => {
+    const result = e.target.value;
+    const status = result > 50 ? 'Pass' : 'Fail';
+    form.setFieldsValue({ status });
+  };
+
   return (
         <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
@@ -329,21 +354,27 @@ const Remedial = () => {
             name="result"
             rules={[{ required: true, message: 'Please input result!' }]}
           >
-            <Input />
+          <Input onChange={onChangeResult} />
           </Form.Item>
           <Form.Item
             label="Test Date"
             name="testDate"
             rules={[{ required: true, message: 'Please select test date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange} defaultValue={moment()} />
-          </Form.Item>
+          <DatePicker  style={{ width: '100%' }} 
+                                 value={startDate && moment(startDate)} 
+
+            onChange={onChangeStart} />
+                      </Form.Item>
           <Form.Item
             label="Result Date"
             name="resultDate"
             rules={[{ required: true, message: 'Please select result date!' }]}
           >
-            <DatePicker style={{ width: '100%' }} onChange={onchange} defaultValue={moment()} />
+   <DatePicker  style={{ width: '100%' }} 
+                                 value={endDate && moment(endDate)} 
+
+            onChange={onChangeEnd} />
           </Form.Item>
           <Form.Item
             label="Status"
