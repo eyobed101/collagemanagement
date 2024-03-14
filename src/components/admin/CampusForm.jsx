@@ -37,7 +37,7 @@ function CampusForm({ onSubmit }) {
        };
       console.log("Response iss" , postData)
 
-      // const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter', postData);
+      const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter', postData);
 
       // Handle the response as needed
       console.log('Data successfully posted:', response.data);
@@ -144,7 +144,10 @@ function CampusForm({ onSubmit }) {
               className="w-full h-full text-lg bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
             >
                <option value="Regular">Regular</option>
+               <option value="Extension">Extension</option>
               <option value="Distance">Distance</option>
+              <option value="TVET">TVET</option>
+
          </select>
           </div>
         </div>

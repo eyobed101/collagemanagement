@@ -16,7 +16,9 @@ const Curriculum = () => {
   const [data , setData] = useState([]);
   const [studyCenters, setStudyCenters] = useState([]);
   const [editingKey, setEditingKey] = useState('');
-  const [startDate , setStartDate] = useState(new Date());
+  const [approvedDate , setApprovedDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   // Ref for accessing form instance
 
 
@@ -77,6 +79,27 @@ const Curriculum = () => {
     setIsCurriculumModalVisible(false);
   }; 
 
+  const onChangeApproved = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setApprovedDate(dateString);
+
+   };
+
+   const onChangeStart = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setStartDate(dateString);
+
+   };
+
+   const onChangeEnd = (date, dateString) => {
+    // Update the state or form values
+    console.log('onChange is ', dateString)
+    setEndDate(dateString);
+
+   };
+
   const handleCurriculumOk = async () => {
     const values = form.getFieldsValue();
 
@@ -85,26 +108,39 @@ const Curriculum = () => {
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        "courseNo": values.courseNo,
         "dcode": parseInt(values.dcode), 
-        "programType": values.programType,
-        "approvedDate":moment(values.approvedDate).format('YYYY-MM-DD'), 
-        "effectiveSdate": moment(values.effectiveSdate).format('YYYY-MM-DD'),
-        "effectiveEdate": moment(values.effectiveEdate).format('YYYY-MM-DD'),
+        "courseNo": values.courseNo,
+        "approvedDate":moment(approvedDate).format('YYYY-MM-DD'), 
+        "program": values.program,
+        "effectiveSdate": moment(startDate).format('YYYY-MM-DD'),
+        "effectiveEdate": moment(endDate).format('YYYY-MM-DD'),
         "campusId": values.campusId ,
        };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/Curricula', postData);
+      const response = await axios.post('https://localhost:7032/api/Curricula', [postData]);
       console.log('POST request successful:', response.data);
       
- 
+      showCurriculumModal(false);
+
       // You can handle success, e.g., show a success message or redirect to another page
-    } catch (error) {
-      console.error('POST request failed:', error);
-// Reset form fields after submission
-}
+    }  catch (error) {
+      if (error.response) {
+        // The request was made, but the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("Request data:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message:", error.message);
+      }
+      console.error("Config:", error.config);
+      showCurriculumModal(false);
 
-
+    }
 showCurriculumModal(false);
 setEditingKey(null)
   };    
@@ -116,7 +152,7 @@ setEditingKey(null)
     const postData = {
       "courseNo": record.courseNo,
       "dcode": parseInt(record.dcode), 
-      "programType": record.programType,
+      "program": record.program,
       "approvedDate":moment(record.approvedDate).format('YYYY-MM-DD'), 
       "effectiveSdate": moment(record.effectiveSdate).format('YYYY-MM-DD'),
       "effectiveEdate": moment(record.effectiveEdate).format('YYYY-MM-DD'),
@@ -178,9 +214,9 @@ setEditingKey(null)
       key: 'approvedDate',
     },
     {
-      title: 'Program Type',
-      dataIndex: 'programType',
-      key: 'programType',
+      title: 'Program ',
+      dataIndex: 'program',
+      key: 'program',
     },
     {
       title: 'Effective Start Date',
@@ -239,15 +275,15 @@ setEditingKey(null)
     const postData = {
       "courseNo": values.courseNo,
       "dcode": parseInt(values.dcode), 
-      "programType": values.programType,
-      "approvedDate":moment(values.approvedDate).format('YYYY-MM-DD'), 
-      "effectiveSdate": moment(values.effectiveSdate).format('YYYY-MM-DD'),
-      "effectiveEdate": moment(values.effectiveEdate).format('YYYY-MM-DD'),
+      "program": values.program,
+      "approvedDate":(approvedDate ? moment(approvedDate).format('YYYY-MM-DD'):moment(values.approvedDate).format('YYYY-MM-DD')), 
+      "effectiveSdate":(startDate?  moment(startDate).format('YYYY-MM-DD'): moment(values.effectiveSdate).format('YYYY-MM-DD')),
+      "effectiveEdate": (endDate?  moment(endDate).format('YYYY-MM-DD') :moment(values.effectiveEdate).format('YYYY-MM-DD')),
       "campusId": values.campusId ,
      };
        
      const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
-     const url = `https://localhost:7032/api/Curricula/${encodeURIComponent(values.dcode)}/${encodeURIComponent(testDate)}/${encodeURIComponent(values.campusId)}`
+     const url = "https://localhost:7032/api/Curricula"
      console.log("test ", postData , testDate);
       await axios.put(url, postData)
       .then(response => {
@@ -290,21 +326,27 @@ setEditingKey(null)
             name="approvedDate"
             rules={[{ required: true, message: 'Please select Approved date!' }]}
           >
-            <DatePicker style={{ width: '100%' }}  onChange={onchange} />
+            <DatePicker
+            value={approvedDate && moment(approvedDate)} 
+            style={{ width: '100%' }}  onChange={onChangeApproved} />
           </Form.Item>
       <Form.Item
             label="Effective Start Date"
             name="effectiveSdate"
             rules={[{ required: true, message: 'Please select Start date!' }]}
           >
-            <DatePicker style={{ width: '100%' }}  onChange={onchange}  />
+            <DatePicker 
+             value={startDate && moment(startDate)} 
+            style={{ width: '100%' }}  onChange={onChangeStart}  />
           </Form.Item>
           <Form.Item
             label="Effective End Date"
             name="effectiveEdate"
             rules={[{ required: true, message: 'Please select End date!' }]}
           >
-            <DatePicker style={{ width: '100%' }}   onChange={onchange} />
+            <DatePicker 
+                         value={endDate && moment(endDate)} 
+            style={{ width: '100%' }}   onChange={onChangeEnd} />
           </Form.Item>
           <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
           <Select key="dcode">
@@ -315,10 +357,13 @@ setEditingKey(null)
           ))}
         </Select>
       </Form.Item>
-      <Form.Item name="programType" label="Program Type" rules={[{ required: true }]}>
+      <Form.Item name="program" label="Program " rules={[{ required: true }]}>
         <Select>
-          <Option value="Regular">Regular</Option>
-          <Option value="Distance">Distance</Option>
+        <Option value="TVET">TVET</Option>
+        <Option value="Diploma">Diploma</Option>
+          <Option value="Degree">Degree</Option>
+          <Option value="Masters">Masters</Option>
+          <Option value="PHD">PHD</Option>
         </Select>
       </Form.Item>
       <Form.Item label="Study Center" name="campusId" required>

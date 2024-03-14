@@ -147,9 +147,9 @@ const EntryExam = () => {
         "studId": values.studId,
         "courseNo": values.courseNo,
         "result":parseInt(values.result),          
-        "testDate": moment(startDate? startDate: values.testDate).format('YYYY-MM-DD'),
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(endDate? endDate: values.endDate).format('YYYY-MM-DD'),
+        "resultDate": moment(values.endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
@@ -189,7 +189,7 @@ const EntryExam = () => {
 
  
 
-      setDataSource(response.data)
+      // setDataSource(response.data)
 
       setVisible(false);
       
@@ -257,11 +257,17 @@ const EntryExam = () => {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put('https://localhost:7032/api/EntryExams', record);
+    const response = await axios.delete('https://localhost:7032/api/EntryExams', record);
     console.log('Delete request successful:', response.data);
 
     const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);
+  };
+
+  const onChangeResult = (e) => {
+    const result = e.target.value;
+    const status = result > 50 ? 'Pass' : 'Fail';
+    form.setFieldsValue({ status });
   };
 
   return (
@@ -317,7 +323,7 @@ const EntryExam = () => {
             name="result"
             rules={[{ required: true, message: 'Please input result!' }]}
           >
-            <Input />
+          <Input onChange={onChangeResult} />
           </Form.Item>
           <Form.Item
             label="Test Date"
@@ -358,6 +364,7 @@ const EntryExam = () => {
             <Select style={{ width: '100%' }}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Extension</Option>
+              <Option value="Distance">Distance</Option>
             </Select>
           </Form.Item>
         </Form>

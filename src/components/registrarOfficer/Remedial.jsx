@@ -218,9 +218,9 @@ const Remedial = () => {
         "studId": values.studId,
         "courseNo": values.courseNo,
         "result":parseInt(values.result),          
-        "testDate": moment(startDate? startDate: values.testDate).format('YYYY-MM-DD'),
+        "testDate": moment(values.testDate).format('YYYY-MM-DD'),
         "status": values.status,
-        "resultDate": moment(endDate? endDate: values.endDate).format('YYYY-MM-DD'),
+        "resultDate": moment(values.endDate).format('YYYY-MM-DD'),
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
@@ -295,6 +295,12 @@ const Remedial = () => {
     setDataSource(newData);
   };
 
+  const onChangeResult = (e) => {
+    const result = e.target.value;
+    const status = result > 50 ? 'Pass' : 'Fail';
+    form.setFieldsValue({ status });
+  };
+
   return (
         <div className="bg-[#F9FAFB] min-h-[100vh]  ">
         {/* <SiderGenerator /> */}
@@ -348,7 +354,7 @@ const Remedial = () => {
             name="result"
             rules={[{ required: true, message: 'Please input result!' }]}
           >
-            <Input />
+          <Input onChange={onChangeResult} />
           </Form.Item>
           <Form.Item
             label="Test Date"

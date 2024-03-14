@@ -241,7 +241,7 @@ const AddSection = () => {
 
  
 
-      setDataSource(response.data)
+      // setDataSource(response.data)
 
       setVisible(false);
       form.resetFields();
@@ -252,6 +252,9 @@ const AddSection = () => {
     } catch (error) {
       console.error('POST request failed:', error);
     }
+
+    setVisible(false);
+    form.resetFields();
   };
 
   const onFinish = (values) => {
