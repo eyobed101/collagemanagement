@@ -3,6 +3,7 @@ import { Table, Modal, Button, Form, Input, Select, Tag ,Space ,DatePicker, Popc
 import { useSelector, useDispatch } from "react-redux";
 import  axios  from 'axios';
 import moment from 'moment';
+import { api } from '../constants';
 
 const { Option } = Select;
 
@@ -48,7 +49,7 @@ const DepartmentCourse = () => {
         "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
       };
       console.log("Response iss" , postData)
-      const response = await axios.put('https://localhost:7032/api/InstCourseAssgts', postData);
+      const response = await axios.put(`${api}/api/InstCourseAssgts`, postData);
       console.log('Put request successful:', response.data);
     } catch (error) {
       console.error('POST request failed:', error);
@@ -87,7 +88,7 @@ const DepartmentCourse = () => {
       "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
     };
      console.log('delete', postData)
-    const response = await axios.delete('https://localhost:7032/api/InstCourseAssgts', postData);
+    const response = await axios.delete(`${api}/api/InstCourseAssgts`, postData);
     console.log('Delete request successful:', response.data);
 
     const newData = dataSource.filter((item) => item.key !== record.key);
@@ -220,19 +221,19 @@ const DepartmentCourse = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const lectureResponse = await axios.get('https://localhost:7032/api/InstCourseAssgts');
+        const lectureResponse = await axios.get(`${api}/api/InstCourseAssgts`);
         setLecturesData(lectureResponse.data);
 
-        const courseResponse = await axios.get('https://localhost:7032/api/Courses'); // Replace with your course API endpoint
+        const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
         setCoursesData(courseResponse.data);
 
-        const sectionResponse = await axios.get('https://localhost:7032/api/Section'); // Replace with your course API endpoint
+        const sectionResponse = await axios.get(`${api}/api/Section`); // Replace with your course API endpoint
         setSectionData(sectionResponse.data);
 
-        const Response = await axios.get('https://localhost:7032/api/Employees'); // Replace with your course API endpoint
+        const Response = await axios.get(`${api}/api/Employees`); // Replace with your course API endpoint
         setStudentsData(Response.data);
 
-        const Responses = await axios.get('https://localhost:7032/api/Terms'); // Replace with your course API endpoint
+        const Responses = await axios.get(`${api}/api/Terms`); // Replace with your course API endpoint
         setTermData(Responses.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -241,7 +242,7 @@ const DepartmentCourse = () => {
 
     const fetchTerms = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Terms');
+        const response = await axios.get(`${api}/api/Terms`);
         const currentTerms = response.data.filter((term) => new Date(term.endDate) > Date.now());
         setTermOptions(currentTerms);
       } catch (error) {
@@ -282,7 +283,7 @@ const DepartmentCourse = () => {
         "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
       };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/InstCourseAssgts', postData);
+      const response = await axios.post(`${api}/api/InstCourseAssgts`, postData);
       console.log('POST request successful:', response.data);
       //  setDataSource(response.data)
 
@@ -364,7 +365,7 @@ const DepartmentCourse = () => {
           assgtDate: moment(values.assgtDate),
           // resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/InstCourseAssgts', newData);
+        const response = await axios.put(`${api}/api/InstCourseAssgts`, newData);
         console.log('Put request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');

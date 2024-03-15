@@ -2,6 +2,7 @@ import React, { useState , useEffect } from 'react';
 import { Table, Button, Modal, Form, Input,DatePicker,  Select, Popconfirm } from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import { api } from '../constants';
 
 
 
@@ -32,7 +33,7 @@ const AddSection = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Section');
+        const response = await axios.get(`${api}/api/Section`);
         setDataSource(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -48,7 +49,7 @@ const AddSection = () => {
   useEffect(() => {
 
     const SetData = async () => {
-      await axios.get('https://localhost:7032/api/StudyCenters')
+      await axios.get(`${api}/api/StudyCenters`)
       .then(response => {
         setStudyCenters(response.data);
       })
@@ -58,7 +59,7 @@ const AddSection = () => {
     };
 
     const fetchDepartments = async () => {
-      await axios.get('https://localhost:7032/api/Departments')
+      await axios.get(`${api}/api/Departments`)
         .then(response => {
           setDepartment(response.data);
         })
@@ -199,7 +200,7 @@ const AddSection = () => {
   
        };
       console.log("Response iss" , postData)
-      const response = await axios.put('https://localhost:7032/api/Section', postData);
+      const response = await axios.put(`${api}/api/Section`, postData);
       console.log('Put request successful:', response.data);
 
       // setDataSource(response.data)
@@ -236,7 +237,7 @@ const AddSection = () => {
         "programType": values.programType,    
        };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/Section', postData);
+      const response = await axios.post(`${api}/api/Section`, postData);
       console.log('POST request successful:', response.data);
 
  
@@ -294,7 +295,7 @@ const AddSection = () => {
           approvedDate: moment(values.approvedDate),
           // resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/Section', newData);
+        const response = await axios.put(`${api}/api/Section`, newData);
         console.log('Put request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');
@@ -321,7 +322,7 @@ const AddSection = () => {
       "programType": record.programType,   
      };
      console.log('delete', postData)
-    const response = await axios.delete('https://localhost:7032/api/Section', postData);
+    const response = await axios.delete(`${api}/api/Section`, postData);
     console.log('Delete request successful:', response.data);
 
     const newData = dataSource.filter((item) => item.key !== record.key);

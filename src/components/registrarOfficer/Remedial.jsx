@@ -3,6 +3,7 @@ import { Table, Button, Modal, Form, Input, DatePicker, Select, Popconfirm } fro
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
+import { api } from '../constants';
 
 const { Option } = Select;
 
@@ -78,7 +79,7 @@ const Remedial = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Remedials');
+        const response = await axios.get(`${api}/api/Remedials`);
         setDataSource(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -193,7 +194,7 @@ const Remedial = () => {
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/Remedials', postData);
+      const response = await axios.post(`${api}/api/Remedials`, postData);
       console.log('POST request successful:', response.data);
 
 
@@ -224,7 +225,7 @@ const Remedial = () => {
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
-      const response = await axios.put('https://localhost:7032/api/Remedials', postData);
+      const response = await axios.put(`${api}/api/Remedials`, postData);
       console.log('Put request successful:', response.data);
       // setDataSource(response.data)
 
@@ -275,7 +276,7 @@ const Remedial = () => {
           testDate: moment(values.testDate),
           resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/Remedials', newData);
+        const response = await axios.put(`${api}/api/Remedials`, newData);
         console.log('PUT request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');
@@ -289,7 +290,7 @@ const Remedial = () => {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put('https://localhost:7032/api/Remedials', record);
+    const response = await axios.put(`${api}/api/Remedials`, record);
     console.log('Delete request successful:', response.data);
     const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);

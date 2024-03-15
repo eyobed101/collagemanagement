@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal } from 'antd';
 import axios from 'axios';
+import { api } from '../constants';
 // import SiderGenerator from './Menu';
 
 const GradeApproval = () => {
@@ -13,7 +14,7 @@ const GradeApproval = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Grades');
+        const response = await axios.get(`${api}/api/Grades`);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

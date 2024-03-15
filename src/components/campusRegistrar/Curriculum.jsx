@@ -3,6 +3,7 @@ import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm , DatePicker
 
 import axios from 'axios';
 import moment from 'moment';
+import { api } from '../constants';
 
 const { Option } = Select;
 
@@ -25,7 +26,7 @@ const Curriculum = () => {
   useEffect(() => {
 
     const fetchDepartments =() =>{
-    axios.get('https://localhost:7032/api/Departments')
+    axios.get(`${api}/api/Departments`)
       .then(response => {
         setData(response.data);
       })
@@ -36,7 +37,7 @@ const Curriculum = () => {
     }
 
     const fetchStudyCenters = () =>{
-      axios.get('https://localhost:7032/api/StudyCenters')
+      axios.get(`${api}/api/StudyCenters`)
       .then(response => {
         setStudyCenters(response.data);
       })
@@ -58,7 +59,7 @@ const Curriculum = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Curricula');
+        const response = await axios.get(`${api}/api/Curricula`);
         setCurriculum(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -117,7 +118,7 @@ const Curriculum = () => {
         "campusId": values.campusId ,
        };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/Curricula', [postData]);
+      const response = await axios.post(`${api}/api/Curricula`, [postData]);
       console.log('POST request successful:', response.data);
       
       showCurriculumModal(false);
@@ -159,7 +160,7 @@ setEditingKey(null)
       "campusId": record.campusId ,
      };
 
-     const response = await axios.delete('https://localhost:7032/api/Curricula', postData);
+     const response = await axios.delete(`${api}/api/Curricula`, postData);
      console.log('Delete request successful:', response.data);
 
   };
