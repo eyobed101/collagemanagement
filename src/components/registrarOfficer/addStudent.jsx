@@ -5,6 +5,8 @@ import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { apiurl } from "../constants";
+import { tailspin } from "ldrs";
+
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
