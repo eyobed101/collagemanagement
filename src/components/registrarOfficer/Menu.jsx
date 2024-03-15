@@ -16,6 +16,7 @@ import CourseLeaseManagement from "./courseLease";
 import StudentCourseRegistration from "./courseRegistration";
 import StudentCourseExemption from "./studentExemption";
 import StudentStatusManagement from "./manageStudent";
+import StudentCourses from "./CourseTaken"
 import MainMenu from "./menuTest";
 
 import {
@@ -40,7 +41,6 @@ import { FaFreeCodeCamp, FaGraduationCap, FaPaperclip, FaSchool } from "react-ic
 import EntryExam from "./EntryExam";
 import ExitExam from "./ExitExam";
 import Remedial from "./Remedial";
-import StudentCourses from "./manageStudent";
 import { Avatar, List } from "@mui/material";
 
 const icon = {
