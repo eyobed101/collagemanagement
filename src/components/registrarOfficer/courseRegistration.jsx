@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import courseTableData from "@/data/courses";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
-import { waveform } from 'ldrs'
 
-waveform.register()
+import { tailspin } from "ldrs";
 
 // Default values shown
 
@@ -17,8 +16,10 @@ const StudentCourseRegistration = () => {
   const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
   const [secCourseAss, setSecCourseAss] = useState([]);
   const [courses, setCourses] = useState([]);
+
   const [courseRegistrationPendings, setCourseRegistrationPendings] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [program, setProgram] = useState("");
   const [batch, setBatch] = useState("");
   const [term, setTerm] = useState("");
@@ -28,6 +29,9 @@ const StudentCourseRegistration = () => {
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  tailspin.register();
+
   
 
   useEffect(() => {
@@ -163,6 +167,8 @@ const StudentCourseRegistration = () => {
   }
 
   const handleTransaction = async () => {
+
+    setLoading(true)
     try {
       const currentDate = new Date();
 
@@ -211,6 +217,8 @@ const StudentCourseRegistration = () => {
       console.error("Error:", error.message);
       setSuccess(false);
       setError(error.message);
+    }finally {
+      setLoading(false)
     }
   };
 
@@ -431,6 +439,20 @@ const StudentCourseRegistration = () => {
           </button>
         </div>
       </div>
+
+      {loading ? (<l-tailspin
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        size="60"
+        stroke="5"
+        speed="0.9"
+        color="#4279A6"
+      ></l-tailspin>):""}
+      
       {success && (
               <div
                 id="alert-border-3"

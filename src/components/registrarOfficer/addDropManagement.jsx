@@ -4,6 +4,8 @@ import addDropTableData from "@/data/addrop";
 import courseTableData from "@/data/courses";
 import axios from "axios";
 import student from "@/student";
+import { tailspin } from "ldrs";
+
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -22,6 +24,7 @@ const AddDropManagement = () => {
   const [sectionAddCourseAss, setSectionAddCourseAss] = useState([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [selectedOfferingDepartment, setSelectedOfferingDepartment] = useState(
     ""
@@ -33,6 +36,9 @@ const AddDropManagement = () => {
 
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  tailspin.register();
+
 
   const handleStudentSelection = (student) => {
     setSelectedStudent(student);
@@ -85,6 +91,7 @@ const AddDropManagement = () => {
 
   const handleTransaction = async () => {
     try {
+      setLoading(true)
       const currentDate = new Date();
 
       const year = currentDate.getFullYear();
@@ -164,6 +171,8 @@ const AddDropManagement = () => {
       setSuccess(false);
       setError(error.message);
 
+    }finally {
+      setLoading(false)
     }
 
   }
@@ -344,7 +353,7 @@ const AddDropManagement = () => {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md absolute">
       <div class="grid grid-cols-4 mt-10">
         <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
@@ -684,6 +693,19 @@ const AddDropManagement = () => {
     Save Transaction
   </button>
 </div>
+{loading ? <l-tailspin
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        size="60"
+        stroke="5"
+        speed="0.9"
+        color="#4279A6"
+      ></l-tailspin>:""}
+      
 {success && (
               <div
                 id="alert-border-3"

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
+import { tailspin } from "ldrs";
+
 
 const StudentStatusManagement = () => {
   const [students, setStudents] = useState([]);
@@ -17,9 +19,11 @@ const StudentStatusManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterSection, setFilterSection] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [changeReason, setChangeReason] = useState("");
 

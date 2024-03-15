@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import { tailspin } from "ldrs";
+
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -68,6 +70,7 @@ export function AddStudent() {
   const [departments, setDepartments] = useState([]);
   const [dep, setDep] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(false);
   const [studyCenters, setStudyCenters] = useState([]);
   const [sections, setSections] = useState([]);
   const [terms, setTerms] = useState([]);
@@ -76,6 +79,8 @@ export function AddStudent() {
   const [spining, setSpining] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  tailspin.register();
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -190,6 +195,7 @@ export function AddStudent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSpining(true);
+    setLoading1(true);
 
     let getStudentID = generateStudentId();
 
@@ -255,6 +261,7 @@ export function AddStudent() {
       console.error(error);
     } finally {
       setSpining(false);
+      setLoading1(false);
     }
   };
 
@@ -318,7 +325,7 @@ export function AddStudent() {
 
   return (
     <>
-      <div className="mt-12 mb-8 flex flex-col gap-12">
+      <div className="mt-12 mb-8 flex flex-col gap-12 relative">
         <div class="mt-10 sm:mt-0">
           <div class="mt-5 md:mt-0 md:col-span-2">
             <form onSubmit={handleSubmit}>
@@ -1155,6 +1162,24 @@ export function AddStudent() {
                 </div>
               </div>
             </form>
+
+            {loading1 ? (
+              <l-tailspin
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+                size="60"
+                stroke="5"
+                speed="0.9"
+                color="#4279A6"
+              ></l-tailspin>
+            ) : (
+              ""
+            )}
+
             {/* {spining && <div className="loading-spinner">Loading...</div>} */}
             {success && (
               <div

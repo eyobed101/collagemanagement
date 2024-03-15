@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { tailspin } from "ldrs";
 
 const CourseLeaseManagement = () => {
   const [givingDepartment, setGivingDepartment] = useState("");
@@ -12,6 +13,9 @@ const CourseLeaseManagement = () => {
   const [prerequisites, setPrerequisites] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  tailspin.register();
 
   // const departments = ["Dept A", "Dept B"];
   // const courses = [
@@ -65,29 +69,28 @@ const CourseLeaseManagement = () => {
 
   const handleTransaction = async () => {
     try {
+      setLoading(true)
       let formData = [];
+
 
       const endpoint = "http://localhost:5169/api/CourseLeases";
 
-      console.log("boo", borrowingDepartment)
+      console.log("boo", borrowingDepartment);
 
-       borrowingCourses.map( async (course, index) =>  {
-
+      borrowingCourses.map(async (course, index) => {
         const data = {
-          "courseNo": course.courseNo,
-          "dname": borrowingDepartment.did,
-          "courseType": courseType,
-          "hasLabNew": "No",
-          "hasPreReq": "No",
-          "acadYearLevel": 0,
-          "termLevel": 0,
-          "courseLeaseId": 0,
-        }
+          courseNo: course.courseNo,
+          dname: borrowingDepartment.did,
+          courseType: courseType,
+          hasLabNew: "No",
+          hasPreReq: "No",
+          acadYearLevel: 0,
+          termLevel: 0,
+          courseLeaseId: 0,
+        };
 
-        formData.push(data)
-       
-
-      })
+        formData.push(data);
+      });
 
       const response = await axios.post(endpoint, formData, {
         headers: {
@@ -99,29 +102,28 @@ const CourseLeaseManagement = () => {
       setError(null);
 
       console.log("Response data:", response.data);
-      setGivingDepartment("")
-      setGivingCourses([])
-      setDepartiment([])
-      setCourses([])
-      setBorrowingDepartment("")
-      setBorrowingCourses([])
-      setCourseType("")
-      setSuccess(false)
-      setError(null)
+      setGivingDepartment("");
+      setGivingCourses([]);
+      setDepartiment([]);
+      setCourses([]);
+      setBorrowingDepartment("");
+      setBorrowingCourses([]);
+      setCourseType("");
+      setSuccess(false);
+      setError(null);
 
-      
-      
-  
       // const response = await axios.post(endpoint, data, {
       //   headers: {
       //     "Content-Type": "application/json",
       //   },
       // });
-  
     } catch (error) {
       console.error("Error:", error.message);
       setSuccess(false);
       setError(error.message);
+    }
+    finally {
+      setLoading(false)
     }
   };
 
@@ -142,26 +144,26 @@ const CourseLeaseManagement = () => {
     setGivingCourses([]);
   };
 
-
-
   const handleClearSelected = () => {
     setGivingCourses([]);
   };
 
   const handleCourseSelection = (course) => {
     // const isSelected = borrowingCourses.some((selectedCourse) => selectedCourse.courseNo === course.courseNo);
-    setBorrowingCourses((prevCourses) => 
-    prevCourses.map((selectedCourse) =>
-      selectedCourse.courseNo === course.courseNo
-        ? { ...selectedCourse, isSelected: !selectedCourse.isSelected }
-        : selectedCourse
-    )
-  );
+    setBorrowingCourses((prevCourses) =>
+      prevCourses.map((selectedCourse) =>
+        selectedCourse.courseNo === course.courseNo
+          ? { ...selectedCourse, isSelected: !selectedCourse.isSelected }
+          : selectedCourse
+      )
+    );
   };
 
   const handleClearAdded = () => {
     // Clear only the selected courses
-    setBorrowingCourses((prevCourses) => prevCourses.filter((course) => !course.isSelected));
+    setBorrowingCourses((prevCourses) =>
+      prevCourses.filter((course) => !course.isSelected)
+    );
 
     // setBorrowingCourses((prevCourses) => prevCourses.filter((course) => !course.isSelected));
   };
@@ -171,7 +173,7 @@ const CourseLeaseManagement = () => {
   // };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md relative">
       <div className="grid grid-cols-2 gap-8">
         <div>
           <h2 className="text-lg font-semibold mb-2 text-[#434343]">
@@ -267,7 +269,7 @@ const CourseLeaseManagement = () => {
               </div>
             </div>
           </div>
-         
+
           <div className="flex justify-between mt-20">
             <div className="flex">
               <button
@@ -311,26 +313,28 @@ const CourseLeaseManagement = () => {
             </select>
           </div>
           <div className="mb-4">
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-          Added Courses
-        </label>
-        <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-md rounded-md">
-          {borrowingCourses.map((borrowedCourse, index) => (
-            <li
-              key={index}
-              className={`border mb-2 p-2 cursor-pointer list-none text-black ${borrowedCourse.isSelected ? 'bg-gray-300' : ''}`}
-              onClick={() => handleCourseSelection(borrowedCourse)}
-            >
-              <input
-                type="checkbox"
-                checked={borrowedCourse.isSelected || false}
-                readOnly
-                className="mr-2"
-              />
-              {borrowedCourse.courseNo}-{borrowedCourse.courseName}
-            </li>
-          ))}
-        </div>
+            <label className="block text-lg font-semibold mb-2 text-[#434343]">
+              Added Courses
+            </label>
+            <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto min-h-[200px] max-h-48 shadow-md rounded-md">
+              {borrowingCourses.map((borrowedCourse, index) => (
+                <li
+                  key={index}
+                  className={`border mb-2 p-2 cursor-pointer list-none text-black ${
+                    borrowedCourse.isSelected ? "bg-gray-300" : ""
+                  }`}
+                  onClick={() => handleCourseSelection(borrowedCourse)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={borrowedCourse.isSelected || false}
+                    readOnly
+                    className="mr-2"
+                  />
+                  {borrowedCourse.courseNo}-{borrowedCourse.courseName}
+                </li>
+              ))}
+            </div>
           </div>
           <div className="flex justify-end">
             <button
@@ -343,96 +347,108 @@ const CourseLeaseManagement = () => {
         </div>
       </div>
       <div className="flex justify-end">
-        <button className="px-4 py-3 bg-green-500 text-white rounded" onClick={handleTransaction}>
+        <button
+          className="px-4 py-3 bg-green-500 text-white rounded"
+          onClick={handleTransaction}
+        >
           Save Transaction{" "}
         </button>
       </div>
+      {loading ? <l-tailspin
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+        size="60"
+        stroke="5"
+        speed="0.9"
+        color="#4279A6"
+      ></l-tailspin>:""}
       {success && (
-              <div
-                id="alert-border-3"
-                class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">
-                  Submission successful!
-                </div>
-                <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-3"
-                  aria-label="Close"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
+        <div
+          id="alert-border-3"
+          class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+          role="alert"
+        >
+          <svg
+            class="flex-shrink-0 w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <div class="ms-3 text-sm font-medium">Submission successful!</div>
+          <button
+            type="button"
+            class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+            data-dismiss-target="#alert-border-3"
+            aria-label="Close"
+          >
+            <span class="sr-only">Dismiss</span>
+            <svg
+              class="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
 
-            {error && (
-              <div
-                id="alert-border-2"
-                class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">Error: {error}</div>
-                <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-2"
-                  aria-label="Close"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
-
+      {error && (
+        <div
+          id="alert-border-2"
+          class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
+          role="alert"
+        >
+          <svg
+            class="flex-shrink-0 w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <div class="ms-3 text-sm font-medium">Error: {error}</div>
+          <button
+            type="button"
+            class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+            data-dismiss-target="#alert-border-2"
+            aria-label="Close"
+          >
+            <span class="sr-only">Dismiss</span>
+            <svg
+              class="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
