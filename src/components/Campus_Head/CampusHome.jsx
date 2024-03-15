@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Modal, Input, Button } from 'antd';
 import CampusDash from './Campus_Dashboard';
 import axios from 'axios';
+import { api } from '../constants';
 
 
 const CampusHome = () =>{
@@ -17,7 +18,7 @@ const CampusHome = () =>{
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Employees');
+        const response = await axios.get(`${api}/api/Employees`);
         setEmployee(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

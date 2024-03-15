@@ -3,6 +3,7 @@ import { Table, Button, Modal, Form, Input, DatePicker, Select, Popconfirm } fro
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
+import { api } from '../constants';
 
 const { Option } = Select;
 
@@ -79,7 +80,7 @@ const ExitExam = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/ExitExams');
+        const response = await axios.get(`${api}/api/ExitExams`);
         setDataSource(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -194,7 +195,7 @@ const ExitExam = () => {
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/ExitExams', postData);
+      const response = await axios.post(`${api}/api/ExitExams`, postData);
       console.log('POST request successful:', response.data);
 
       setDataSource(response.data)
@@ -224,7 +225,7 @@ const ExitExam = () => {
         "programType": values.programType,   
        };
       console.log("Response iss" , postData)
-      const response = await axios.put('https://localhost:7032/api/ExitExams', postData);
+      const response = await axios.put(`${api}/api/ExitExams`, postData);
       console.log('Put request successful:', response.data);
       setDataSource(response.data)
 
@@ -274,7 +275,7 @@ const ExitExam = () => {
           testDate: moment(values.testDate),
           resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/ExitExams', newData);
+        const response = await axios.put(`${api}/api/ExitExams`, newData);
         console.log('PUT request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');
@@ -288,7 +289,7 @@ const ExitExam = () => {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put('https://localhost:7032/api/ExitExams', record);
+    const response = await axios.put(`${api}/api/ExitExams`, record);
     console.log('Delete request successful:', response.data);
     const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import axios from 'axios';
+import {api  } from '../constants'
 
 
 import {
@@ -37,7 +38,7 @@ function CampusForm({ onSubmit }) {
        };
       console.log("Response iss" , postData)
 
-      const response = await axios.post('https://localhost:7032/api/StudyCenters/StudyCenter', postData);
+      const response = await axios.post(`${api}/api/StudyCenters/StudyCenter`, postData);
 
       // Handle the response as needed
       console.log('Data successfully posted:', response.data);

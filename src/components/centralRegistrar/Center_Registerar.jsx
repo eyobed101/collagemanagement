@@ -17,10 +17,8 @@ import axios from "axios"
 // import SiderGenerator from "./Menu";
 
 import Grid from "@mui/material/Grid";
- import ChartTeacher from "../../graph/teacherGraph/Chart";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { api } from "../constants";
+
 
 // Mock data
 const { Option } = Select;
@@ -58,7 +56,7 @@ const CenterRegistrar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Applicants');
+        const response = await axios.get(`${api}/api/Applicants`);
         setStudent(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

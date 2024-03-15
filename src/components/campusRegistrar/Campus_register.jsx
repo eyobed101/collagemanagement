@@ -2,6 +2,7 @@ import React, { useState , useEffect} from 'react';
 import { Space, Table, Button, Col, DatePicker, Drawer, Form, Input, Row, Select ,Card } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from '../constants';
 // import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
@@ -45,7 +46,7 @@ const CampusRegistrar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Applicants');
+        const response = await axios.get(`${api}/api/Applicants`);
         setStudent(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

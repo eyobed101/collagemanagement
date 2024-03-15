@@ -2,6 +2,7 @@ import React, { useState, useEffect ,useRef } from 'react';
 import { Table, Button, Modal, Form, Input, Popconfirm, Select } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
+import { api } from '../constants';
 
 
 const { Option } = Select;
@@ -18,7 +19,7 @@ const AddDepartment = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    await axios.get('https://localhost:7032/api/Departments')
+    await axios.get(`${api}/api/Departments`)
       .then(response => {
         setData(response.data);
       })
@@ -130,7 +131,7 @@ const AddDepartment = () => {
      };
 
      console.log("test ", postData);
-      await axios.put('https://localhost:7032/api/Departments/'+ editingKey, postData)
+      await axios.put(`${api}/api/Departments/`+ editingKey, postData)
       .then(response => {
         console.log('Department updated successfully:', response.data);
         setData(updatedData);
@@ -154,7 +155,7 @@ const AddDepartment = () => {
     };
     console.log(newDepartment)
   
-    await axios.post('https://localhost:7032/api/Departments', newDepartment)
+    await axios.post(`${api}/api/Departments`, newDepartment)
       .then(response => {
         console.log('Department created successfully:', response.data);
         setData(newDepartment);

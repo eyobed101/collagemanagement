@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 // import { Transition } from "@headlessui/react";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { api } from "../constants";
 import "react-tabs/style/react-tabs.css";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
@@ -65,7 +66,7 @@ export function CreateUser() {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "https://localhost:7032/api/Departments"
+          `${api}/api/Departments`
         );
         setDepartments(response.data);
         console.log(departments);
@@ -80,7 +81,7 @@ export function CreateUser() {
     const fetchStudyCenters = async () => {
       try {
         const response = await axios.get(
-          "https://localhost:7032/api/StudyCenters"
+          `${api}/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -170,7 +171,7 @@ export function CreateUser() {
 
     console.log("data", data);
 
-    const apiUrl = "https://localhost:7032/api/Employees";
+    const apiUrl = `${api}/api/Employees`;
 
     try {
       const response = await axios.post(apiUrl, restFormData);

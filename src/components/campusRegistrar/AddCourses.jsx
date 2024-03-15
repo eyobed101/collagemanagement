@@ -1,6 +1,7 @@
 import React, { useState , useEffect} from 'react';
 import { Form, Input, Select, Radio, Button, Table , Row , Col ,Modal ,Checkbox , Popconfirm , message} from 'antd';
 import axios from 'axios';
+import {api} from '../constants'
 
 // import 'antd/dist/antd.css';
 
@@ -20,7 +21,7 @@ const AddCourse = () => {
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      await axios.get('https://localhost:7032/api/Departments')
+      await axios.get(`${api}/api/Departments`)
         .then(response => {
           setData(response.data);
         })
@@ -31,7 +32,7 @@ const AddCourse = () => {
       };
 
         const fetchDatas = async () => {
-          await axios.get('https://localhost:7032/api/CoursePrerequisites')
+          await axios.get(`${api}/api/CoursePrerequisites`)
             .then(response => {
               setModalData(response.data);
             })
@@ -76,10 +77,10 @@ const AddCourse = () => {
         console.log("Response iss", postData);
         console.log("Response ",editingKey)
        if(editingKey == 'delete'){
-        const response = await axios.delete(`https://localhost:7032/api/CoursePrerequisites/${values.courseNo}/${values.courseNoPre}/${parseInt(values.dcode)}`, postData);
+        const response = await axios.delete(`${api}/api/CoursePrerequisites/${values.courseNo}/${values.courseNoPre}/${parseInt(values.dcode)}`, postData);
         console.log('delete request successful:', response.data);
        } 
-        const response = await axios.put(`https://localhost:7032/api/CoursePrerequisites/${values.courseNo}/${values.courseNoPre}/${parseInt(values.dcode)}`, postData);
+        const response = await axios.put(`${api}/api/CoursePrerequisites/${values.courseNo}/${values.courseNoPre}/${parseInt(values.dcode)}`, postData);
         console.log('Put request successful:', response.data);
       } catch (error) {
         console.error('PUT request failed:', error);
@@ -104,7 +105,7 @@ const AddCourse = () => {
       }] ;
       console.log("test ", postData)
       if (formData.checkbox) {
-       await axios.post('https://localhost:7032/api/CoursePrerequisites', postData)
+       await axios.post(`${api}/api/CoursePrerequisites`, postData)
           .then(response => {
             console.log('POST request successful:', response.data);
             // Close the modal
@@ -148,7 +149,7 @@ const AddCourse = () => {
         "thesis": (values.thesis == true ?"Yes" :"No" )
       };
       console.log("Response iss" , postData)
-      const response = await axios.post('https://localhost:7032/api/Courses', postData);
+      const response = await axios.post(`${api}/api/Courses`, postData);
       console.log('POST request successful:', response.data);
       
 
@@ -162,7 +163,7 @@ const AddCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Courses');
+        const response = await axios.get(`${api}/api/Courses`);
         setTableData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -200,7 +201,7 @@ const AddCourse = () => {
           ...values
          // resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/CoursePrerequisites', newData);
+        const response = await axios.put(`${api}/api/CoursePrerequisites`, newData);
         console.log('Put request successful:', response.data);
         setModalData(newData);
         setEditingKey('');

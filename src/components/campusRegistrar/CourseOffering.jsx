@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table, Button , message } from 'antd';
 import axios from 'axios';
+import { api } from '../constants';
 
 const { Option } = Select;
 
@@ -18,10 +19,10 @@ const CourseOffering = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sectionResponse = await axios.get('https://localhost:7032/api/Section');
+        const sectionResponse = await axios.get(`${api}/api/Section`);
         setSections(sectionResponse.data);
 
-        const courseResponse = await axios.get('https://localhost:7032/api/Courses'); // Replace with your course API endpoint
+        const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
         setCourses(courseResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -29,7 +30,7 @@ const CourseOffering = () => {
     };
     const fetchTerms = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Terms');
+        const response = await axios.get(`${api}/api/Terms`);
         const currentTerms = response.data.filter((term) => new Date(term.endDate) > Date.now());
         setTermOptions(currentTerms);
       } catch (error) {
@@ -77,7 +78,7 @@ const CourseOffering = () => {
         // Perform the post request
         try {
           // Perform the post request
-          const response = await axios.post('https://localhost:7032/api/SecCourseAssgts', [postData], {
+          const response = await axios.post(`${api}/api/SecCourseAssgts`, [postData], {
             headers: {
               'Content-Type': 'application/json', // Set Content-Type to application/json
             },

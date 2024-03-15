@@ -2,6 +2,7 @@ import React, { useState , useEffect} from 'react';
 import { Table, Button, Input, DatePicker, Popconfirm, Select , Modal , Form} from 'antd';
 import moment from 'moment';
 import axios from 'axios';
+import { api } from '../constants';
 
 const AddTerm = () => {
   const [data, setData] = useState([
@@ -35,7 +36,7 @@ const AddTerm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Terms');
+        const response = await axios.get(`${api}/api/Terms`);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -50,7 +51,7 @@ const AddTerm = () => {
   
     const SetData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/StudyCenters');
+        const response = await axios.get(`${api}/api/StudyCenters`);
         setStudyCenters(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -160,7 +161,7 @@ const AddTerm = () => {
         "centerId":values.centerId, //
        };
       console.log("Response iss" , newRecord)
-      const response = await axios.put('https://localhost:7032/api/Terms', newRecord);
+      const response = await axios.put(`${api}/api/Terms`, newRecord);
       console.log('Put request successful:', response.data);
 
       setData(response.data)
@@ -192,7 +193,7 @@ const AddTerm = () => {
         "centerId":values.centerId, //
        };
       console.log("Response iss" , newRecord)
-      const response = await axios.post('https://localhost:7032/api/Terms/Terms', newRecord);
+      const response = await axios.post(`${api}/api/Terms/Terms`, newRecord);
       console.log('POST request successful:', response.data);
 
       setData(response.data)
@@ -243,7 +244,7 @@ const AddTerm = () => {
           startDate: moment(values.startDate),
           endDate: moment(values.endDate),
         };
-        const response = await axios.put('https://localhost:7032/api/Terms', newData);
+        const response = await axios.put(`${api}/api/Terms`, newData);
         console.log('Put request successful:', response.data);
         setData(newData);
         setEditingKey('');
@@ -257,7 +258,7 @@ const AddTerm = () => {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put('https://localhost:7032/api/Terms', record);
+    const response = await axios.put(`${api}/api/Terms`, record);
     console.log('Delete request successful:', response.data);
 
     const newData = data.filter((item) => item.key !== record.key);
