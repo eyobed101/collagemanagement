@@ -3,6 +3,7 @@ import courseTableData from "@/data/courses";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { waveform } from 'ldrs'
+import { apiurl } from "../constants";
 
 waveform.register()
 
@@ -33,7 +34,7 @@ const StudentCourseRegistration = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Section");
+        const response = await axios.get(`${apiurl}/api/Section`);
         setSections(response.data);
       } catch (error) {
         console.error("Error fetching sections:", error);
@@ -43,7 +44,7 @@ const StudentCourseRegistration = () => {
     const fetchSectionStudentEnroll = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/SectionStudEnroll"
+          `${apiurl}/api/SectionStudEnroll`
         );
         setSectionStudEnroll(response.data);
       } catch (error) {
@@ -53,7 +54,7 @@ const StudentCourseRegistration = () => {
     const fetchSecCourseAss = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/SecCourseAssgts"
+          `${apiurl}/api/SecCourseAssgts`
         );
         setSecCourseAss(response.data);
       } catch (error) {
@@ -62,7 +63,7 @@ const StudentCourseRegistration = () => {
     };
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Courses");
+        const response = await axios.get(`${apiurl}/api/Courses`);
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -71,7 +72,7 @@ const StudentCourseRegistration = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Departments"
+          `${apiurl}/api/Departments`
         );
         setDepartment(response.data);
       } catch (error) {
@@ -81,7 +82,7 @@ const StudentCourseRegistration = () => {
     const fetchApplicant = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Applicants"
+          `${apiurl}/api/Applicants`
         );
         setApplicants(response.data);
       } catch (error) {
@@ -91,7 +92,7 @@ const StudentCourseRegistration = () => {
     const fetchCourseRegistration = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/CourseRegistrationPendings"
+          `${apiurl}/api/CourseRegistrationPendings`
         );
         setCourseRegistrationPendings(response.data);
       } catch (error) {
@@ -195,7 +196,7 @@ const StudentCourseRegistration = () => {
           });
         console.log(formData);
 
-        const endpoint = "http://localhost:5169/api/CourseRegistrationPendings";
+        const endpoint = `${apiurl}/api/CourseRegistrationPendings`;
 
         const response = await axios.post(endpoint, formData, {
           headers: {
