@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
+import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 
 
@@ -31,7 +32,7 @@ const StudentStatusManagement = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+          `${apiurl}/api/Departments`
         );
         setDepartments(response.data);
         console.log("Departiments", response.data);
@@ -41,7 +42,7 @@ const StudentStatusManagement = () => {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Section");
+        const response = await axios.get(`${apiurl}/api/Section`);
         setSections(response.data);
         console.log("Sections", response.data);
       } catch (error) {
@@ -51,7 +52,7 @@ const StudentStatusManagement = () => {
     const fetchSectionStudentEnroll = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/SectionStudEnroll"
+          `${apiurl}/api/SectionStudEnroll`
         );
         setSectionStudEnroll(response.data);
         console.log("sectionStudEnroll", response.data);
@@ -63,7 +64,7 @@ const StudentStatusManagement = () => {
     const fetchApplicants = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Applicants"
+          `${apiurl}/api/Applicants`
         );
         setStudents(response.data);
         console.log("Students", response.data);
@@ -74,7 +75,7 @@ const StudentStatusManagement = () => {
     const fetchStudentStatus = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/StudentStatus"
+          `${apiurl}/api/StudentStatus`
         );
         setStudStatus(response.data);
         console.log("status", response.data);
@@ -237,7 +238,7 @@ const StudentStatusManagement = () => {
     console.log(updatedStatus);
     axios
       .put(
-        `http://localhost:5169/api/StudentStatus/${encodedStudId}`,
+        `${apiurl}/api/StudentStatus/${encodedStudId}`,
         updatedStatus
       )
       .then((response) => {
