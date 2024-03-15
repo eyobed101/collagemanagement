@@ -23,6 +23,7 @@ import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { apiurl } from "../constants";
 
 export function Profile() {
 
@@ -34,7 +35,7 @@ export function Profile() {
     const fetchApplicant = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Applicants"
+          `${apiurl}/api/Applicants`
         );
         setStudents(response.data);
         console.log(response.data);
