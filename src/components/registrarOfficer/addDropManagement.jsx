@@ -4,6 +4,7 @@ import addDropTableData from "@/data/addrop";
 import courseTableData from "@/data/courses";
 import axios from "axios";
 import student from "@/student";
+import { apiurl } from "../constants";
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -125,9 +126,9 @@ const AddDropManagement = () => {
     })
     console.log(formData);
 
-    const endpoint = "http://localhost:5169/api/CourseRegistrationPendings";
-    const add_and_drop_endpoint = "http://localhost:5169/api/AddDropCourses";
-    const drop_endpoint = "http://localhost:5169/api/CourseRegistrationPendings";
+    const endpoint = `${apiurl}/api/CourseRegistrationPendings`;
+    const add_and_drop_endpoint = `${apiurl}/api/AddDropCourses`;
+    const drop_endpoint = `${apiurl}/api/CourseRegistrationPendings`;
 
        
 
@@ -175,7 +176,7 @@ const AddDropManagement = () => {
 // #######################################################
 
         const departmentsResponse = await axios.get(
-          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartiment(departmentsResponse.data);
         setOffDepartiment(departmentsResponse.data);
@@ -185,7 +186,7 @@ const AddDropManagement = () => {
 
 
         const sectionsResponse = await axios.get(
-          "http://localhost:5169/api/Section"
+          `${apiurl}/api/Section`
         );
         setSections(sectionsResponse.data);
         setOffSections(sectionsResponse.data);
@@ -195,7 +196,7 @@ const AddDropManagement = () => {
 
 
         const sectionStudEnrollResponse = await axios.get(
-          "http://localhost:5169/api/SectionStudEnroll"
+          `${apiurl}/api/SectionStudEnroll`
         );
         setSectionStudEnroll(sectionStudEnrollResponse.data);
         console.log(sectionStudEnrollResponse.data);
@@ -203,7 +204,7 @@ const AddDropManagement = () => {
 
 
         const fetchSecCourses = await axios.get(
-          "http://localhost:5169/api/SecCourseAssgts"
+          `${apiurl}/api/SecCourseAssgts`
         );
         setSectionCourseAss( fetchSecCourses.data.map((course) => {
           return {
@@ -216,13 +217,13 @@ const AddDropManagement = () => {
 
 
         const fetchStudents = await axios.get(
-          "http://localhost:5169/api/Applicants"
+          `${apiurl}/api/Applicants`
         );
         setStudents(fetchStudents.data);
 
 // #######################################################
         const fetchCourses = await axios.get(
-          "http://localhost:5169/api/Courses"
+          `${apiurl}/api/Courses`
         );
         setCourses(fetchCourses.data);
 

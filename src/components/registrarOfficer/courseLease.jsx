@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { apiurl } from "../constants";
 
 const CourseLeaseManagement = () => {
   const [givingDepartment, setGivingDepartment] = useState("");
@@ -27,7 +28,7 @@ const CourseLeaseManagement = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartiment(response.data);
         console.log(response.data);
@@ -38,7 +39,7 @@ const CourseLeaseManagement = () => {
 
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Courses");
+        const response = await axios.get(`${apiurl}/api/Courses`);
         setCourses(response.data);
         console.log(response.data);
       } catch (error) {
@@ -67,7 +68,7 @@ const CourseLeaseManagement = () => {
     try {
       let formData = [];
 
-      const endpoint = "http://localhost:5169/api/CourseLeases";
+      const endpoint = `${apiurl}/api/CourseLeases`;
 
       console.log("boo", borrowingDepartment)
 

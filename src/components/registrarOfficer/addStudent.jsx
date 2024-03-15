@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import { apiurl } from "../constants";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -81,7 +82,7 @@ export function AddStudent() {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/Departments?sortOrder=name desc&pageNumber=1"
+          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartments(response.data);
         console.log(departments);
@@ -93,7 +94,7 @@ export function AddStudent() {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Section");
+        const response = await axios.get(`${apiurl}/api/Section`);
         setSections(response.data);
         console.log(sections);
         setLoading(false);
@@ -105,7 +106,7 @@ export function AddStudent() {
     const fetchStudyCenters = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5169/api/StudyCenters"
+          `${apiurl}/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -116,7 +117,7 @@ export function AddStudent() {
 
     const fetchTerms = async () => {
       try {
-        const response = await axios.get("http://localhost:5169/api/Terms");
+        const response = await axios.get(`${apiurl}/api/Terms`);
         setTerms(response.data);
         setLoadingTerms(false);
       } catch (error) {
@@ -234,7 +235,7 @@ export function AddStudent() {
 
     console.log("data", data);
 
-    const apiUrl = "http://localhost:5169/api/Applicants";
+    const apiUrl = `${apiurl}/api/Applicants`;
 
     try {
       const response = await axios.post(apiUrl, restFormData, {
