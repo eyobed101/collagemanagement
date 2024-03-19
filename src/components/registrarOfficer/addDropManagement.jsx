@@ -5,6 +5,7 @@ import courseTableData from "@/data/courses";
 import axios from "axios";
 import student from "@/student";
 import { apiurl } from "../constants";
+import { tailspin } from "ldrs";
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -38,7 +39,6 @@ const AddDropManagement = () => {
 
   tailspin.register();
 
-
   const handleStudentSelection = (student) => {
     setSelectedStudent(student);
   };
@@ -65,11 +65,10 @@ const AddDropManagement = () => {
   };
 
   const handleClearAdded = () => {
-    setNewCourceList([])
-  }
+    setNewCourceList([]);
+  };
 
   const handleAddDropFunction = () => {
-
     setNewCourceList((prev) => [
       ...prev,
       ...sectionCourseAss
@@ -87,100 +86,95 @@ const AddDropManagement = () => {
     ]);
   };
 
-
   const handleTransaction = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const currentDate = new Date();
 
       const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const day = String(currentDate.getDate()).padStart(2, '0');
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      const day = String(currentDate.getDate()).padStart(2, "0");
 
       const formattedDate = `${year}-${month}-${day}`;
       let formData = [];
       let dropped = [];
 
-      sectionCourseAss.filter((cor) => cor.isSelected === true).map((course) => {
-        const data = {"studId": selectedStudent.studId,
-        "courseNo": course.courseNo,
-        "sectionId": course.sectionId,
-        "submitBy": "AD/C/04/23",
-        "dateSubmitted": formattedDate,
-        "termId": course.termId,
-        "registered": "Yes",
-        "dateRegistered": formattedDate}
+      sectionCourseAss
+        .filter((cor) => cor.isSelected === true)
+        .map((course) => {
+          const data = {
+            studId: selectedStudent.studId,
+            courseNo: course.courseNo,
+            sectionId: course.sectionId,
+            submitBy: "AD/C/04/23",
+            dateSubmitted: formattedDate,
+            termId: course.termId,
+            registered: "Yes",
+            dateRegistered: formattedDate,
+          };
 
-        dropped.push(data) 
-      })
+          dropped.push(data);
+        });
 
       newCourseList.map((course) => {
-
         const data = {
-          "studId": selectedStudent.studId,
-          "courseNo": course.courseNo,
-          "sectionId": selectedOffSection.sectionId,
-          "submitBy": "AD/C/04/23",
-          "dateSubmitted": formattedDate,
-          "termId": course.termId,
-          "registered": "Yes",
-          "dateRegistered": formattedDate
-        }
+          studId: selectedStudent.studId,
+          courseNo: course.courseNo,
+          sectionId: selectedOffSection.sectionId,
+          submitBy: "AD/C/04/23",
+          dateSubmitted: formattedDate,
+          termId: course.termId,
+          registered: "Yes",
+          dateRegistered: formattedDate,
+        };
 
         formData.push(data);
-    })
-    console.log(formData);
+      });
+      console.log(formData);
 
-    const endpoint = `${apiurl}/api/CourseRegistrationPendings`;
-    const add_and_drop_endpoint = `${apiurl}/api/AddDropCourses`;
-    const drop_endpoint = `${apiurl}/api/CourseRegistrationPendings`;
+      const endpoint = `${apiurl}/api/CourseRegistrationPendings`;
+      const add_and_drop_endpoint = `${apiurl}/api/AddDropCourses`;
+      const drop_endpoint = `${apiurl}/api/CourseRegistrationPendings`;
 
-       
+      const response = await axios.post(endpoint, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const drop_response = await axios.delete(drop_endpoint, dropped, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const add_and_drop_response = await axios.post(
+        add_and_drop_endpoint,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    
+      setSuccess(true);
+      setError(null);
 
-    const response = await axios.post(endpoint, formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const drop_response = await axios.delete(drop_endpoint, dropped, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const add_and_drop_response = await axios.post(add_and_drop_endpoint, formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    setSuccess(true);
-    setError(null);
-
-    console.log("Response data:", response.data);
-    console.log("Add and Drop data:", add_and_drop_response.data);
-    console.log("dropped data:", drop_response.data);
-
-
-      
-
+      console.log("Response data:", response.data);
+      console.log("Add and Drop data:", add_and_drop_response.data);
+      console.log("dropped data:", drop_response.data);
     } catch (error) {
       console.error("Error:", error.message);
       setSuccess(false);
       setError(error.message);
-
-    }finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
-
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-// #######################################################
+        // #######################################################
 
         const departmentsResponse = await axios.get(
           `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
@@ -189,59 +183,48 @@ const AddDropManagement = () => {
         setOffDepartiment(departmentsResponse.data);
         console.log(departmentsResponse.data);
 
-// #######################################################
+        // #######################################################
 
-
-        const sectionsResponse = await axios.get(
-          `${apiurl}/api/Section`
-        );
+        const sectionsResponse = await axios.get(`${apiurl}/api/Section`);
         setSections(sectionsResponse.data);
         setOffSections(sectionsResponse.data);
         console.log(sectionsResponse.data);
 
-// #######################################################
-
+        // #######################################################
 
         const sectionStudEnrollResponse = await axios.get(
           `${apiurl}/api/SectionStudEnroll`
         );
         setSectionStudEnroll(sectionStudEnrollResponse.data);
         console.log(sectionStudEnrollResponse.data);
-// #######################################################
-
+        // #######################################################
 
         const fetchSecCourses = await axios.get(
           `${apiurl}/api/SecCourseAssgts`
         );
-        setSectionCourseAss( fetchSecCourses.data.map((course) => {
-          return {
-            ...course,  
-            isSelected: false  
-          };
-        }));
-        setSectionAddCourseAss(fetchSecCourses.data);
-// #######################################################
-
-
-        const fetchStudents = await axios.get(
-          `${apiurl}/api/Applicants`
+        setSectionCourseAss(
+          fetchSecCourses.data.map((course) => {
+            return {
+              ...course,
+              isSelected: false,
+            };
+          })
         );
+        setSectionAddCourseAss(fetchSecCourses.data);
+        // #######################################################
+
+        const fetchStudents = await axios.get(`${apiurl}/api/Applicants`);
         setStudents(fetchStudents.data);
 
-// #######################################################
-        const fetchCourses = await axios.get(
-          `${apiurl}/api/Courses`
-        );
+        // #######################################################
+        const fetchCourses = await axios.get(`${apiurl}/api/Courses`);
         setCourses(fetchCourses.data);
 
-// #######################################################
-
+        // #######################################################
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
-
 
     fetchData();
   }, []);
@@ -356,7 +339,7 @@ const AddDropManagement = () => {
       <div class="grid grid-cols-4 mt-10">
         <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
-            <div className="mr-5 mb-10 flex flex-col w-full">
+            <div className="mb-10 flex flex-col w-full">
               <label
                 for="departmentOption"
                 className="block text-lg font-semibold text-[#434343] mb-2"
@@ -382,7 +365,7 @@ const AddDropManagement = () => {
               </select>
             </div>
 
-            <div className="mr-5 mb-10 flex flex-col w-full">
+            <div className=" mb-10 flex flex-col w-full">
               <label
                 for="departmentOption"
                 className="block text-lg font-semibold mb-2 text-[#434343]"
@@ -416,31 +399,33 @@ const AddDropManagement = () => {
               </select>
             </div>
 
-            <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[45%]">
-              <label
-                htmlFor="departmentOption"
-                className="block text-lg font-semibold mb-2 text-[#434343]"
-              >
-                Program{" "}
-              </label>
-              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
-                {selectedDepartment && selectedSection
-                  ? selectedSection.program || "Program Not Found"
-                  : "Select Department and Section"}
+            <div className="flex w-full justify-between">
+              <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[50%]">
+                <label
+                  htmlFor="departmentOption"
+                  className="block text-lg font-semibold mb-2 text-[#434343]"
+                >
+                  Program{" "}
+                </label>
+                <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                  {selectedDepartment && selectedSection
+                    ? selectedSection.program || "Program Not Found"
+                    : "Select Department and Section"}
+                </div>
               </div>
-            </div>
 
-            <div className="mb-10 flex flex-col w-[100%] sm:w-[45%] ml-auto">
-              <label
-                htmlFor="departmentOption"
-                className="block text-lg font-semibold mb-2 text-[#434343]"
-              >
-                Term/Academic Year{" "}
-              </label>
-              <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
-                {selectedDepartment && selectedSection
-                  ? selectedSection.acadYear || "Term Not Found"
-                  : "Select Department and Section"}
+              <div className="mb-10 flex flex-col w-[100%] sm:w-[50%]">
+                <label
+                  htmlFor="departmentOption"
+                  className="block text-lg font-semibold mb-2 text-[#434343]"
+                >
+                  Term/Academic Year{" "}
+                </label>
+                <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
+                  {selectedDepartment && selectedSection
+                    ? selectedSection.acadYear || "Term Not Found"
+                    : "Select Department and Section"}
+                </div>
               </div>
             </div>
             <div className="flex flex-col w-full">
@@ -492,7 +477,12 @@ const AddDropManagement = () => {
                         }`}
                         onClick={() => handleStudentSelection(student)}
                       >
-                        {student.studId} {students.filter((stud)=> stud.studId === student.studId).map((std)=> `${std.fname} ${std.mname} ${std.lname}`)}
+                        {student.studId}{" "}
+                        {students
+                          .filter((stud) => stud.studId === student.studId)
+                          .map(
+                            (std) => `${std.fname} ${std.mname} ${std.lname}`
+                          )}
                       </div>
                     ))
                 : "No section selected"
@@ -614,7 +604,10 @@ const AddDropManagement = () => {
                             readOnly
                             className="mr-2"
                           />
-                    {course.courseNo} -  {courses.filter((cor)=> cor.courseNo === course.courseNo).map((cour)=>cour.courseName)}
+                          {course.courseNo} -{" "}
+                          {courses
+                            .filter((cor) => cor.courseNo === course.courseNo)
+                            .map((cour) => cour.courseName)}
                         </li>
                       ))
                   : "No offering section selected"
@@ -631,7 +624,10 @@ const AddDropManagement = () => {
             <div className="border-[2px] border-[#C2C2C2] p-4 overflow-y-auto max-h-48 min-h-[200px] shadow-sm rounded-md">
               {newCourseList.map((course) => (
                 <div key={course.courseNo} className="border p-4 mb-2">
-                    {course.courseNo} -  {courses.filter((cor)=> cor.courseNo === course.courseNo).map((cour)=>cour.courseName)}
+                  {course.courseNo} -{" "}
+                  {courses
+                    .filter((cor) => cor.courseNo === course.courseNo)
+                    .map((cour) => cour.courseName)}
                 </div>
               ))}
             </div>
@@ -663,7 +659,10 @@ const AddDropManagement = () => {
                       readOnly
                       className="mr-2"
                     />
-                    {course.courseNo} -  {courses.filter((cor)=> cor.courseNo === course.courseNo).map((cour)=>cour.courseName)}
+                    {course.courseNo} -{" "}
+                    {courses
+                      .filter((cor) => cor.courseNo === course.courseNo)
+                      .map((cour) => cour.courseName)}
                   </li>
                 ))}
             </div>
@@ -671,127 +670,127 @@ const AddDropManagement = () => {
         </div>
       </div>
       <div className="flex justify-between m-5">
-  <div className="flex space-x-5">
-    <button
-      className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
-      onClick={() => handleAddDropFunction()}
-    >
-      ADD/DROP
-    </button>
-    <button
-      className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
-      onClick={() => handleClearAdded()}
-    >
-      Clear Added
-    </button>
-  </div>
-  <button
-    className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
-    onClick={() => handleTransaction()}
-  >
-    Save Transaction
-  </button>
-</div>
-{loading ? <l-tailspin
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-        size="60"
-        stroke="5"
-        speed="0.9"
-        color="#4279A6"
-      ></l-tailspin>:""}
-      
-{success && (
-              <div
-                id="alert-border-3"
-                class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">
-                  Submission successful!
-                </div>
-                <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-3"
-                  aria-label="Close"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
+        <div className="flex space-x-5">
+          <button
+            className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+            onClick={() => handleAddDropFunction()}
+          >
+            ADD/DROP
+          </button>
+          <button
+            className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+            onClick={() => handleClearAdded()}
+          >
+            Clear Added
+          </button>
+        </div>
+        <button
+          className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+          onClick={() => handleTransaction()}
+        >
+          Save Transaction
+        </button>
+      </div>
+      {loading ? (
+        <l-tailspin
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          size="60"
+          stroke="5"
+          speed="0.9"
+          color="#4279A6"
+        ></l-tailspin>
+      ) : (
+        ""
+      )}
 
-            {error && (
-              <div
-                id="alert-border-2"
-                class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">Error: {error}</div>
-                <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-2"
-                  aria-label="Close"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </button>
-              </div>
-            )}
+      {success && (
+        <div
+          id="alert-border-3"
+          class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+          role="alert"
+        >
+          <svg
+            class="flex-shrink-0 w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <div class="ms-3 text-sm font-medium">Submission successful!</div>
+          <button
+            type="button"
+            class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+            data-dismiss-target="#alert-border-3"
+            aria-label="Close"
+          >
+            <span class="sr-only">Dismiss</span>
+            <svg
+              class="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
 
-
+      {error && (
+        <div
+          id="alert-border-2"
+          class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
+          role="alert"
+        >
+          <svg
+            class="flex-shrink-0 w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <div class="ms-3 text-sm font-medium">Error: {error}</div>
+          <button
+            type="button"
+            class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+            data-dismiss-target="#alert-border-2"
+            aria-label="Close"
+          >
+            <span class="sr-only">Dismiss</span>
+            <svg
+              class="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
