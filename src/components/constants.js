@@ -1,4 +1,4 @@
-export const api = 'http://localhost:5169';
-export const  apiurl = "http://localhost:5169"
-export const config = "test";
+export const api = 'https://localhost:7032';
+export const  apiurl = "https://localhost:7032"
+export const config = "http://localhost:5169";
 

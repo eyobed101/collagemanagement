@@ -15,6 +15,7 @@ const CourseOffering = () => {
 
   const [sections, setSections] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [excludedCourses , setExcludedCourses] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,13 @@ const CourseOffering = () => {
 
         const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
         setCourses(courseResponse.data);
+
+        const excludedResponse = await axios.get(`${api}/api/SecCourseAssgts`); // Replace with your course API endpoint
+        setExcludedCourses(excludedResponse.data);
+
+        console.log("exc"  , excludedCourses)
+
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -42,9 +50,16 @@ const CourseOffering = () => {
     fetchData();
   }, []);
 
+
+
   const handleSectionChange = (value) => {
     setSelectedSection(value);
   };
+   
+  const selectedSectionObject = sections.find((section) => section.dcode === selectedSection);
+  const selectedSectionId = selectedSectionObject ? selectedSectionObject.sectionId : null;
+
+
 
   const handleAssignCourses = async () => {
     try {
@@ -52,6 +67,8 @@ const CourseOffering = () => {
         message.error('No active terms available for course assignment.');
         return;
       }
+
+        
   
       // Assuming you want the first active term, modify as needed
       const termId = termOptions[0].termId;
@@ -166,12 +183,31 @@ const CourseOffering = () => {
       } 
       <h2>Course </h2>
       <Table
-        dataSource={courses.filter((course) => course.dcode === selectedSection && course.program === selectedProgram )}
-        columns={columns}
-        rowKey="courseNo"
-        bordered
-        pagination={false}
-      />
+  dataSource={courses.filter((course) => {
+    const shouldBeExcluded = excludedCourses.some((excludedCourse) => {
+      const shouldBeExcluded =
+        excludedCourse.courseNo === course.courseNo &&
+        excludedCourse.sectionId === selectedSectionId;
+      console.log(
+        `Course: ${course.courseNo} - Section: ${course.sectionId} - Excluded: ${shouldBeExcluded}`
+      );
+      return shouldBeExcluded;
+    });
+    console.log(
+      `Course: ${course.courseNo} - Section: ${course.sectionId} - Should be excluded: ${shouldBeExcluded}`
+    );
+    return (
+      course.dcode === selectedSection &&
+      course.program === selectedProgram &&
+      !shouldBeExcluded
+    );
+  })}
+  columns={columns}
+  rowKey="courseNo"
+  bordered
+  pagination={false}
+/>
+
       <h2 style={{ margin: '2%' }}>Offered Courses </h2>
       <Table
         dataSource={otherTableData}
