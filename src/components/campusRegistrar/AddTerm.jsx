@@ -5,10 +5,7 @@ import axios from 'axios';
 import { api } from '../constants';
 
 const AddTerm = () => {
-  const [data, setData] = useState([
-   
-    // Add more sample data as needed
-  ]);
+  const [data, setData] = useState([]);
   const [loading , setLoading]= useState(false)
   const [editingKey, setEditingKey] = useState('');
   const [visible, setVisible] = useState(false);
@@ -16,6 +13,8 @@ const AddTerm = () => {
   const [studyCenters, setStudyCenters] = useState([]);
   const [StartDate , setStartDate] = useState(null);
   const [EndDate , setEndDate] = useState(null);
+  const [nextTerm, setNextTerm] = useState(""); // State to hold the next term
+
 
   
 
@@ -37,15 +36,29 @@ const AddTerm = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${api}/api/Terms`);
+        console.log('Response:', response.data); // Log the response data
         setData(response.data);
+        // console.log("Response" , response.data)
+        // console.log("Response" )
+
       } catch (error) {
         console.error('Error fetching data:', error);
       } 
     };
 
     fetchData();
+    console.log("Fetching data" ,data);
   }, []);
 
+
+  useEffect(() => {
+    // Calculate next term once data is fetched
+    if (data.length > 0) {
+      const previousTerm = getPreviousTerm(data);
+      const calculatedNextTerm = getNextTerm(previousTerm);
+      setNextTerm(calculatedNextTerm);
+    }
+  }, [data]);
   
   useEffect(() => {
   
@@ -61,7 +74,43 @@ const AddTerm = () => {
     SetData();
   }, []);
 
+  console.log("study" , studyCenters);
   const isEditing = (record) => record.key === editingKey;
+
+  // const previousTerm = getPreviousTerm(data);
+
+
+  function getPreviousTerm(terms) { 
+    let currentDate = new Date();
+    console.log("Current date:", data)
+    let closestStartDate = new Date(terms[0].startDate);
+    let closestTerm = terms[0];
+
+    terms.forEach(term => {
+        let termStartDate = new Date(term.startDate);
+        if (Math.abs(termStartDate - currentDate) < Math.abs(closestStartDate - currentDate)) {
+            closestStartDate = termStartDate;
+            closestTerm = term;
+        }
+    });
+
+    return closestTerm.name;
+}
+
+// Determine the previous term
+
+function getNextTerm(previousTerm) {
+  switch (previousTerm) {
+      case 'I':
+          return 'II';
+      case 'II':
+          return 'III';
+      case 'III':
+          return 'I';
+      default:
+          return 'I'; // If no previous term or unexpected value, default to 'I'
+  }
+}
 
   const columns = [
     {
@@ -183,8 +232,8 @@ const AddTerm = () => {
     try {
       // Make a POST request to the API endpoint
       const newRecord = {
-        "termId": values.termId,
-        "name": values.name,
+        "termId":`${values.centerId}/${nextTerm}/${values.acadYear}`,
+        "name": nextTerm,
         "acadYear": values.acadYear,
         "startDate":moment(StartDate).format('YYYY-MM-DD'), // Format date as needed
         "endDate":moment(EndDate).format('YYYY-MM-DD'), // Format date as needed
@@ -285,20 +334,20 @@ const AddTerm = () => {
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
-          <Form.Item
+          {/* <Form.Item
             label="Term ID"
             name="termId"
             rules={[{ required: true, message: 'Please input term ID!' }]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item
+          </Form.Item> */}
+          {/* <Form.Item
             label="Name"
             name="name"
             rules={[{ required: true, message: 'Please input Name!' }]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Acadamic Year"
             name="acadYear"
@@ -345,6 +394,7 @@ const AddTerm = () => {
             <Select style={{ width: '100%' }}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Extension</Option>
+              <Option value="Distance">Distance</Option>
             </Select>
           </Form.Item>
 

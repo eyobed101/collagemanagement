@@ -26,6 +26,12 @@ export function SignIn() {
   const [buttons, setButtons] = useState(false);
   const [value, setValue] = useState(0);
 
+  const handleForgotPassword = () => {
+    // Implement logic to handle forgot password functionality, e.g., navigate to a forgot password page
+    // You can use React Router to navigate to the forgot password page
+    navigate('./forgot-password');
+  };
+
   const onFinish = () => {
     console.log("data");
     setLoading(true);
@@ -120,7 +126,9 @@ export function SignIn() {
           onClick={() => onFinish()} className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
-
+          <Button onClick={handleForgotPassword} className="mt-2" fullWidth variant="outlined" color="primary">
+          Forgot Password
+        </Button>
         </form>
 
       </div>

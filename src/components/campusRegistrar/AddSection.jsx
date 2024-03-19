@@ -227,7 +227,7 @@ const AddSection = () => {
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        "sectionId": values.sectionId,
+        "termId":`${values.campusId}/${values.sectionName}/${values.acadYear}`,
         "campusId": values.campusId,
         "sectionName":values.sectionName,          
         "dateCreated": moment(createDate).format('YYYY-MM-DD'),
@@ -363,13 +363,13 @@ const AddSection = () => {
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
-          <Form.Item
+          {/* <Form.Item
             label="Section ID"
             name="sectionId"
             rules={[{ required: true, message: 'Please input Sectiont ID!' }]}
           >
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             label="Section Name"
             name="sectionName"
