@@ -14,12 +14,17 @@ const Curriculum = () => {
   const [isCurriculumModalVisible, setIsCurriculumModalVisible] = useState(false);
   const [isEditCurriculumModalVisible, setIsEditCurriculumModalVisible] = useState(false);
   const [curriculum , setCurriculum] = useState([])
+  const [courses , setCourses] = useState([])
   const [data , setData] = useState([]);
   const [studyCenters, setStudyCenters] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [approvedDate , setApprovedDate] = useState(new Date());
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [filteredCourses, setFilteredCourses] = useState([]);
+
+  // Function to filter courses based on selected department
+ 
   // Ref for accessing form instance
 
 
@@ -36,6 +41,17 @@ const Curriculum = () => {
 
     }
 
+    const fetchCourses =() =>{
+      axios.get(`${api}/api/Courses`)
+        .then(response => {
+          setCourses(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching course data:', error);
+        });
+  
+      }
+
     const fetchStudyCenters = () =>{
       axios.get(`${api}/api/StudyCenters`)
       .then(response => {
@@ -48,12 +64,18 @@ const Curriculum = () => {
     }
     fetchDepartments()
     fetchStudyCenters()
+    fetchCourses()
 
      
   }, []);
 
   const showCurriculumModal = () => {
     setIsCurriculumModalVisible(true);
+  };
+
+  const handleDepartmentChange = (value) => {
+    const filtered = courses.filter(course => course.dcode === value);
+    setFilteredCourses(filtered);
   };
 
   useEffect(() => {
@@ -284,7 +306,7 @@ setEditingKey(null)
      };
        
      const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
-     const url = "https://localhost:7032/api/Curricula"
+     const url = `${api}/api/Curricula`
      console.log("test ", postData , testDate);
       await axios.put(url, postData)
       .then(response => {
@@ -319,9 +341,27 @@ setEditingKey(null)
       okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       onOk={editingKey ? handleEdit : handleCurriculumOk} onCancel={handleCancel}>
         <Form form={form} onFinish={editingKey ? handleEdit : handleCurriculumOk} layout="vertical">
-        <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
-        <Input />
+        <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
+          <Select  onChange={handleDepartmentChange}>
+          {data.map(center => (
+            <Option key={center.did} value={center.did}>
+              {center.dname}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
+      <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
+          <Select>
+            {filteredCourses.map(course => (
+              <Option key={course.courseNo} value={course.courseNo}>
+                {course.courseName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        {/* <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item> */}
       <Form.Item
             label="Approved Date"
             name="approvedDate"
@@ -349,15 +389,7 @@ setEditingKey(null)
                          value={endDate && moment(endDate)} 
             style={{ width: '100%' }}   onChange={onChangeEnd} />
           </Form.Item>
-          <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-          <Select key="dcode">
-          {data.map(center => (
-            <Option key={center.did} value={center.did}>
-              {center.dname}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
+
       <Form.Item name="program" label="Program " rules={[{ required: true }]}>
         <Select>
         <Option value="TVET">TVET</Option>

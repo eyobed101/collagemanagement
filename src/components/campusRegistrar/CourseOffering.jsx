@@ -15,6 +15,7 @@ const CourseOffering = () => {
 
   const [sections, setSections] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [curriculum , setCurriculum] = useState([]);
   const [excludedCourses , setExcludedCourses] = useState([]);
 
   useEffect(() => {
@@ -25,6 +26,9 @@ const CourseOffering = () => {
 
         const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
         setCourses(courseResponse.data);
+
+        const curriculumResponse = await axios.get(`${api}/api/Curricula`); // Replace with your course API endpoint
+        setCurriculum(curriculumResponse.data);
 
         const excludedResponse = await axios.get(`${api}/api/SecCourseAssgts`); // Replace with your course API endpoint
         setExcludedCourses(excludedResponse.data);
@@ -125,6 +129,14 @@ const CourseOffering = () => {
       message.error('Error assigning courses. Please try again.');
     }
   };
+
+  const mergedCurriculum = curriculum.map((curriculumItem) => {
+    const matchingCourse = courses.find((course) => course.courseNo === curriculumItem.courseNo);
+    if (matchingCourse) {
+      return { ...curriculumItem, courseName: matchingCourse.courseName };
+    }
+    return curriculumItem;
+  });
   
 
   const handleSectionProgramChange =(value) =>{
@@ -133,10 +145,20 @@ const CourseOffering = () => {
   }
 
   const handleRowClick = (record) => {
-    const updatedMainTableData = mainTableData.filter((data) => data.courseNo !== record.courseNo);
-    setMainTableData(updatedMainTableData);
-    setOtherTableData([...otherTableData, { ...record }]);
+    const courseAlreadyAssigned = otherTableData.some((data) => data.courseNo === record.courseNo);
+    if (!courseAlreadyAssigned) {
+      const updatedMainTableData = mainTableData.filter((data) => {
+        // Check if the course matches the selected section and program
+        const matchesSection = data.dcode === selectedSection;
+        const matchesProgram = data.program === selectedProgram;
+        // Only keep the course if it doesn't match the selected section and program
+        return !(matchesSection && matchesProgram && data.courseNo === record.courseNo);
+      });
+      setMainTableData(updatedMainTableData);
+      setOtherTableData([...otherTableData, { ...record }]);
+    }
   };
+  
 
   const columns = [
     { title: 'Course ID', dataIndex: 'courseNo', key: 'courseNo' },
@@ -183,7 +205,7 @@ const CourseOffering = () => {
       } 
       <h2>Course </h2>
       <Table
-  dataSource={courses.filter((course) => {
+  dataSource={mergedCurriculum.filter((course) => {
     const shouldBeExcluded = excludedCourses.some((excludedCourse) => {
       const shouldBeExcluded =
         excludedCourse.courseNo === course.courseNo &&

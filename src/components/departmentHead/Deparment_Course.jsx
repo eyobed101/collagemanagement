@@ -29,7 +29,11 @@ const DepartmentCourse = () => {
 
 
   const handleEdit =  () => {
+
+    const valuesis = form.getFieldsValue();
+    
     form.validateFields().then(async(values) => {
+      console.log("Values from form:", values);
       const updatedDataSource = lecturesData.map((record) => {
         if (record.empId === values.empId) {
           return { ...record, ...values };
@@ -37,18 +41,20 @@ const DepartmentCourse = () => {
         return record;
       });
 
-
+    console.log("test " , valuesis)
     console.log('Form Edit :', updatedDataSource);
+   
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        "courseNo": values.courseNo,
-        "empId": values.empId,
-        "sectionId":values.sectionId, 
-        "termId": values.termId,         
-        "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
+        "courseNo": valuesis.courseNo,
+        "empId": valuesis.empId,
+        "sectionId":valuesis.sectionId, 
+        "termId": valuesis.termId,         
+        "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(valuesis.assgtDate).format('YYYY-MM-DD')),
       };
-      console.log("Response iss" , postData)
+
+      console.log("Response iss" , postData  , valuesis.courseNo)
       const response = await axios.put(`${api}/api/InstCourseAssgts`, postData);
       console.log('Put request successful:', response.data);
     } catch (error) {
@@ -81,11 +87,11 @@ const DepartmentCourse = () => {
   const handleDelete = async (record) => {
     console.log('delete', record)
     const postData = {
-      "courseNo": values.courseNo,
-      "empId": values.empId,
-      "sectionId":values.sectionId, 
-      "termId": values.termId,         
-      "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
+      "courseNo": record.courseNo,
+      "empId": record.empId,
+      "sectionId":record.sectionId, 
+      "termId": record.termId,         
+      "assgtDate":  moment(record.assgtDate).format('YYYY-MM-DD'),
     };
      console.log('delete', postData)
     const response = await axios.delete(`${api}/api/InstCourseAssgts`, postData);
@@ -224,17 +230,17 @@ const DepartmentCourse = () => {
         const lectureResponse = await axios.get(`${api}/api/InstCourseAssgts`);
         setLecturesData(lectureResponse.data);
 
-        const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
+        const courseResponse = await axios.get(`${api}/api/SecCourseAssgts`); // Replace with your course API endpoint
         setCoursesData(courseResponse.data);
 
-        const sectionResponse = await axios.get(`${api}/api/Section`); // Replace with your course API endpoint
-        setSectionData(sectionResponse.data);
+        // const sectionResponse = await axios.get(`${api}/api/Section`); // Replace with your course API endpoint
+        // setSectionData(sectionResponse.data);
 
-        const Response = await axios.get(`${api}/api/Employees`); // Replace with your course API endpoint
-        setStudentsData(Response.data);
+        // const Response = await axios.get(`${api}/api/Employees`); // Replace with your course API endpoint
+        // setStudentsData(Response.data);
 
-        const Responses = await axios.get(`${api}/api/Terms`); // Replace with your course API endpoint
-        setTermData(Responses.data);
+        // const Responses = await axios.get(`${api}/api/Terms`); // Replace with your course API endpoint
+        // setTermData(Responses.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -486,6 +492,16 @@ const DepartmentCourse = () => {
   console.log('onFinish')
  }
 
+ const handleCourseChange = (value) => {
+  const selectedCourse = coursesData.find(course => course.courseNo === value);
+  if (selectedCourse) {
+    form.setFieldsValue({
+      termId: selectedCourse.termId,
+      sectionId: selectedCourse.sectionId
+    });
+  }
+};
+
   
 
   return (
@@ -572,6 +588,9 @@ const DepartmentCourse = () => {
         <Tag color="">Pending Approval</Tag>
       </Modal> */}
 
+
+      
+
       <Modal  
          title={editingKey ? 'Edit Record' : 'Create Record'}
          visible={isModalVisible1}
@@ -586,7 +605,7 @@ const DepartmentCourse = () => {
             name="courseNo"
             rules={[{ required: true, message: 'Please input term ID!' }]}
           >
-            <Select key="courseNo">
+            <Select key="courseNo" onChange={handleCourseChange}>
           {coursesData.map(center => (
             <Option key={center.courseNo} value={center.courseNo}>
               {center.courseName}
@@ -611,27 +630,31 @@ const DepartmentCourse = () => {
             label="Section Name"
             name="sectionId"
             rules={[{ required: true, message: 'Please give the Section ' }]}
-          >
-             <Select key="sectionId">
+          > 
+          <Input    />
+             {/* <Select key="sectionId">
          {sectionData.map(center => (
             <Option key={center.sectionId} value={center.sectionId}>
               {center.sectionName}
             </Option>
           ))}
-          </Select>
+          </Select> */}
           </Form.Item>
           <Form.Item
             label="Term ID"
             name="termId"
             rules={[{ required: true, message: 'Please give the termId!' }]}
           >
-         <Select key="termId">
+
+               <Input   />
+
+         {/* <Select key="termId">
            {termData.map(center => (
             <Option key={center.termId} value={center.termId}>
               {center.termId}
             </Option>
           ))}
-          </Select>
+          </Select> */}
           </Form.Item>
           <Form.Item
             label="Assignment Date"
