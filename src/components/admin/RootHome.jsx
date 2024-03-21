@@ -684,6 +684,9 @@ const RootHome = () => {
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
+
+        {!editingKey && (
+      <> 
           <Form.Item
             label="Center ID"
             name="CenterId"
@@ -691,6 +694,8 @@ const RootHome = () => {
           >
             <Input />
           </Form.Item>
+          </>
+       )}
           <Form.Item
             label="Center Name"
             name="CenterName"

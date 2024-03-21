@@ -1,5 +1,5 @@
 import React, { useState , useEffect} from 'react';
-import { Table, Button, Input, DatePicker, Popconfirm, Select , Modal , Form} from 'antd';
+import { Table, Button, Input, DatePicker, Popconfirm, Select , Modal , Form , message} from 'antd';
 import moment from 'moment';
 import axios from 'axios';
 import { api } from '../constants';
@@ -192,6 +192,9 @@ function getNextTerm(previousTerm) {
  
   const handleCancel = () => {
     setVisible(false);
+    setEditingKey(null);
+    form.resetFields(); // Reset form fields
+
   };
 
   const handleEdit = async () => {
@@ -269,16 +272,18 @@ function getNextTerm(previousTerm) {
     console.log(record)
     const startDate = moment(record.startDate, 'YYYY-MM-DD');
     const endDate = moment(record.endDate, 'YYYY-MM-DD'); 
-
-    form.setFieldsValue({
-      ...record,
-      startDate: startDate,
-      endDate : endDate
-    });
-    // form.setFieldsValue(record);
-    setEditingKey(record.termId);
-    // handleOk();  
-    setVisible(true) 
+    if (Date.now() >= startDate && Date.now() <= endDate) {
+      form.setFieldsValue({
+        ...record,
+        startDate,
+        endDate,
+      });
+      setEditingKey(record.termId);
+      setVisible(true);
+    } else {
+      // Display a message or handle the case where editing is not allowed
+      message.error('Editing is not allowed at this time.');
+    }
   };
 
 
@@ -334,28 +339,7 @@ function getNextTerm(previousTerm) {
         okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
       >
         <Form form={form} onFinish={onFinish}>
-          {/* <Form.Item
-            label="Term ID"
-            name="termId"
-            rules={[{ required: true, message: 'Please input term ID!' }]}
-          >
-            <Input />
-          </Form.Item> */}
-          {/* <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please input Name!' }]}
-          >
-            <Input />
-          </Form.Item> */}
-          <Form.Item
-            label="Acadamic Year"
-            name="acadYear"
-            rules={[{ required: true, message: 'Please input Acadamic Year' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
+                  <Form.Item
             label="Start Date"
             name="startDate"
             rules={[{ required: true, message: 'Please select Start date!' }]}
@@ -363,8 +347,6 @@ function getNextTerm(previousTerm) {
             <DatePicker 
                      value={StartDate && moment(StartDate)} 
                      getPopupContainer={(trigger) => trigger.parentElement}
-
-
             style={{ width: '100%' }} onChange={onChangeStart} />
           </Form.Item>
           <Form.Item
@@ -376,6 +358,16 @@ function getNextTerm(previousTerm) {
          value={EndDate && moment(EndDate)} 
             style={{ width: '100%' }} onChange={onChangeEnd}  />
           </Form.Item>
+        
+         {!editingKey && (
+      <>      
+          <Form.Item
+            label="Acadamic Year"
+            name="acadYear"
+            rules={[{ required: true, message: 'Please input Acadamic Year' }]}
+          >
+            <Input />
+          </Form.Item>          
           <Form.Item
             label="Program"
             name="program"
@@ -397,7 +389,6 @@ function getNextTerm(previousTerm) {
               <Option value="Distance">Distance</Option>
             </Select>
           </Form.Item>
-
           <Form.Item label="Study Center" name="centerId" required>
         <Select key="centerId">
           {studyCenters.map(center => (
@@ -407,9 +398,10 @@ function getNextTerm(previousTerm) {
           ))}
         </Select>
       </Form.Item>
+      </>
+       )}
         </Form>
-      </Modal>
-     
+      </Modal>     
         </div>
   );
 }
