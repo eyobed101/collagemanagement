@@ -294,7 +294,7 @@ const StudentCourseRegistration = () => {
                 ? secCourseAss.filter(
                     (section) => section.sectionId === selectedSection.sectionId
                   ).length
-                : "0"}
+                : ""}
             </div>
           </div>
           <div className="mb-4 border border-[#676767] shadow-md p-2 mr-4 rounded-md">

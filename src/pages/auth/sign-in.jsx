@@ -47,18 +47,18 @@ export function SignIn() {
           // Handle error
           console.error("Failed to login");
         }
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((e) => {
         console.error(e);
       });
   };
 
-  useEffect(() => {
-    if (current) {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (current) {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   return (
     <section className="m-8 flex gap-4">
@@ -124,7 +124,7 @@ export function SignIn() {
         </form>
 
       </div>
-      <div className="w-2/5 h-full hidden lg:block ">
+      <div className="w-[20%] h-[20%] hidden lg:block my-auto">
         <img
           src="/img/pattern.png"
           className="h-full w-full object-cover rounded-3xl"

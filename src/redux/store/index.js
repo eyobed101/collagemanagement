@@ -23,8 +23,8 @@ const persistConfig = {
 const store = configureStore({
   reducer: {
     user: persistReducer(persistConfig, userReducer),
-    student: studentReducer,
-    courses: coursesReducer,
+    // student: studentReducer,
+    // courses: coursesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -34,7 +34,7 @@ const store = configureStore({
     }),
 });
 
-store.dispatch(listCourse());
+// store.dispatch(listCourse());
 setupListeners(store.dispatch);
 
 export default store;
