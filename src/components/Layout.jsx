@@ -47,7 +47,7 @@ const Layouts = () => {
   
 
   useEffect(() => {
-     if(userRole == "Login successful"){
+     if(userRole.email == "lecture@gmail.com"){
       navigate("/root_admin")
      }
      else if(user.email == "one@gmail.com"){
