@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { apiurl } from "../../components/constants";
+
 
 // Define an async thunk for user login
 const loginUser = createAsyncThunk("user/loginUser", async (data) => {
   try {
-    const response = await axios.post('http://localhost:5169/api/Authenticate/login', {
+    const response = await axios.post(`${apiurl}/api/Authenticate/login`, {
       email: data.email,
       password: data.password
     });
@@ -41,22 +43,22 @@ const userSlice = createSlice({
       state.loading = false;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(loginUser.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.loading = false;
-      state.value = action.payload.message;
-      state.token = action.payload.token;
-      state.expiration = action.payload.expiration;
-      state.error = false;
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(loginUser.pending, (state) => {
+  //     state.loading = true;
+  //   });
+  //   builder.addCase(loginUser.fulfilled, (state, action) => {
+  //     state.loading = false;
+  //     state.value = action.payload.message;
+  //     state.token = action.payload.token;
+  //     state.expiration = action.payload.expiration;
+  //     state.error = false;
+  //   });
+  //   builder.addCase(loginUser.rejected, (state, action) => {
+  //     state.loading = false;
+  //     state.error = action.error.message;
+  //   });
+  // },
 });
 
 // Export the user login thunk and slice actions

@@ -26,7 +26,8 @@ export function SignIn() {
   const [buttons, setButtons] = useState(false);
   const [value, setValue] = useState(0);
 
-  const onFinish = () => {
+  const onFinish = (e) => {
+    e.preventDefault(); 
     console.log("data");
     setLoading(true);
     let data = {
@@ -40,13 +41,13 @@ export function SignIn() {
     dispatch(userLogin(data))
       .then((res) => {
         console.log("test", res);
-        if (data.email === 'onetest@gmail.com') {
-          // Handle specific case
-        }
-        if (res.error) {
-          // Handle error
-          console.error("Failed to login");
-        }
+        // if (data.email === 'onetest@gmail.com') {
+        //   // Handle specific case
+        // }
+        // if (res.error) {
+        //   // Handle error
+        //   console.error("Failed to login");
+        // }
         // setLoading(false);
       })
       .catch((e) => {
@@ -67,7 +68,7 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={onFinish} >
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
@@ -117,7 +118,7 @@ export function SignIn() {
           />
           <Button
           style={{backgroundColor: "#4279A6"}}
-          onClick={() => onFinish()} className="mt-6" fullWidth type="submit">
+         className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
 
