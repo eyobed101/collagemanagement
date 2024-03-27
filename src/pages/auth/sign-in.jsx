@@ -68,7 +68,7 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={onFinish} >
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={onFinish}>
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
@@ -118,7 +118,7 @@ export function SignIn() {
           />
           <Button
           style={{backgroundColor: "#4279A6"}}
-         className="mt-6" fullWidth type="submit">
+          className="mt-6" fullWidth type="submit">
             Sign In
           </Button>
 
