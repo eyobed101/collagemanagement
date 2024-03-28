@@ -37,17 +37,26 @@ import StudentSiderGenerator from "./student/Menu";
 import LucturerSiderGenerator from "./lecturer/Menu";
 import CampusAdmin from "./Campus_Head/Campus_Admin"
 import RegistrarOfficerSiderGenerator from "./registrarOfficer/Menu";
+import axiosInstance from "@/configs/axios";
 const { Header, Content, Sider } = Layout;
 const drawerWidth = 240;
 
+const ProtectedRouteWithAxios = ({ element: Component, ...rest }) => {
+  // Wrap the provided component with axiosInstance
+  const WrappedComponent = () => <Component axiosInstance={axiosInstance} />;
+  return <Route {...rest} element={<WrappedComponent />} />;
+};
+
 
 const Layouts = () => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
-  const userRole = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value);
   
 
   useEffect(() => {
-     if(userRole.email == "lecture@gmail.com"){
+     if(user == "Login successful"){
       navigate("/root_admin")
      }
      else if(user.email == "one@gmail.com"){

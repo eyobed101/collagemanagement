@@ -27,8 +27,11 @@ const Layouts = () => {
 
   localStorage.setItem('tokenNew', user);
     useEffect(() => {
-    console.log("asasasa")
-    if (!user || !user.role) {
+    // if (!user || !user.role) {
+    //   dispatch(userLogoutAction());
+
+    // }
+    if (!user) {
       dispatch(userLogoutAction());
 
     }

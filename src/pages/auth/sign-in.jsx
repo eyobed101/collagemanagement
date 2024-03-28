@@ -48,18 +48,18 @@ export function SignIn() {
         //   // Handle error
         //   console.error("Failed to login");
         // }
-        // setLoading(false);
+        setLoading(false);
       })
       .catch((e) => {
         console.error(e);
       });
   };
 
-  // useEffect(() => {
-  //   if (current) {
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (current) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <section className="m-8 flex gap-4">

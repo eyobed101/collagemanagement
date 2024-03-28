@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { api } from "../constants";
 import "react-tabs/style/react-tabs.css";
+import axiosInstance from "@/configs/axios";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -65,8 +66,8 @@ export function UserForm() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${api}/api/Departments`
+        const response = await axiosInstance.get(
+          `/api/Departments`
         );
         setDepartments(response.data);
         console.log(departments);
@@ -80,8 +81,8 @@ export function UserForm() {
 
     const fetchStudyCenters = async () => {
       try {
-        const response = await axios.get(
-          `${api}/api/StudyCenters`
+        const response = await axiosInstance.get(
+          `/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -171,10 +172,10 @@ export function UserForm() {
 
     console.log("data", data);
 
-    const apiUrl =`${api}/api/Employees`;
+    const apiUrl =`/api/Employees`;
 
     try {
-      const response = await axios.post(apiUrl, restFormData);
+      const response = await axiosInstance.post(apiUrl, restFormData);
 
       setSuccess(true);
       setError(null);

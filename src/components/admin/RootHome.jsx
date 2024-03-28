@@ -11,6 +11,7 @@ import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 // import Icon from "react-eva-icons";
 import ChartStudent from "@/graph/studentGraph/Chart";
+import axiosInstance from "@/configs/axios";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -77,7 +78,7 @@ const RootHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/StudyCenters');
+        const response = await axiosInstance.get('/api/StudyCenters');
         setStudyCenters(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -92,7 +93,7 @@ const RootHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:7032/api/Employees');
+        const response = await axiosInstance.get('/api/Employees');
         setEmployee(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -227,7 +228,7 @@ const RootHome = () => {
         "centerType": values.CenterType    
        };
       console.log("Response iss" , postData)
-      const response = await axios.put('https://localhost:7032/api/StudyCenters', postData);
+      const response = await axiosInstance.put('https://localhost:7032/api/StudyCenters', postData);
       console.log('Put request successful:', response.data);
 
       setStudyCenters(updatedDataSource)
@@ -264,7 +265,7 @@ const RootHome = () => {
           ...values,
           // resultDate: moment(values.resultDate),
         };
-        const response = await axios.put('https://localhost:7032/api/StudyCenters', newData);
+        const response = await axiosInstance.put('https://localhost:7032/api/StudyCenters', newData);
         console.log('Put request successful:', response.data);
         setStudyCenters(newData);
         setEditingKey('');
@@ -289,7 +290,7 @@ const RootHome = () => {
       "centerType": record.CenterType  
      };
      console.log('delete', postData)
-    const response = await axios.delete('https://localhost:7032/api/StudyCenters', postData);
+    const response = await axiosInstance.delete('https://localhost:7032/api/StudyCenters', postData);
     console.log('Delete request successful:', response.data);
 
     const newData = studyCenters.filter((item) => item.key !== record.key);

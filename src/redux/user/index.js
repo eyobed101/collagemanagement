@@ -9,7 +9,7 @@ const loginUser = createAsyncThunk("user/loginUser", async (data) => {
     const response = await axios.post(`${apiurl}/api/Authenticate/login`, {
       email: data.email,
       password: data.password
-    });
+  });
 
     // Assuming the response contains user data and profile
     const responseData = {
@@ -17,7 +17,7 @@ const loginUser = createAsyncThunk("user/loginUser", async (data) => {
       token: response.data.token,
       expiration: response.data.expiration
     };
-
+    localStorage.setItem('accessToken', response.data.token);
     return responseData;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -43,22 +43,22 @@ const userSlice = createSlice({
       state.loading = false;
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(loginUser.pending, (state) => {
-  //     state.loading = true;
-  //   });
-  //   builder.addCase(loginUser.fulfilled, (state, action) => {
-  //     state.loading = false;
-  //     state.value = action.payload.message;
-  //     state.token = action.payload.token;
-  //     state.expiration = action.payload.expiration;
-  //     state.error = false;
-  //   });
-  //   builder.addCase(loginUser.rejected, (state, action) => {
-  //     state.loading = false;
-  //     state.error = action.error.message;
-  //   });
-  // },
+  extraReducers: (builder) => {
+    builder.addCase(loginUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(loginUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.value = action.payload.message;
+      state.token = action.payload.token;
+      state.expiration = action.payload.expiration;
+      state.error = false;
+    });
+    builder.addCase(loginUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+  },
 });
 
 // Export the user login thunk and slice actions

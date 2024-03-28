@@ -11,6 +11,7 @@ import {
   MdLocationOn,
 
 } from "react-icons/md";
+import axiosInstance from '@/configs/axios';
 
 function CampusForm({ onSubmit }) {
   const [centerId, setCenterId] = useState('');
@@ -38,7 +39,7 @@ function CampusForm({ onSubmit }) {
        };
       console.log("Response iss" , postData)
 
-      const response = await axios.post(`${api}/api/StudyCenters/StudyCenter`, postData);
+      const response = await axiosInstance.post(`/api/StudyCenters/StudyCenter`, postData);
 
       // Handle the response as needed
       console.log('Data successfully posted:', response.data);
@@ -51,7 +52,7 @@ function CampusForm({ onSubmit }) {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-start justify-center">
+    <div className="w-full min-h-screen flex items-start justify-center bg-white p-5 rounded-md">
       <div className="w-[90%] md:w-[50%]  rounded-lg p-4 flex flex-col items-center justify-center gap-4">
           <motion.p
             initial={{ opacity: 0 }}
@@ -62,7 +63,7 @@ function CampusForm({ onSubmit }) {
             {/* {msg} */}
           </motion.p>      
           <div>
-          <p className="text-center text-[#344054] text-[24px] font-bold align-middle -mt-16 mb-8 border-b-[#EAECF0] border-b-[2px]">
+          <p className="text-center text-[#344054] text-[24px] font-bold align-middle mt-10 mb-8 border-b-[#EAECF0] border-b-[2px]">
          Root Adminstrator
           </p> 
             </div> 
