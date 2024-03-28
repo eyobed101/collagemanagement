@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import addDropTableData from "@/data/addrop";
 import courseTableData from "@/data/courses";
 import axios from "axios";
-import student from "@/student";
+// import student from "@/student";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 

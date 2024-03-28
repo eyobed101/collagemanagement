@@ -6,6 +6,78 @@ import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 
 
+
+const TableRow = styled.tr`
+    background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
+    padding: 10px;
+  `;
+
+  const TableCell = styled.td`
+    padding: 8px;
+    border: 2px solid #e2e8f0;
+    border-collapse: collapse;
+  `;
+
+  const TableHeader = styled.th`
+    border: 2px solid #e2e8f0;
+    border-collapse: collapse;
+    padding: 12px;
+    text-align: left;
+    background-color: #f0f0f0;
+  `;
+
+  const StyledTable = styled.table`
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    margin-top: 12px;
+  `;
+
+  const ModalWrapper = styled.div`
+    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 4px;
+    z-index: 999;
+    width: 30%;
+    font-family: "Arial", sans-serif; /* Specify your desired font type */
+  `;
+
+  const ModalOverlay = styled.div`
+    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  `;
+
+  const StyledButton = styled.button`
+    padding: 3px 16px;
+    border: 0.5px #4279a6 solid;
+    background-color: none;
+    color: white;
+    // border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Arial", sans-serif; /* Specify your desired font type */
+    font-size: 16px; /* Specify your desired font size */
+    color: #4279a6;
+
+    &:hover {
+      background-color: #4278a6;
+      color: white;
+    }
+  `;
+
+
 const StudentStatusManagement = () => {
   const [students, setStudents] = useState([]);
   const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
@@ -16,7 +88,7 @@ const StudentStatusManagement = () => {
   const [studStatus, setStudStatus] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStatus, setNewStatus] = useState("");
+  const [newStatus, setNewStatus] = useState("Active");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -26,7 +98,7 @@ const StudentStatusManagement = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [changeReason, setChangeReason] = useState("");
+  const [changeReason, setChangeReason] = useState("Pass");
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -100,76 +172,9 @@ const StudentStatusManagement = () => {
       ...JSON.parse(selectedData),
     });
   };
+  
 
-  const TableRow = styled.tr`
-    background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
-    padding: 10px;
-  `;
-
-  const TableCell = styled.td`
-    padding: 8px;
-    border: 2px solid #e2e8f0;
-    border-collapse: collapse;
-  `;
-
-  const TableHeader = styled.th`
-    border: 2px solid #e2e8f0;
-    border-collapse: collapse;
-    padding: 12px;
-    text-align: left;
-    background-color: #f0f0f0;
-  `;
-
-  const StyledTable = styled.table`
-    width: 100%;
-    min-width: 640px;
-    border-collapse: collapse;
-    margin-top: 12px;
-  `;
-
-  const ModalWrapper = styled.div`
-    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 4px;
-    z-index: 999;
-    width: 30%;
-    font-family: "Arial", sans-serif; /* Specify your desired font type */
-  `;
-
-  const ModalOverlay = styled.div`
-    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-  `;
-
-  const StyledButton = styled.button`
-    padding: 3px 16px;
-    border: 0.5px #4279a6 solid;
-    background-color: none;
-    color: white;
-    // border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: "Arial", sans-serif; /* Specify your desired font type */
-    font-size: 16px; /* Specify your desired font size */
-    color: #4279a6;
-
-    &:hover {
-      background-color: #4278a6;
-      color: white;
-    }
-  `;
+  
 
   const ModalForm = () => {
     const statusOptions = [
@@ -226,19 +231,30 @@ const StudentStatusManagement = () => {
     e.preventDefault();
 
     const encodedStudId = encodeURIComponent(selectedStudent.studId);
+    const StudentStatusChange = selectedStudent.statusChangeDate;
+
+    let currentDate = new Date();
+
+    let year = currentDate.getFullYear();
+    let month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+    let day = String(currentDate.getDate()).padStart(2, '0');
+
+    let formattedDate = `${year}-${month}-${day}`;
+
+    
 
     const updatedStatus = {
-      studId: selectedStudent.studId,
-      currentStatus: newStatus,
-      prevStatus: selectedStudent.currentStatus,
-      statusChangeDate: new Date().toISOString(),
-      changeReason: changeReason,
-      readmissionDate: null,
+      StudId: selectedStudent.studId,
+      CurrentStatus: newStatus,
+      PrevStatus: selectedStudent.currentStatus,
+      StatusChangeDate: formattedDate,
+      ChangeReason: changeReason,
+      ReadmissionDate: null,
     };
-    console.log(updatedStatus);
+    console.log(updatedStatus, StudentStatusChange);
     axios
       .put(
-        `${apiurl}/api/StudentStatus/${encodedStudId}`,
+        `${apiurl}/api/StudentStatus/${encodedStudId}/${StudentStatusChange}`,
         updatedStatus
       )
       .then((response) => {
@@ -355,7 +371,7 @@ const StudentStatusManagement = () => {
                 ? studStatus
                     .filter((status) =>
                       sectionStudEnroll.some(
-                        (stud) => stud.studId === status.studId
+                        (stud) => stud.studId === status.studId && stud.sectionId === selectedSection.sectionId
                       )
                     )
                     .map((status, index) => (
@@ -392,7 +408,7 @@ const StudentStatusManagement = () => {
                         </TableCell>
                         <TableCell>
                           <StyledButton onClick={() => handleOpenModal(status)}>
-                            Change
+                            Edit
                           </StyledButton>
                         </TableCell>
                       </TableRow>

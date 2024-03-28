@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { api } from "../constants";
 import "react-tabs/style/react-tabs.css";
+import axiosInstance from "@/configs/axios";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -29,10 +30,26 @@ export function UserForm() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-     const fetchStudyCenters = async () => {
+    
+    const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${api}/api/StudyCenters`
+        const response = await axiosInstance.get(
+          `/api/Departments`
+        );
+        setDepartments(response.data);
+        console.log(departments);
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+   
+
+    const fetchStudyCenters = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -41,6 +58,7 @@ export function UserForm() {
       }
     };
     fetchStudyCenters();
+    fetchDepartments();
 
     }, []);
 
@@ -94,10 +112,12 @@ export function UserForm() {
 
     console.log("data", data);
 
-    const apiUrl = `${api}/api/Authenticate/Register`;
+    const apiUrl = `/api/Authenticate/Register`;
+
+   
 
     try {
-      const response = await axios.post(apiUrl, restFormData , config);
+      const response = await axiosInstance.post(apiUrl, restFormData);
 
       setSuccess(true);
       setError(null);

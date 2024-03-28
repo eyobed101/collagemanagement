@@ -1,90 +1,74 @@
+import axios from 'axios';
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { firebaseAuth, firestoreDb, app } from "../../firebase";
+import { apiurl } from "../../components/constants";
 
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
 
-const phoneUser = createAsyncThunk("user/phoneUser", async (data) => {
-  var resp = await JSON.stringify(data.user);
-  const docRef = await doc(firestoreDb, "users", data.user.uid);
-  const docSnap = await getDoc(docRef);
-  const profile = await docSnap.data();
-  // const profile = await JSON.stringify(pro);
-  var data = { resp, profile };
-  return data;
-});
-
+// Define an async thunk for user login
 const loginUser = createAsyncThunk("user/loginUser", async (data) => {
-  var datas ={
-    resp: {
+  try {
+    const response = await axios.post(`${apiurl}/api/Authenticate/login`, {
       email: data.email,
-      password :data.password
-    },
-    profile: {
-      role: {
-        'isAdmin': true,
-         isTeacher: false,
-      }
-    },
+      password: data.password
+  });
 
+    // Assuming the response contains user data and profile
+    const responseData = {
+      message: response.data.message,
+      token: response.data.token,
+      expiration: response.data.expiration
+    };
+    localStorage.setItem('accessToken', response.data.token);
+    return responseData;
+  } catch (error) {
+    throw new Error(error.response.data.message);
   }
-  return datas;
 });
 
+// Define a slice for user data management
 const userSlice = createSlice({
   name: "user",
-
   initialState: {
     loading: false,
     error: false,
     value: null,
-    school: null,
-    profile: null,
-    role: "",
+    token: null,
+    expiration: null
   },
   reducers: {
     logout: (state) => {
       state.value = null;
-      state.profile = null;
-      state.school = null;
+      state.token = null;
+      state.expiration = null;
       state.error = false;
       state.loading = false;
     },
   },
-
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.value = action.payload.resp;
-      state.profile = action.payload.profile
-      state.school = action.payload.datas;
-      state.error = "";
+      state.value = action.payload.message;
+      state.token = action.payload.token;
+      state.expiration = action.payload.expiration;
+      state.error = false;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
-      state.value = null;
-      state.error = action.error.message;
-    });
-    builder.addCase(phoneLogin.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(phoneLogin.fulfilled, (state, action) => {
-      state.loading = false;
-      state.value = action.payload.resp;
-      state.profile = action.payload.profile;
-      state.error = "";
-    });
-    builder.addCase(phoneLogin.rejected, (state, action) => {
-      state.loading = false;
-      state.value = {};
       state.error = action.error.message;
     });
   },
 });
+
+// Export the user login thunk and slice actions
 export const userLogin = loginUser;
-export const phoneLogin = phoneUser;
+// export const { logout } = userSlice.actions;
 export const userAction = userSlice.actions;
+
+
+// export const userAction = userSlice.actions;
+
+
+// Export the user reducer
 export default userSlice.reducer;

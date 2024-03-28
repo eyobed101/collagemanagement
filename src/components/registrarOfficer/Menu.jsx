@@ -375,11 +375,11 @@ const RegistrarOfficerSiderGenerator = () => {
 
           
         // },
-        {
-          icon: <FaGraduationCap {...icon} />,
-          name: "Grade Entry",
-          onClick: handleGradeEntry,
-        },
+        // {
+        //   icon: <FaGraduationCap {...icon} />,
+        //   name: "Grade Entry",
+        //   onClick: handleGradeEntry,
+        // },
         {
           icon: <MdLogout {...icon} />,
           name: "Log out",
