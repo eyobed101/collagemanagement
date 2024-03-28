@@ -3,6 +3,7 @@ import { Table, Button, Input, DatePicker, Popconfirm, Select , Modal , Form , m
 import moment from 'moment';
 import axios from 'axios';
 import { api } from '../constants';
+import axiosInstance from '@/configs/axios';
 
 const AddTerm = () => {
   const [data, setData] = useState([]);
@@ -35,7 +36,7 @@ const AddTerm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Terms`);
+        const response = await axiosInstance.get(`/api/Terms`);
         console.log('Response:', response.data); // Log the response data
         setData(response.data);
         // console.log("Response" , response.data)
@@ -64,7 +65,7 @@ const AddTerm = () => {
   
     const SetData = async () => {
       try {
-        const response = await axios.get(`${api}/api/StudyCenters`);
+        const response = await axiosInstance.get(`/api/StudyCenters`);
         setStudyCenters(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -213,7 +214,7 @@ function getNextTerm(previousTerm) {
         "centerId":values.centerId, //
        };
       console.log("Response iss" , newRecord)
-      const response = await axios.put(`${api}/api/Terms`, newRecord);
+      const response = await axiosInstance.put(`/api/Terms`, newRecord);
       console.log('Put request successful:', response.data);
 
       setData(response.data)
@@ -245,7 +246,7 @@ function getNextTerm(previousTerm) {
         "centerId":values.centerId, //
        };
       console.log("Response iss" , newRecord)
-      const response = await axios.post(`${api}/api/Terms/Terms`, newRecord);
+      const response = await axiosInstance.post(`/api/Terms/Terms`, newRecord);
       console.log('POST request successful:', response.data);
 
       setData(response.data)
@@ -312,7 +313,7 @@ function getNextTerm(previousTerm) {
 
   const handleDelete = async (record) => {
     console.log('delete', record)
-    const response = await axios.put(`${api}/api/Terms`, record);
+    const response = await axiosInstance.put(`/api/Terms`, record);
     console.log('Delete request successful:', response.data);
 
     const newData = data.filter((item) => item.key !== record.key);
@@ -324,8 +325,8 @@ function getNextTerm(previousTerm) {
   };
 
   return (
-    <div>
-      <Button onClick={showModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
+    <div className='mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md'>
+      <Button onClick={showModal} type="primary" style={{ marginBottom: 16,fontWeight:"bold", backgroundColor: '#4279A6', padding: '12px 24px', height: 'auto', maxWidth:'15%'}} >
         Add New Term
       </Button>
       <Table dataSource={data} columns={columns}  bordered  

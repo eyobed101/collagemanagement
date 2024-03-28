@@ -4,6 +4,7 @@ import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
 
 
 
@@ -103,8 +104,8 @@ const StudentStatusManagement = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments`
+        const response = await axiosInstance.get(
+          `/api/Departments`
         );
         setDepartments(response.data);
         console.log("Departiments", response.data);
@@ -114,7 +115,7 @@ const StudentStatusManagement = () => {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
         console.log("Sections", response.data);
       } catch (error) {
@@ -123,8 +124,8 @@ const StudentStatusManagement = () => {
     };
     const fetchSectionStudentEnroll = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/SectionStudEnroll`
+        const response = await axiosInstance.get(
+          `/api/SectionStudEnroll`
         );
         setSectionStudEnroll(response.data);
         console.log("sectionStudEnroll", response.data);
@@ -135,8 +136,8 @@ const StudentStatusManagement = () => {
 
     const fetchApplicants = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Applicants`
+        const response = await axiosInstance.get(
+          `/api/Applicants`
         );
         setStudents(response.data);
         console.log("Students", response.data);
@@ -146,8 +147,8 @@ const StudentStatusManagement = () => {
     };
     const fetchStudentStatus = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/StudentStatus`
+        const response = await axiosInstance.get(
+          `/api/StudentStatus`
         );
         setStudStatus(response.data);
         console.log("status", response.data);
@@ -252,9 +253,9 @@ const StudentStatusManagement = () => {
       ReadmissionDate: null,
     };
     console.log(updatedStatus, StudentStatusChange);
-    axios
+    axiosInstance
       .put(
-        `${apiurl}/api/StudentStatus/${encodedStudId}/${StudentStatusChange}`,
+        `/api/StudentStatus/${encodedStudId}/${StudentStatusChange}`,
         updatedStatus
       )
       .then((response) => {

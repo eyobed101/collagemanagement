@@ -3,6 +3,7 @@ import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { apiurl } from "../constants";
+import axiosInstance from "@/configs/axios";
 
 const StudentCourses = () => {
   const [students, setStudents] = useState([]);
@@ -28,8 +29,8 @@ const StudentCourses = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments`
+        const response = await axiosInstance.get(
+          `/api/Departments`
         );
         setDepartments(response.data);
         console.log("Departiments", response.data);
@@ -39,7 +40,7 @@ const StudentCourses = () => {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
         console.log("Sections", response.data);
       } catch (error) {
@@ -48,8 +49,8 @@ const StudentCourses = () => {
     };
     const fetchSectionStudentEnroll = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/SectionStudEnroll`
+        const response = await axiosInstance.get(
+          `/api/SectionStudEnroll`
         );
         setSectionStudEnroll(response.data);
         console.log("sectionStudEnroll", response.data);
@@ -60,8 +61,8 @@ const StudentCourses = () => {
 
     const fetchApplicants = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Applicants`
+        const response = await axiosInstance.get(
+          `/api/Applicants`
         );
         setStudents(response.data);
         console.log("Students", response.data);
@@ -71,7 +72,7 @@ const StudentCourses = () => {
     };
     const fetchGrades = async () => {
       try {
-        const response = await axios.get(`${apiurl}:5169/api/Grades`);
+        const response = await axiosInstance.get(`/api/Grades`);
         setGrades(response.data);
         console.log("grades", response.data);
       } catch (error) {
@@ -80,7 +81,7 @@ const StudentCourses = () => {
     };
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Courses`);
+        const response = await axiosInstance.get(`/api/Courses`);
         setCourses(response.data);
         console.log("courses", response.data);
       } catch (error) {
@@ -250,9 +251,9 @@ const StudentCourses = () => {
       readmissionDate: null,
     };
     console.log(updatedStatus);
-    axios
+    axiosInstance
       .put(
-        `${apiurl}/api/StudentStatus/${encodedStudId}`,
+        `/api/StudentStatus/${encodedStudId}`,
         updatedStatus
       )
       .then((response) => {

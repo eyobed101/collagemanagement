@@ -9,13 +9,13 @@ import axiosInstance from "@/configs/axios";
 // import "react-calendar/dist/Calendar.css";
 
 export function UserForm() {
-
   const initialFormData = {
     username: "",
     password: "",
-    centerId: "",      
+    centerId: "",
     email: "",
-    };
+    roles: "",
+  };
 
   const [formData, setFormData] = useState(initialFormData);
   // let [data, setData] = useState({});
@@ -30,27 +30,9 @@ export function UserForm() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    
-    const fetchDepartments = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `/api/Departments`
-        );
-        setDepartments(response.data);
-        console.log(departments);
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-   
-
     const fetchStudyCenters = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/StudyCenters`
-        );
+        const response = await axiosInstance.get(`/api/StudyCenters`);
         setStudyCenters(response.data);
         setLoadingCenters(false);
       } catch (error) {
@@ -58,13 +40,11 @@ export function UserForm() {
       }
     };
     fetchStudyCenters();
-    fetchDepartments();
-
-    }, []);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-   if (name === "centerId") {
+    if (name === "centerId") {
       const selectedCenter = studyCenters.find(
         (center) => center.CenterId === value
       );
@@ -76,7 +56,7 @@ export function UserForm() {
           centerId: selectedCenter.CenterId,
         }));
       }
-    }  else {
+    } else {
       console.log(value);
       setFormData((prevData) => ({
         ...prevData,
@@ -91,7 +71,7 @@ export function UserForm() {
     e.preventDefault();
     setSpining(true);
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     // Set the Authorization header with the token
     const config = {
@@ -100,24 +80,24 @@ export function UserForm() {
       },
     };
 
-
     const data = {
       username: formData.username,
       Email: formData.email,
       Password: formData.password,
       CenterId: formData.centerId,
-      };
+      roles:formData.roles
+    };
 
     const { ...restFormData } = data;
 
     console.log("data", data);
 
-    const apiUrl = `/api/Authenticate/Register`;
-
-   
+    const apiUrl = `/api/Authenticate/AdminRegister`;
 
     try {
-      const response = await axiosInstance.post(apiUrl, restFormData);
+      const response = await axiosInstance.post(apiUrl, restFormData, { params: {
+        roles: formData.roles
+      }});
 
       setSuccess(true);
       setError(null);
@@ -140,140 +120,169 @@ export function UserForm() {
             <form onSubmit={handleSubmit}>
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
-               
-                    {/* <div class="grid grid-cols-6 gap-6"> */}
-                      <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
-                        <div className="col-span-6 md:col-span-3 mx-2 my-2">
-                          <label
-                            // for="full_name"
-                            class="block text-sm font-medium text-gray-700"
-                          >
-                            User Name
-                          </label>
-                          <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            id="first_name"
-                            placeholder="User Name"
-                            autocomplete="given-name"
-                            onChange={handleInputChange}
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          />
-                        </div>
-                                
-                        <div class="col-span-6 md:col-span-3 m-2">
-                          <label
-                            for="email_address"
-                            class="block text-sm font-medium text-gray-700"
-                          >
-                            Email address
-                          </label>
-                          <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            placeholder="Email address"
-                            onChange={handleInputChange}
-                            id="email"
-                            autocomplete="email"
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          />
-                        </div>
-                        <div class="col-span-6 md:col-span-3 m-2">
-                          <label
-                            for="email_address"
-                            class="block text-sm font-medium text-gray-700"
-                          >
-                            Password
-                          </label>
-                          <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            placeholder="Password"
-                            id="password"
-                            class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          />
-                        </div>                         
-                        
-                     <div className="col-span-6 sm:col-span-3 m-2">
-                          <label
-                            htmlFor="study_center"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Study Center
-                          </label>
-                          <select
-                            id="study_center"
-                            name="centerId"
-                            value={formData.centerId}
-                            onChange={handleInputChange}
-                            autoComplete="study_center"
-                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          >
-                            <option value="">All Study Centers</option>
+                  {/* <div class="grid grid-cols-6 gap-6"> */}
+                  <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
+                    <div className="col-span-6 md:col-span-3 mx-2 my-2">
+                      <label
+                        // for="full_name"
+                        class="block text-sm font-medium text-gray-700"
+                      >
+                        User Name
+                      </label>
+                      <input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        id="first_name"
+                        placeholder="User Name"
+                        autocomplete="given-name"
+                        onChange={handleInputChange}
+                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                      />
+                    </div>
 
-                            {loadingCenters ? (
-                              <option>Loading study centers...</option>
-                            ) : (
-                              studyCenters.map((center) => (
-                                <option
-                                  key={center.CenterId}
-                                  value={center.CenterId}
-                                >
-                                  {center.CenterId}
-                                </option>
-                              ))
-                            )}
-                          </select>
-                        </div>          
-                      </div>
+                    <div class="col-span-6 md:col-span-3 m-2">
+                      <label
+                        for="email_address"
+                        class="block text-sm font-medium text-gray-700"
+                      >
+                        Email address
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        placeholder="Email address"
+                        onChange={handleInputChange}
+                        id="email"
+                        autocomplete="email"
+                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                      />
+                    </div>
+                    <div class="col-span-6 md:col-span-3 m-2">
+                      <label
+                        for="email_address"
+                        class="block text-sm font-medium text-gray-700"
+                      >
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="Password"
+                        id="password"
+                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3 m-2">
+                      <label
+                        htmlFor="study_center"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Study Center
+                      </label>
+                      <select
+                        id="study_center"
+                        name="centerId"
+                        value={formData.centerId}
+                        onChange={handleInputChange}
+                        autoComplete="study_center"
+                        className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                      >
+                        <option value="">All Study Centers</option>
+
+                        {loadingCenters ? (
+                          <option>Loading study centers...</option>
+                        ) : (
+                          studyCenters.map((center) => (
+                            <option
+                              key={center.CenterId}
+                              value={center.CenterId}
+                            >
+                              {center.CenterId}
+                            </option>
+                          ))
+                        )}
+                      </select>
+                    </div>
+                    <div className="col-span-6 sm:col-span-3 m-2">
+                      <label
+                        htmlFor="role"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Role
+                      </label>
+                      <select
+                        id="roles"
+                        name="roles"
+                        value={formData.roles}
+                        onChange={handleInputChange}
+                        autoComplete=" "
+                        className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
+                      >
+                        <option value="">Roles</option>
+
+                            <option
+                              value={"CampusAdmin"}
+                            >
+                              Campus Admin
+                            </option>
+                            <option
+                              value={"CentralRegistrar"}
+                            >
+                              Central Registrar
+                            </option>
+
+                      </select>
+                    </div>
+                  </div>
                   <div
                     style={{
                       display: "flex",
                       justifyContent: "end",
                       marginTop: "40px",
                       padding: "10px",
-                      alignSelf:"end"
+                      alignSelf: "end",
                     }}
                   >
-                         <button
-                        type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                      >
-                        {loading && (
-                          <svg
-                            className="animate-spin absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 mr-3"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M16 4s-4 1-4 4"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M22 12h-6M18 12a6 6 0 01-6 6H6"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M8 20V12"
-                            />
-                          </svg>
-                        )}
-                        Submit
-                      </button>
-                   </div>
+                    <button
+                      type="submit"
+                      class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      {loading && (
+                        <svg
+                          className="animate-spin absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 mr-3"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M16 4s-4 1-4 4"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M22 12h-6M18 12a6 6 0 01-6 6H6"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 20V12"
+                          />
+                        </svg>
+                      )}
+                      Submit
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>

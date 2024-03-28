@@ -6,6 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
 
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
@@ -86,8 +87,8 @@ export function AddStudent() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
+        const response = await axiosInstance.get(
+          `/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartments(response.data);
         console.log(departments);
@@ -99,7 +100,7 @@ export function AddStudent() {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
         console.log(sections);
         setLoading(false);
@@ -110,8 +111,8 @@ export function AddStudent() {
 
     const fetchStudyCenters = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/StudyCenters`
+        const response = await axiosInstance.get(
+          `/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -122,7 +123,7 @@ export function AddStudent() {
 
     const fetchTerms = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Terms`);
+        const response = await axiosInstance.get(`/api/Terms`);
         setTerms(response.data);
         setLoadingTerms(false);
       } catch (error) {
@@ -241,10 +242,10 @@ export function AddStudent() {
 
     console.log("data", data);
 
-    const apiUrl = `${apiurl}/api/Applicants`;
+    const apiUrl = `/api/Applicants`;
 
     try {
-      const response = await axios.post(apiUrl, restFormData, {
+      const response = await axiosInstance.post(apiUrl, restFormData, {
         params: {
           SectionID: SectionId,
           TermId: TermId,

@@ -5,6 +5,7 @@ import axios from "axios";
 import { apiurl } from "../constants";
 
 import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
 
 // Default values shown
 
@@ -37,7 +38,7 @@ const StudentCourseRegistration = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
       } catch (error) {
         console.error("Error fetching sections:", error);
@@ -46,7 +47,7 @@ const StudentCourseRegistration = () => {
 
     const fetchSectionStudentEnroll = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/SectionStudEnroll`);
+        const response = await axiosInstance.get(`/api/SectionStudEnroll`);
         setSectionStudEnroll(response.data);
       } catch (error) {
         console.error("Error fetching sections:", error);
@@ -54,7 +55,7 @@ const StudentCourseRegistration = () => {
     };
     const fetchSecCourseAss = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/SecCourseAssgts`);
+        const response = await axiosInstance.get(`/api/SecCourseAssgts`);
         setSecCourseAss(response.data);
       } catch (error) {
         console.error("Error fetching sections:", error);
@@ -62,7 +63,7 @@ const StudentCourseRegistration = () => {
     };
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Courses`);
+        const response = await axiosInstance.get(`/api/Courses`);
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -70,7 +71,7 @@ const StudentCourseRegistration = () => {
     };
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Departments`);
+        const response = await axiosInstance.get(`/api/Departments`);
         setDepartment(response.data);
       } catch (error) {
         console.error("Error fetching departiment:", error);
@@ -78,7 +79,7 @@ const StudentCourseRegistration = () => {
     };
     const fetchApplicant = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Applicants`);
+        const response = await axiosInstance.get(`/api/Applicants`);
         setApplicants(response.data);
       } catch (error) {
         console.error("Error fetching applicants:", error);
@@ -86,8 +87,8 @@ const StudentCourseRegistration = () => {
     };
     const fetchCourseRegistration = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/CourseRegistrationPendings`
+        const response = await axiosInstance.get(
+          `/api/CourseRegistrationPendings`
         );
         setCourseRegistrationPendings(response.data);
       } catch (error) {
@@ -196,9 +197,9 @@ const StudentCourseRegistration = () => {
           });
         console.log(formData);
 
-        const endpoint = `${apiurl}/api/CourseRegistrationPendings`;
+        const endpoint = `/api/CourseRegistrationPendings`;
 
-        const response = await axios.post(endpoint, formData, {
+        const response = await axiosInstance.post(endpoint, formData, {
           headers: {
             "Content-Type": "application/json",
           },

@@ -15,7 +15,8 @@ const loginUser = createAsyncThunk("user/loginUser", async (data) => {
     const responseData = {
       message: response.data.message,
       token: response.data.token,
-      expiration: response.data.expiration
+      expiration: response.data.expiration,
+      roleName:response.data.roleName[0]
     };
     localStorage.setItem('accessToken', response.data.token);
     return responseData;
@@ -49,7 +50,7 @@ const userSlice = createSlice({
     });
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.value = action.payload.message;
+      state.value = action.payload.roleName;
       state.token = action.payload.token;
       state.expiration = action.payload.expiration;
       state.error = false;

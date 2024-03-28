@@ -4,6 +4,7 @@ import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm , DatePicker
 import axios from 'axios';
 import moment from 'moment';
 import { api } from '../constants';
+import axiosInstance from '@/configs/axios';
 
 const { Option } = Select;
 
@@ -31,7 +32,7 @@ const Curriculum = () => {
   useEffect(() => {
 
     const fetchDepartments =() =>{
-    axios.get(`${api}/api/Departments`)
+    axiosInstance.get(`/api/Departments`)
       .then(response => {
         setData(response.data);
       })
@@ -42,7 +43,7 @@ const Curriculum = () => {
     }
 
     const fetchCourses =() =>{
-      axios.get(`${api}/api/Courses`)
+      axiosInstance.get(`/api/Courses`)
         .then(response => {
           setCourses(response.data);
         })
@@ -53,7 +54,7 @@ const Curriculum = () => {
       }
 
     const fetchStudyCenters = () =>{
-      axios.get(`${api}/api/StudyCenters`)
+      axiosInstance.get(`/api/StudyCenters`)
       .then(response => {
         setStudyCenters(response.data);
       })
@@ -81,7 +82,7 @@ const Curriculum = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Curricula`);
+        const response = await axiosInstance.get(`/api/Curricula`);
         setCurriculum(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -140,7 +141,7 @@ const Curriculum = () => {
         "campusId": values.campusId ,
        };
       console.log("Response iss" , postData)
-      const response = await axios.post(`${api}/api/Curricula`, [postData]);
+      const response = await axiosInstance.post(`/api/Curricula`, [postData]);
       console.log('POST request successful:', response.data);
       
       showCurriculumModal(false);
@@ -182,7 +183,7 @@ setEditingKey(null)
       "campusId": record.campusId ,
      };
 
-     const response = await axios.delete(`${api}/api/Curricula`, postData);
+     const response = await axiosInstance.delete(`/api/Curricula`, postData);
      console.log('Delete request successful:', response.data);
 
   };
@@ -306,9 +307,9 @@ setEditingKey(null)
      };
        
      const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
-     const url = `${api}/api/Curricula`
+     const url = `/api/Curricula`
      console.log("test ", postData , testDate);
-      await axios.put(url, postData)
+      await axiosInstance.put(url, postData)
       .then(response => {
         console.log('Department updated successfully:', response.data);
         setData(updatedData);
@@ -325,13 +326,13 @@ setEditingKey(null)
   };
 
   return (
-    <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
+    <div  className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
           {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-sub mb-10 ml-[2%]">
-   <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
+   <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] ">
         Curriculum List
       </p>
-      <Button type="primary" style={{ background: "#4279A6", }} onClick={showCurriculumModal}>
+      <Button type="primary" style={{ background: "#4279A6",marginBottom:"15px" ,padding: '12px 24px', height: 'auto', maxWidth:"18%"}} onClick={showCurriculumModal}>
         New Curriculum
       </Button>
 

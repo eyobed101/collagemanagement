@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import  axios  from 'axios';
 import moment from 'moment';
 import { api } from '../constants';
+import axiosInstance from '@/configs/axios';
 
 const { Option } = Select;
 
@@ -55,7 +56,7 @@ const DepartmentCourse = () => {
       };
 
       console.log("Response iss" , postData  , valuesis.courseNo)
-      const response = await axios.put(`${api}/api/InstCourseAssgts`, postData);
+      const response = await axiosInstance.put(`/api/InstCourseAssgts`, postData);
       console.log('Put request successful:', response.data);
     } catch (error) {
       console.error('POST request failed:', error);
@@ -94,7 +95,7 @@ const DepartmentCourse = () => {
       "assgtDate":  moment(record.assgtDate).format('YYYY-MM-DD'),
     };
      console.log('delete', postData)
-    const response = await axios.delete(`${api}/api/InstCourseAssgts`, postData);
+    const response = await axiosInstance.delete(`/api/InstCourseAssgts`, postData);
     console.log('Delete request successful:', response.data);
 
     const newData = dataSource.filter((item) => item.key !== record.key);
@@ -227,10 +228,10 @@ const DepartmentCourse = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const lectureResponse = await axios.get(`${api}/api/InstCourseAssgts`);
+        const lectureResponse = await axiosInstance.get(`/api/InstCourseAssgts`);
         setLecturesData(lectureResponse.data);
 
-        const courseResponse = await axios.get(`${api}/api/SecCourseAssgts`); // Replace with your course API endpoint
+        const courseResponse = await axiosInstance.get(`/api/SecCourseAssgts`); // Replace with your course API endpoint
         setCoursesData(courseResponse.data);
 
         // const sectionResponse = await axios.get(`${api}/api/Section`); // Replace with your course API endpoint
@@ -248,7 +249,7 @@ const DepartmentCourse = () => {
 
     const fetchTerms = async () => {
       try {
-        const response = await axios.get(`${api}/api/Terms`);
+        const response = await axiosInstance.get(`/api/Terms`);
         const currentTerms = response.data.filter((term) => new Date(term.endDate) > Date.now());
         setTermOptions(currentTerms);
       } catch (error) {
@@ -289,7 +290,7 @@ const DepartmentCourse = () => {
         "assgtDate": (assgtDate? moment(assgtDate).format('YYYY-MM-DD') : moment(values.assgtDate).format('YYYY-MM-DD')),
       };
       console.log("Response iss" , postData)
-      const response = await axios.post(`${api}/api/InstCourseAssgts`, postData);
+      const response = await axiosInstance.post(`/api/InstCourseAssgts`, postData);
       console.log('POST request successful:', response.data);
       //  setDataSource(response.data)
 
@@ -371,7 +372,7 @@ const DepartmentCourse = () => {
           assgtDate: moment(values.assgtDate),
           // resultDate: moment(values.resultDate),
         };
-        const response = await axios.put(`${api}/api/InstCourseAssgts`, newData);
+        const response = await axiosInstance.put(`/api/InstCourseAssgts`, newData);
         console.log('Put request successful:', response.data);
         setDataSource(newData);
         setEditingKey('');

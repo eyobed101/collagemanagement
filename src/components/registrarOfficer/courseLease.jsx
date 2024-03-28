@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
 
 
 const CourseLeaseManagement = () => {
@@ -32,8 +33,8 @@ const CourseLeaseManagement = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
+        const response = await axiosInstance.get(
+          `/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartiment(response.data);
         console.log(response.data);
@@ -44,7 +45,7 @@ const CourseLeaseManagement = () => {
 
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Courses`);
+        const response = await axiosInstance.get(`/api/Courses`);
         setCourses(response.data);
         console.log(response.data);
       } catch (error) {
@@ -74,7 +75,7 @@ const CourseLeaseManagement = () => {
       setLoading(true)
       let formData = [];
 
-      const endpoint = `${apiurl}/api/CourseLeases`;
+      const endpoint = `/api/CourseLeases`;
 
       console.log("boo", borrowingDepartment);
 
@@ -93,7 +94,7 @@ const CourseLeaseManagement = () => {
         formData.push(data);
       });
 
-      const response = await axios.post(endpoint, formData, {
+      const response = await axiosInstance.post(endpoint, formData, {
         headers: {
           "Content-Type": "application/json",
         },

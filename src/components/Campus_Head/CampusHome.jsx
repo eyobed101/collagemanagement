@@ -154,7 +154,7 @@ const CampusHome = () =>{
 
 
 return (
-    <div>
+    <div className="mt-12 mb-8 bg-white p-5 rounded-md">
       {/* <CampusDash /> */}
     <div style={{color:'black'}}>
          <p className="text-center text-[#344054] text-[24px] font-bold align-middle  mb-8 border-b-[#EAECF0] border-b-[2px]">

@@ -13,6 +13,7 @@ import moment from "moment";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
 import { api } from "../constants";
+import axiosInstance from "@/configs/axios";
 
 const { Option } = Select;
 
@@ -85,7 +86,7 @@ const Remedial = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Remedials`);
+        const response = await axiosInstance.get(`/api/Remedials`);
         setDataSource(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -211,7 +212,7 @@ const Remedial = () => {
         programType: values.programType,
       };
       console.log("Response iss", postData);
-      const response = await axios.post(`${api}/api/Remedials`, postData);
+      const response = await axiosInstance.post(`/api/Remedials`, postData);
       console.log("POST request successful:", response.data);
 
       // You can handle success, e.g., show a success message or redirect to another page
@@ -237,7 +238,7 @@ const Remedial = () => {
         programType: values.programType,
       };
       console.log("Response iss", postData);
-      const response = await axios.put(`${api}/api/Remedials`, postData);
+      const response = await axiosInstance.put(`/api/Remedials`, postData);
       console.log("Put request successful:", response.data);
       // setDataSource(response.data)
 
@@ -285,7 +286,7 @@ const Remedial = () => {
           testDate: moment(values.testDate),
           resultDate: moment(values.resultDate),
         };
-        const response = await axios.put(`${api}/api/Remedials`, newData);
+        const response = await axiosInstance.put(`/api/Remedials`, newData);
         console.log("PUT request successful:", response.data);
         setDataSource(newData);
         setEditingKey("");
@@ -299,7 +300,7 @@ const Remedial = () => {
 
   const handleDelete = async (record) => {
     console.log("delete", record);
-    const response = await axios.put(`${api}/api/Remedials`, record);
+    const response = await axiosInstance.put(`/api/Remedials`, record);
     console.log("Delete request successful:", response.data);
     const newData = dataSource.filter((item) => item.key !== record.key);
     setDataSource(newData);

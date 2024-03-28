@@ -56,28 +56,28 @@ const Layouts = () => {
   
 
   useEffect(() => {
-     if(user == "Login successful"){
+     if(user == "RootAdmin"){
       navigate("/root_admin")
      }
-     else if(user.email == "one@gmail.com"){
+     else if(user == "CampusAdmin"){
       navigate("/campus_admin")
      }
-     else if(user.email == "register@gmail.com"){
+     else if(user == "RegistrarOfficer"){
       navigate("/register_office")
      }
-     else if(user.email == "department@gmail.com"){
+     else if(user == "Department"){
       navigate("/department_admin")
      }
-     else if(user.email == "student@gmail.com"){
+     else if(user == "Student"){
       navigate("/student_home")
      }
-     else if(user.email == "center@gmail.com"){
+     else if(user == "CentralRegistrar"){
       navigate("/center_register")
      }
-     else if(user.email == "campusRegister@gmail.com"){
+     else if(user == "CampusRegistrar"){
       navigate("/campus_registrar")
      }
-     else if(user.email == "lecture@gmail.com"){
+     else if(user == "Lecturer"){
       navigate("/lecture")
      }
      else {

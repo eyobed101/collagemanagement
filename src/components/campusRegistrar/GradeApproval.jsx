@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal } from 'antd';
 import axios from 'axios';
 import { api } from '../constants';
+import axiosInstance from '@/configs/axios';
 // import SiderGenerator from './Menu';
 
 const GradeApproval = () => {
@@ -14,7 +15,7 @@ const GradeApproval = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Grades`);
+        const response = await axiosInstance.get(`/api/Grades`);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -109,11 +110,11 @@ const GradeApproval = () => {
   };
 
   return (
-    <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
+    <div  className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
     {/* <SiderGenerator navigate={navigate}/> */}
 
     <div className="list-sub mb-10 ml-[0%]">
-      <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
+      <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0]">
         Grade Approval
       </p>
       <Table  dataSource={data} columns={columns}  bordered  loading={loading}
