@@ -11,6 +11,7 @@ import { Layout, Menu } from "antd";
 import DepartmentAdmin from "./Department_Admin";
 import DepartmentCourse from "./Deparment_Course";
 import DepartmentHead from "./Department_Head";
+import CreateUser from "./CreateUser";
 
 import {
   Configurator,
@@ -41,6 +42,7 @@ const DepartSiderGenerator = () => {
   const [isDepartmentHead, setIsDepartmentHead] = useState(false);
   const [isDepartmentCourse, setIsDepartmentCourse] = useState(true);
   const [isDepartmentAdmin, setIsDepartmentAdmin] = useState(false);
+  const [isCreateUser, setIsCreateUser] = useState(false);
   
 
   const drawerWidth = 240;
@@ -53,17 +55,30 @@ const DepartSiderGenerator = () => {
     setIsDepartmentAdmin(false);
     setIsDepartmentCourse(true);
     setIsDepartmentHead(false);
+    setIsCreateUser(false);
+
+
+  };
+  const handleCreateUser = () => {
+    setIsDepartmentAdmin(false);
+    setIsDepartmentCourse(false);
+    setIsDepartmentHead(false);
+    setIsCreateUser(true);
 
   };
   const handleDepartmentHead= () => {
     setIsDepartmentAdmin(false);
     setIsDepartmentCourse(false);
     setIsDepartmentHead(true);
+    setIsCreateUser(false);
+
   };
   const handleDepartmentAdmin = () => {
     setIsDepartmentAdmin(true);
     setIsDepartmentCourse(false);
     setIsDepartmentHead(false);
+    setIsCreateUser(false);
+
   };
   
   const handlelogout = () => {
@@ -80,6 +95,11 @@ const DepartSiderGenerator = () => {
           icon: <BuildingLibraryIcon {...icon} />,
           name: "Depatiment Course",
           onClick: handleCDepartmentCourse,
+        },
+        {
+          icon: <UserCircleIcon {...icon} />,
+          name: "Create User",
+          onClick: handleCreateUser,
         },
         {
           icon: <HomeIcon {...icon} />,
@@ -129,6 +149,7 @@ const DepartSiderGenerator = () => {
           {isDepartmentAdmin ? <DepartmentAdmin /> : null}
           {isDepartmentHead ? <DepartmentHead /> : null}
           {isDepartmentCourse ? <DepartmentCourse /> : null}
+          {isCreateUser ? <CreateUser /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />

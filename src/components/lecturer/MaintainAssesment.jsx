@@ -94,7 +94,7 @@ const MaintainAssesgment = () => {
   }
 
   return (
-            <div className="bg-[#F9FAFB] min-h-[100vh]  ">
+            <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md ">
     {/* <SiderGenerator /> */}
 <div className="list-header mb-2 ml-100">
   <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%] mt-[2%]">Maintain Assesment</h1>

@@ -12,7 +12,7 @@ const StudentCourses = () => {
   const [selectedDepartment, setSelectedDepartment] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [grades, setGrades] = useState([]);
+  const [courseTaken, setCourseTaken] = useState([]);
   const [courses, setCourses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,10 +70,10 @@ const StudentCourses = () => {
         console.error("Error fetching terms:", error);
       }
     };
-    const fetchGrades = async () => {
+    const fetchCourseRegistration = async () => {
       try {
-        const response = await axiosInstance.get(`/api/Grades`);
-        setGrades(response.data);
+        const response = await axiosInstance.get(`/api/CourseRegistrationPendings`);
+        setCourseTaken(response.data);
         console.log("grades", response.data);
       } catch (error) {
         console.error("Error fetching grades:", error);
@@ -92,7 +92,7 @@ const StudentCourses = () => {
     fetchDepartments();
     fetchSections();
     fetchApplicants();
-    fetchGrades();
+    fetchCourseRegistration();
     fetchSectionStudentEnroll();
     fetchCourses();
   }, []);
@@ -345,7 +345,7 @@ const StudentCourses = () => {
         </div>
         <div style={{ width: "25%", minWidth: "200px" }}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            filter by Students
+            Students
           </label>
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
@@ -396,14 +396,14 @@ const StudentCourses = () => {
           <tbody>
             {selectedSection
               ? selectedStudent
-                ? grades
-                    .filter((grad) => grad.studId === selectedStudent.studId)
+                ? courseTaken
+                    .filter((grad) => grad.StudID === selectedStudent.studId)
                     .map((grade, index) => (
                       <TableRow key={index} isOdd={index % 2 !== 0}>
-                        <TableCell>{grade.courseNo}</TableCell>
+                        <TableCell>{grade.CourseNo}</TableCell>
                         <TableCell>
                           {courses
-                            .filter((cor) => cor.courseNo === grade.courseNo)
+                            .filter((cor) => cor.courseNo === grade.CourseNo)
                             .map((cors) => 
                               cors.courseName
                             )}

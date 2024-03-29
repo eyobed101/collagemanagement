@@ -49,6 +49,7 @@ export function SignIn() {
     dispatch(userLogin(data))
       .then((res) => {
         console.log("test", res);
+        setFinished(true)
         // if (data.email === 'onetest@gmail.com') {
         //   // Handle specific case
         // }
@@ -67,7 +68,7 @@ export function SignIn() {
     if (current) {
       navigate("/");
     }
-  }, []);
+  }, [finished]);
 
   return (
     <section className="m-8 flex gap-4">
@@ -76,7 +77,7 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={onFinish}>
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2 p-5 rounded-md ring-1 ring-[#8a9eae] shadow-md" onSubmit={onFinish}>
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
@@ -135,7 +136,7 @@ export function SignIn() {
         </form>
 
       </div>
-      <div className="w-[20%] h-[20%] hidden lg:block my-auto">
+      <div className="max-w-[30%] max-h-[30%] hidden lg:block my-auto pt-20">
         <img
           src="/img/pattern.png"
           className="h-full w-full object-cover rounded-3xl"

@@ -336,7 +336,7 @@ const AddDropManagement = () => {
   };
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md absolute">
+    <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md absolute">
       <div class="grid grid-cols-4 mt-10">
         <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
@@ -561,7 +561,7 @@ const AddDropManagement = () => {
               offSections
                 .filter(
                   (section) => section.dcode === selectedOffDepartment.did
-                )
+                ).filter((secn)=> secn.sectionId !== selectedStudent.sectionId)
                 .map((section) => (
                   <option
                     key={section.sectionId}

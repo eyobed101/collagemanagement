@@ -198,31 +198,13 @@ export function CreateUser() {
                       >
                         <option value="">Roles</option>
 
-                            <option
-                              value={"CampusRegistrar"}
-                            >
-                              Campus Registrar
-                            </option>
-                            <option
-                              value={"RegistrarOfficer"}
-                            >
-                              Registrar Officer
-                            </option>
-                            <option
-                              value={"Department"}
-                            >
-                              Department Head
-                            </option>
+                            
                             <option
                               value={"Lecturer"}
                             >
                               Lecturer
                             </option>
-                            <option
-                              value={"Student"}
-                            >
-                              Student
-                            </option>
+                           
 
                       </select>
                     </div>

@@ -199,6 +199,7 @@ const CourseOffering = () => {
 
   return (
     <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
+      <div>
       <Select
         placeholder="Select Section"
         style={{ width: 200, marginBottom: 16 }}
@@ -223,6 +224,7 @@ const CourseOffering = () => {
           <Option value="Masters">Masters</Option>
         </Select>
       )}
+      </div>
       <p className="!font-jakarta text-left text-[#3b608e] text-[17px] font-bold align-middle">
         Courses{" "}
       </p>

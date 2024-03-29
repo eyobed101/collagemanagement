@@ -231,7 +231,7 @@ const AddSection = () => {
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        termId: `${values.campusId}/${values.sectionName}/${values.acadYear}`,
+        SectionId: `${values.campusId}/${values.sectionName}/${values.acadYear}`,
         campusId: values.campusId,
         sectionName: values.sectionName,
         dateCreated: moment(createDate).format("YYYY-MM-DD"),

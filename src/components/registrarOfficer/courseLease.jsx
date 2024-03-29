@@ -307,7 +307,7 @@ const CourseLeaseManagement = () => {
               }
             >
               <option value="">Select Department</option>
-              {departments.map((dept, index) => (
+              {departments.filter((dep) => dep.dcode !== givingDepartment.dcode).map((dept, index) => (
                 <option key={index} value={dept.dname}>
                   {dept.dname}
                 </option>
