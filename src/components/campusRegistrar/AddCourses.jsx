@@ -15,6 +15,9 @@ const AddCourse = () => {
   const [editingKey, setEditingKey] = useState('');
   const [tableData, setTableData] = useState([]);
   const [data , setData] = useState([]);
+  const [modalDataState, setModalDataState] = useState([]);
+  const [courseNo , setCourseNo] = useState([]);
+
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -241,6 +244,36 @@ const AddCourse = () => {
     // setModalData(newData);
   };
 
+  const handleDepartmentChange = (value) => {
+
+    // Check if department is selected
+    if (!value) {
+      message.error('Please choose a department first');
+      setModalData([...modalDataState]);
+      return;
+    }
+
+    // Filter modalData based on selected department
+    const filteredDatas = data.filter(department => department.did === value);
+    const departmentNames = filteredDatas.map(department => department.dname);
+    console.log("test d" , departmentNames)
+
+    const filteredData =  modalDataState.filter(item => item.dname === value);
+    setModalData(filteredData);
+
+    const filteredCourses = tableData.filter(course => course.dcode === value);
+    setCourseNo(filteredCourses);
+
+
+    secondForm.setFieldsValue({
+      dname : value
+    }); 
+  };
+
+  useEffect(() => {
+    setModalDataState([...modalData]);
+  }, [modalData]);
+
 
   const columns = [
     { title: 'Course No', dataIndex: 'courseNo', key: 'courseNo' },
@@ -352,7 +385,7 @@ const AddCourse = () => {
       </Form.Item>
 
       <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-      <Select key="dcode">
+      <Select key="dcode" onChange={handleDepartmentChange}>
           {data.map(department => (
             <Option key={department.did} value={department.did}>
               {department.dname}
@@ -411,10 +444,16 @@ const AddCourse = () => {
             <Input />
           </Form.Item>
           <Form.Item name="courseNoPre" label="Course No Pre" rules={[{ required: true }]}>
-            <Input />
+          <Select key="courseNoPre">
+           {courseNo.map(course => (
+              <Option key={course.id} value={course.id}>
+                  {course.courseName}
+             </Option>
+            ))}
+          </Select>
           </Form.Item>
           <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-          <Select key="dcode">
+          <Select key="dcode" >
           {data.map(department => (
             <Option key={department.did} value={department.did}>
               {department.dname}
@@ -436,7 +475,7 @@ const AddCourse = () => {
 
 
       <h2>Course Table</h2>
-      <Table dataSource={tableData} columns={columns} rowKey="key" bordered pagination={false} />
+      <Table dataSource={tableData} columns={columns} rowKey="key" bordered  />
     </div>
   );
 };

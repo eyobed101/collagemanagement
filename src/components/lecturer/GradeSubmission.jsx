@@ -1,57 +1,202 @@
-import React, { useState } from 'react';
+import React, { useState , useRef ,useEffect } from 'react';
 import { Select, Button, Table } from 'antd';
+import * as XLSX from 'xlsx';
+import { DownloadTableExcel } from 'react-export-table-to-excel';
+import axios from 'axios';
+import { api } from '../constants';
 
 const { Option } = Select;
 
 const GradeSubmission = () => {
-  const [academicYear, setAcademicYear] = useState('');
+  const [academicYear, setAcademicYear] = useState ('');
   const [course, setCourse] = useState('');
   const [semester, setSemester] = useState('');
   const [studentData, setStudentData] = useState([]);
+  const [dataSource , setDataSource ] = useState([]);
+  const [gradeValue , setGradeValue] = useState([]);
+  const [data, setData] = useState([]);
+  const [courseNo , setCourseNo] = useState([]);
+  const [term , setTermNo] = useState([]);
+  const [empId , setempId] = useState([]);
+  const tableRef = useRef(null);
 
-  const mockStudentData = [
-    { id: 'UGR/1885/21', fullName: 'John Doe', score1: 19, score2: 12, score3: 8, score4: 37, acadamic:'2021/22' , course:'Section A| Introduction to Computer' , grade:'A'},
-    { id: 'UGR/1897/21', fullName: 'Jane Smith', score1: 20, score2: 11, score3: 7, score4: 24 ,acadamic:'2021/22' ,course:'Section B| Introduction to Computer',grade:'A'},
-   { id: 'UGR/1960/21', fullName: 'Thomas Boyle', score1: 13, score2: 10, score3: 9, score4: 30 ,acadamic:'2021/22' , course:'Section A| Introduction to Computer', grade:'A'},
-    { id: 'UGR/1875/21', fullName: 'Smith Abel', score1: 22, score2: 14, score3: 10, score4: 42 , acadamic:'2021/22' ,course:'Section C| Introduction to Computer',grade:'B'},
-    { id: 'UGR/1885/14', fullName: 'Kalab Doe', score1: 19, score2: 11, score3: 6, score4: 37, acadamic:'2021/22' , course:'Section A| Introduction to Computer',grade:'B'},
-    { id: 'UGR/1897/15', fullName: 'Melat Smith', score1: 24, score2: 11, score3: 7, score4: 24 ,acadamic:'2022/23' ,course:'Section B| Introduction to Computer',grade:'A'},
-   { id: 'UGR/1960/15', fullName: 'Seble Boyle', score1: 13, score2: 10, score3: 9, score4: 30 ,acadamic:'2023/24' , course:'Section A| Introduction to Computer',grade:'A'},
-    { id: 'UGR/1875/15', fullName: 'Eyobed Abel', score1: 22, score2: 14, score3: 10, score4: 42 , acadamic:'2021/22' ,course:'Section C| Introduction to Computer',grade:'C'},
-    { id: 'UGR/1885/12', fullName: 'Sole Doe', score1: 19, score2: 12, score3: 8, score4: 37, acadamic:'2022/23' , course:'Section A| Introduction to Computer',grade:'C'},
-    { id: 'UGR/1897/12', fullName: 'Exo Smith', score1: 20, score2: 11, score3: 7, score4: 24 ,acadamic:'2023/24' ,course:'Section B| Introduction to Computer',grade:'A'},
-   { id: 'UGR/1960/12', fullName: 'Eyob Boyle', score1: 13, score2: 10, score3: 9, score4: 30 ,acadamic:'2022/23' , course:'Section A| Introduction to Computer',grade:'A'},
-    { id: 'UGR/1875/12', fullName: 'Wonde Abel', score1: 22, score2: 14, score3: 10, score4: 42 , acadamic:'2023/24' ,course:'Section C| Introduction to Computer',grade:'B'},
-    // Add more student data here
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${api}/api/SecCourseAssgts`);
+        setData(response.data);
+        console.log("test" , data)
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  
+  // const generateExcel = () => {
+  //   // Create a new workbook
+  //   const workbook = XLSX.utils.book_new();
+  
+  //   // Define sheet data
+  //   const sheetData = [
+  //     ["No.", "StudID", "FullName", "Test 1(20%)", "Test 2(10%)", "mid", "Final", "total"],
+  //     [1, 'ADO?0001/24', 'Diriba Megersa', 20, 7, 16, 45, 88],
+  //     [2, 'ADO?0002/24', 'Kalkidan Misgn', 20, 8, 17, 35, 80],
+  //     [3, 'ADO?0003/24', 'able mulu', 15, 9, 18, 36, 78],
+  //     [4, 'ADO?0004/24', 'Tomas beyene', 8, 10, 19, 37, 74],
+  //     [5, 'ADO?0005/24', 'sole Mola', 10, 6, 11, 38, 65],
+  //     [6, 'ADO?0006/24', 'Bonsa Semere', 19, 7, 12, 39, 77],
+  //     [7, 'ADO?0007/24', 'Taylor Perry', 17, 8, 13, 40, 78],
+  //     [8, 'ADO?0008/24', 'Tiki Gelana', 12, 9, null, null, null]
+  //   ];
+  
+  //   // Create worksheet
+  //   const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+  
+  //   // Add the worksheet to the workbook
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  
+  //   // Generate blob from workbook
+  //   const workbookBlob = XLSX.write(workbook, { type: 'blob' });
+  
+  //   // Create a temporary URL for the blob
+  //   const workbookUrl = URL.createObjectURL(workbookBlob);
+  
+  //   // Create a link element to trigger download
+  //   const link = document.createElement('a');
+  //   link.href = workbookUrl;
+  //   link.download = 'output.xlsx';
+  //   document.body.appendChild(link);
+  
+  //   // Trigger the download
+  //   link.click();
+  
+  //   // Clean up
+  //   URL.revokeObjectURL(workbookUrl);
+  // };
+
+  const handleFileUploads = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+const workbook = XLSX.read(data, { type: 'array' });
+const sheetName = workbook.SheetNames[0];
+const sheet = workbook.Sheets[sheetName];
+const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+// Filter data based on row index
+const firstPartIndex = 5; // Specify the row index for separation
+const firstPart = jsonData.slice(0, firstPartIndex);
+const secondPart = jsonData.slice(firstPartIndex);
+
+// Transpose each part separately
+const transposeData = (data) =>
+  data[0].map((_, colIndex) => data.map((row) => row[colIndex]));
+
+  const transposeDataBack = (data) =>
+  data[0].map((_, colIndex) => data.map((row) => row[colIndex]));
+
+  const filteredData = jsonData.filter(row => row.length > 0);
 
 
-  const handleGenerateData = () => {
-    // Generate data for the selected academic year, course, and semester
-    // For demonstration purposes, use mock data
-    const filteredData = mockStudentData.filter(student => {
-        return student.acadamic === academicYear;
-    });
-
-    const updatedData = filteredData.map(student => {
-        const totalScore = student.score1 + student.score2 + student.score3 + student.score4;
-        const grade = convertToLetterGrade(totalScore);
-
-        return {
-            ...student,
-            total: totalScore,
-            grade: grade
-        };
-    });
-
-    setStudentData(updatedData);
-};
+const transposedFirstPart = transposeData(firstPart);
+const transposedSecondPart = transposeData(secondPart);
+const transback = transposeDataBack(transposedSecondPart);
 
 
+
+console.log("te" ,filteredData)
+
+console.log('First Part:', firstPart);
+console.log('Second Part:', secondPart);
+console.log('Transposed First Part:', transposedFirstPart);
+console.log('Transposed Second Part:', transposedSecondPart);
+console.log('Transposed row Part:', transback);
+  setDataSource(secondPart);
+  setGradeValue(firstPart);
+
+
+    // You can then set the state or perform any other operation with the data
+    };
+    reader.readAsArrayBuffer(file);
+  };
+  const transposeData = (courseNo, term, empId) => {
+    const transposedData = [];
+    // Assuming the first row contains headers, excluding them from transposition
+    for (let i = 1; i < dataSource.length; i++) {
+      const row = dataSource[i];
+      const studID = row[1]; // Assuming StudID is always at index 1
+      for (let j = 3; j < row.length - 1; j++) { // Skipping No., StudID, FullName, and total
+        const weight = dataSource[0][j];
+        const result = row[j];
+        transposedData.push({ StudID: studID, weight: weight, result: result ,course: courseNo ,TermId: term , empId: empId });
+      }
+    }
+    return transposedData;
+  };
+
+  const transposeDatas = (courseNo, term, empId) => {
+    const transposedData = [];
+    // Assuming the first row contains headers, excluding them from transposition
+    for (let i = 1; i < dataSource.length; i++) {
+      const row = dataSource[i];
+      const studID = row[1]; // Assuming StudID is always at index 1
+      const total = row[row.length - 1]; 
+      // Assuming the "total" value is always at the end of the row
+
+      let grade = '';
+    if (total !== null) {
+      if (total >= 85) grade = 'A';
+      else if (total >= 80) grade = 'A-';
+      else if (total >= 75) grade = 'B+';
+      else if (total >= 70) grade = 'B';
+      else if (total >= 60) grade = 'C+';
+      else if (total >= 50) grade = 'C';
+      else if (total >= 45) grade = 'D';
+      else grade = 'F';
+    }
+      transposedData.push({ StudID: studID, total: total, letterGrade: grade ,course: courseNo, TermId: term, empId: empId });
+    }
+    return transposedData;
+  };
+  
+
+  
+  
+  // const [transposedData, setTransposedData] = useState();
+ 
   const handleSubmitData = () => {
-    // Submit student data
-    // Implement your submit logic here
-    console.log('Submitted data:', studentData);
+    const filteredData =  data
+    .filter(item => item.courseNo === "AcFn 101") // Change the courseNo as needed
+    .map(item => ({
+      courseNo: item.courseNo,
+      termId: item.termId,
+      instrId: item.instrId
+    }));
+
+    if (filteredData.length > 0) {
+      const firstItem = filteredData[0];
+     
+      console.log("sort is is ", transposeData(firstItem.courseNo, firstItem.termId, firstItem.instrId));
+      console.log("sort is is ", transposeDatas(firstItem.courseNo, firstItem.termId, firstItem.instrId));
+
+    } else {
+      console.log("Filtered data is empty");
+    }
+
+  
+
+
+
+  
   };
 
   const convertToLetterGrade = (grade) => {
@@ -84,73 +229,137 @@ const GradeSubmission = () => {
        setSemester(value);
   }
 
-  const columns = [
-    {
-      title: 'S.No',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text, record, index) => index + 1
-    },
-    {
-      title: 'ID No',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'Full Name',
-      dataIndex: 'fullName',
-      key: 'fullName'
-    },
-    {
-      title: '25%',
-      dataIndex: 'score1',
-      key: 'score1'
-    },
-    {
-      title: '15%',
-      dataIndex: 'score2',
-      key: 'score2'
-    },
-    {
-      title: '10%',
-      dataIndex: 'score3',
-      key: 'score3'
-    },
-    {
-      title: '50%',
-      dataIndex: 'score4',
-      key: 'score4'
-    },
-    {
-      title: 'Total (100%)',
-      key: 'total',
-      render: (text, record) => {
-        const total = record.score1 + record.score2 + record.score3 + record.score4;
-        return <span>{total}</span>;
-      }
-    },
-    {
-      title: 'Grade',
-      dataIndex: 'grade',
-      key: 'grade'
-    },
-    {
-      title: 'NG',
-      dataIndex: 'ng',
-      key: 'ng'
-    },
-    {
-      title: 'IA',
-      dataIndex: 'ia',
-      key: 'ia'
-    },
-    {
-      title: 'F',
-      dataIndex: 'f',
-      key: 'f'
-    }
-  ];
+  const MyTableComponent = ({ data }) => {
+    // Separate columns and data
+    const [columns, ...dataSource] = data;
+  
+    // Check if the "total" value exists in the column data
+    const hasTotal = columns.includes('total');
+    console.log('Has Total:', hasTotal);
 
+    let antdColumns = columns.map((title, index) => {
+      let columnDefinition = {
+        title,
+        dataIndex: index.toString(), // Use index as the dataIndex
+        key: index.toString(),
+      };
+
+      return columnDefinition;
+    });
+  
+    // Check if the "total" value exists in the column data
+    if (hasTotal) {
+        // Add new columns for Grade, NG, IA, and F
+        const newColumns = [
+          {
+            title: 'Grade',
+            key: 'grade',
+            render: (text, record) => {
+              const total = record[columns.indexOf('total')];
+              if (total === null) return '';
+              if (total >= 85) return 'A';
+              if (total >= 80) return 'A-';
+              if (total >= 75) return 'B+';
+              if (total >= 70) return 'B';
+              if (total >= 60) return 'C+';
+              if (total >= 50) return 'C';
+              if (total >= 45) return 'D';
+              return 'F';
+            }
+          },
+          {
+            title: 'NG',
+            key: 'ng',
+            render: (text, record) => {
+              const total = record[columns.indexOf('total')];
+              if (total === null || total < 40) return 'NG';
+              return '';
+            }
+          },
+          {
+            title: 'IA',
+            key: 'ia',
+            render: (text, record) => {
+              const total = record[columns.indexOf('total')];
+              if (total === null || total < 40) return 'IA';
+              return '';
+            }
+          },
+          {
+            title: 'F',
+            key: 'f',
+            render: (text, record) => {
+              const total = record[columns.indexOf('total')];
+              if (total === null || total < 40) return 'F';
+              return '';
+            }
+          }
+        ];
+    
+        // Include new columns in the column definitions
+        antdColumns = [...antdColumns, ...newColumns];
+    }
+    
+   
+  
+    // Transform data for Antd Table
+    const antdDataSource = dataSource.map((rowData, rowIndex) => {
+      const rowDataObject = {};
+      rowData.forEach((cellData, cellIndex) => {
+        rowDataObject[cellIndex.toString()] = cellData; // Use index as the key
+      });
+      return { key: rowIndex.toString(), ...rowDataObject };
+    });
+  
+    return <Table columns={antdColumns} dataSource={antdDataSource} />;
+};
+
+
+function generateTable(data, ref) {
+  const table = document.createElement('table');
+  const tbody = document.createElement('tbody');
+
+  // Iterate over each row in the JSON data
+  data.forEach(rowData => {
+    const row = document.createElement('tr');
+
+    // Iterate over each cell in the row
+    rowData.forEach(cellData => {
+      const cell = document.createElement('td');
+      cell.textContent = cellData !== null ? cellData.toString() : ''; // Convert null to empty string
+      row.appendChild(cell);
+    });
+
+    tbody.appendChild(row);
+  });
+
+  // Add the tbody to the table
+  table.appendChild(tbody);
+
+  // Assign the ref to the table
+  if (ref) {
+    ref.current = table;
+  }
+
+  return table;
+}
+
+const jsonData = [
+  [null, 'Admas University'],
+  [null, 'Office of the Registrar'],
+  [null, 'Student Assessment sheet'],
+  [null, 'CourseName: (AcFn 101) Introduction to Accounting'],
+  [null, 'Term: ADOL/I/2024/2025', null, ' Semester:I', 'AcadYear: 2024/2025', null, null, 'Instructor: (EMi234) (Kalkidan)'],
+  ['No.', 'StudID', 'FullName'],
+
+  // Add more rows here if needed
+];
+useEffect(() => {
+  generateTable(jsonData, tableRef);
+}, [jsonData]);
+
+
+ 
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
     {/* <SiderGenerator /> */}
@@ -159,47 +368,71 @@ const GradeSubmission = () => {
 </div>
 <div className="list-sub mb-10 ml-[2%] ">
  {/* {handleGrade()} */}
-  <div className="list-filter"></div>      
+  <div className="list-filter"></div> 
+       
   <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent: 'flex-start' , display:'flex' }}>
+
       <div style={{display:'flex' , flexDirection:'column', marginRight:'20%'}}>
       <label>Acadamic Year</label>  
-        <Select value={academicYear} onChange={handleAcadamic} 
-        placeholder="Select Academic Year"
-         style={{ marginRight: '8px', width:350 , height:40 }}>
-          {/* Add academic year options */}
-          <Option value="2021/22">2021/22</Option>
-            <Option value="2022/23">2022/23</Option>
-            <Option value="2023/24">2023/24</Option>
-        </Select>
+      <Select 
+  value={academicYear} 
+   onChange={handleAcadamic} 
+  // placeholder="Select Academic Year"
+  style={{ marginRight: '8px', width:350 , height:40 }}
+>
+  <Option value={ "2024/25"}>2024/2025</Option>
+</Select>
         </div>
+
         <div style={{display:'flex' , flexDirection:'column'}}>
       <label>Course</label> 
         <Select value={course} onChange={handleCourse} placeholder="Select Course" style={{
              marginRight: '8px',  width:350 , height:40 }}>
           {/* Add course options */}
-          <Option value="Section A| Introduction to Computer">Section A| Introduction to Computer</Option>
-            <Option value="Section B| Introduction to Computer">Section B| Introduction to Computer</Option>
-            <Option value="Section C| Introduction to Computer">Section C| Introduction to Computer</Option>
+          <Option value={"AcFn 101"}>AcFn 101</Option>
         </Select>
         </div>
       </div>
-      <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent:'flex-start' , display:'flex' }}>
+            <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent:'flex-start' , display:'flex' }}>
+     
+            
+
       <div style={{display:'flex' , flexDirection:'column', marginRight:'20%'}}>
       <label>Semister</label> 
         <Select value={semester} onChange={handleSemister} placeholder="Select Semester" 
         style={{ marginRight: '8px',  width:350 , height:40 }}>
           {/* Add semester options */}
-          <Option value="1">Semester 1</Option>
-           <Option value="2">Semester 2</Option>
+          <Option value={"I"}>I</Option>
+
         </Select>
         </div>
-        <Button type="primary" style={{ marginBottom: 16 , margingLeft:20, marginTop :20, backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }} onClick={handleGenerateData}>Show</Button>
+        
         </div>
         <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent: 'flex-start' , display:'flex', backgroundColor: '#CFE4D9'}}>
-        <Button type="primary" onClick={handleGenerateData} style={{ marginBottom: 16 ,marginLeft:'2%', marginTop :20, backgroundColor:'#FFF', color:'#4279A6', marginRight:"20%" }}>Generate</Button>
+        <input type="file" accept=".xlsx" onChange={handleFileUploads} />
+\
+        <div style={{ position: 'relative' }}>
+
+            <span style={{ marginLeft: '8px' }}>No file selected</span> {/* You can display the selected file name here */}
+</div>
+
+<DownloadTableExcel 
+        filename="student grade table"
+        sheet="users"
+        currentTableRef={tableRef.current}
+      >
+        <Button type="primary"   style={{ marginBottom: 16 ,marginLeft:'2%', marginTop :20, backgroundColor:'#FFF', color:'#4279A6', marginRight:"20%" }}>Generate</Button>
+
+      </DownloadTableExcel>
         <Button type="primary" onClick={handleSubmitData} style={{ marginBottom: 16 , margingLeft:20, marginTop :20, backgroundColor:'#4279A6'  }}>Submit</Button>
         </div>
-      <Table dataSource={studentData} columns={columns} />
+        {dataSource && dataSource.length > 0 && <MyTableComponent data={dataSource} />}    </div>
+
+        <div>
+     
+
+      {/* Render the table using the ref */}
+      <div ref={tableRef}></div>
     </div>
     </div>
   );

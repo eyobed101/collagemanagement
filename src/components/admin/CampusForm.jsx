@@ -3,10 +3,8 @@ import { motion } from "framer-motion";
 import axios from 'axios';
 import {api  } from '../constants'
 
-
 import {
   MdWork,
-  MdAddLocation,
   MdHowToReg,
   MdLocationOn,
 
@@ -23,7 +21,6 @@ function CampusForm({ onSubmit }) {
 
 
   const handleSubmit = async () => {
-
 
     try {
       // Make a POST request to your server endpoint

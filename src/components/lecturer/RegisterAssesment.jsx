@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, Input, Button, Row, Col } from 'antd';
 
 const { Option } = Select;
@@ -10,6 +10,25 @@ const AssessmentRegistration = () => {
   const [assessmentType, setAssessmentType] = useState('');
   const [assessmentTitle, setAssessmentTitle] = useState('');
   const [weight, setWeight] = useState('');
+  const [section , setSection]= useState('');
+  
+
+ 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${api}/api/SecCourseAssgts`);
+        setSection(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSave = () => {
     // Add your save logic here
@@ -42,29 +61,34 @@ const AssessmentRegistration = () => {
    
       <Row gutter={16} style={{marginTop:'5%'}}>
         <Col span={8}>
-          <label style={{paddingBottom:10 , color:'#333' , fontSize:14}}>Acadamic Year</label>  
+          <label style={{paddingBottom:10 , color:'#333' , fontSize:14}}>Section</label>  
           <Select
             value={academicYear}
             onChange={(value) => setAcademicYear(value)}
             placeholder="Academic Year"
             style={{ width: '100%' , height: 40 }}
           >
-            <Option value="2022/23">2022/23</Option>
-            <Option value="2023/24">2023/24</Option>
+           {section.map(department => (
+            <Option key={department.sectionId} value={department.sectionId}>
+              {department.sectionId}
+            </Option>
+          ))}
             {/* Add more academic years as needed */}
           </Select>
         </Col>
         <Col span={8}>
-        <label style={{paddingBottom:10 , color:'#333' , fontSize:14}}>Semister</label>  
+        <label style={{paddingBottom:10 , color:'#333' , fontSize:14}}>Term</label>  
           <Select
             value={semester}
             onChange={(value) => setSemester(value)}
             placeholder="Semester"
             style={{ width: '100%', height: 40 }}
           >
-            <Option value="1">Semester 1</Option>
-            <Option value="2">Semester 2</Option>
-            {/* Add more semesters as needed */}
+         {section.map(department => (
+            <Option key={department.termId} value={department.termId}>
+              {department.termId}
+            </Option>
+          ))}
           </Select>
         </Col>
         <Col span={6}>
@@ -75,9 +99,11 @@ const AssessmentRegistration = () => {
             placeholder="Course"
             style={{ width: '100%', height: 40 }}
           >
-            <Option value="CSE101">CSE101</Option>
-            <Option value="ENG102">ENG102</Option>
-            {/* Add more courses as needed */}
+             {section.map(department => (
+            <Option key={department.courseNo} value={department.courseNo}>
+              {department.courseNo}
+            </Option>
+          ))}        
           </Select>
         </Col>
        
@@ -90,9 +116,11 @@ const AssessmentRegistration = () => {
             onChange={(value) => setAssessmentType(value)}
             placeholder="Assessment Type"
             style={{ width: '100%' ,height: 40 }}
-          >
-            <Option value="Midterm">Midterm</Option>
-            <Option value="Final">Final</Option>
+          >  
+          <Option value="Test">Test</Option>
+          <Option value="presentation">Presentation</Option>
+          <Option value="Midterm">Midterm</Option>
+          <Option value="Final">Final</Option>
             {/* Add more assessment types as needed */}
           </Select>
         </Col>
