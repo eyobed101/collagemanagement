@@ -229,7 +229,7 @@ const DepartmentHead = () => {
   }
 
   return (
-    <div>
+    <div className='mb-8 flex flex-col gap-6 bg-white p-5 rounded-md'>
 
    
     <div className="list-filter">

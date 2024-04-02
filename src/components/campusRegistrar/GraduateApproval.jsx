@@ -92,10 +92,10 @@ const GraduatesApproval = () => {
   };
 
   return (
-    <div  className="bg-[#F9FAFB] min-h-[100vh]  ">
+    <div  className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
     {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-sub mb-10 ml-[2%]">
-      <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] border-b-[2px]">
+      <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0]">
         Graduates Approval
       </p>
       <Table

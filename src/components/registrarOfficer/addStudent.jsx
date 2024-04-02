@@ -5,6 +5,9 @@ import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { apiurl } from "../constants";
+import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
+
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -38,8 +41,8 @@ export function AddStudent() {
     termId: "",
     doB: "2024-02-28",
     placeOfBirth: "",
-    nationality: "",
-    maritalStatus: "",
+    nationality: "Ethiopian",
+    maritalStatus: "SINGLE",
     prevEducation: "",
     prevInstitution: "",
     prevMajorDepartment: "",
@@ -69,6 +72,7 @@ export function AddStudent() {
   const [departments, setDepartments] = useState([]);
   const [dep, setDep] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(false);
   const [studyCenters, setStudyCenters] = useState([]);
   const [sections, setSections] = useState([]);
   const [terms, setTerms] = useState([]);
@@ -78,11 +82,13 @@ export function AddStudent() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
+  tailspin.register();
+
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments?sortOrder=name desc&pageNumber=1`
+        const response = await axiosInstance.get(
+          `/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartments(response.data);
         console.log(departments);
@@ -94,7 +100,7 @@ export function AddStudent() {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
         console.log(sections);
         setLoading(false);
@@ -105,8 +111,8 @@ export function AddStudent() {
 
     const fetchStudyCenters = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/StudyCenters`
+        const response = await axiosInstance.get(
+          `/api/StudyCenters`
         );
         setStudyCenters(response.data);
         setLoadingCenters(false);
@@ -117,7 +123,7 @@ export function AddStudent() {
 
     const fetchTerms = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Terms`);
+        const response = await axiosInstance.get(`/api/Terms`);
         setTerms(response.data);
         setLoadingTerms(false);
       } catch (error) {
@@ -191,6 +197,7 @@ export function AddStudent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSpining(true);
+    setLoading1(true);
 
     let getStudentID = generateStudentId();
 
@@ -235,10 +242,10 @@ export function AddStudent() {
 
     console.log("data", data);
 
-    const apiUrl = `${apiurl}/api/Applicants`;
+    const apiUrl = `/api/Applicants`;
 
     try {
-      const response = await axios.post(apiUrl, restFormData, {
+      const response = await axiosInstance.post(apiUrl, restFormData, {
         params: {
           SectionID: SectionId,
           TermId: TermId,
@@ -256,6 +263,7 @@ export function AddStudent() {
       console.error(error);
     } finally {
       setSpining(false);
+      setLoading1(false);
     }
   };
 
@@ -319,7 +327,7 @@ export function AddStudent() {
 
   return (
     <>
-      <div className="mt-12 mb-8 flex flex-col gap-12">
+      <div className="mt-12 mb-8 flex flex-col gap-12 relative">
         <div class="mt-10 sm:mt-0">
           <div class="mt-5 md:mt-0 md:col-span-2">
             <form onSubmit={handleSubmit}>
@@ -1156,6 +1164,24 @@ export function AddStudent() {
                 </div>
               </div>
             </form>
+
+            {loading1 ? (
+              <l-tailspin
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+                size="60"
+                stroke="5"
+                speed="0.9"
+                color="#4279A6"
+              ></l-tailspin>
+            ) : (
+              ""
+            )}
+
             {/* {spining && <div className="loading-spinner">Loading...</div>} */}
             {success && (
               <div

@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Space,
   Table,
@@ -13,12 +13,12 @@ import {
   Card,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
 // import SiderGenerator from "./Menu";
 
 import Grid from "@mui/material/Grid";
 import { api } from "../constants";
-
+import axiosInstance from "@/configs/axios";
 
 // Mock data
 const { Option } = Select;
@@ -36,12 +36,11 @@ const noUsers = [
 ];
 
 const Acadamic = [
-  { id: 1, year: 'Degree' },
-  { id: 2, year: 'Masters' },
-  { id: 3, year: 'Doctrate' },
+  { id: 1, year: "Degree" },
+  { id: 2, year: "Masters" },
+  { id: 3, year: "Doctrate" },
   // Add more campuses as needed
 ];
-
 
 const CenterRegistrar = () => {
   //   const dispatch = useDispatch();
@@ -49,17 +48,16 @@ const CenterRegistrar = () => {
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
   const [teachvalue, setTeachvalue] = useState([]);
-  const [student , setStudent] = useState([])
+  const [student, setStudent] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Applicants`);
+        const response = await axiosInstance.get(`/api/Applicants`);
         setStudent(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -80,7 +78,6 @@ const CenterRegistrar = () => {
       render: (text, record) => (
         <span>{`${record.fname} ${record.mname}`}</span>
       ),
- 
     },
     {
       title: <p className="font-jakarta  font-[600]"> Student ID</p>,
@@ -90,7 +87,7 @@ const CenterRegistrar = () => {
     {
       title: <p className="font-jakarta  font-[600]">Program</p>,
       dataIndex: "program",
-      key: "program"
+      key: "program",
     },
     {
       title: <p className="font-jakarta  font-[600]">Approved </p>,
@@ -103,10 +100,10 @@ const CenterRegistrar = () => {
       key: "programType",
     },
     {
-        title: <p className="font-jakarta  font-[600]">Center ID</p>,
-        dataIndex: "centerId",
-        key: "centerId",
-      },
+      title: <p className="font-jakarta  font-[600]">Center ID</p>,
+      dataIndex: "centerId",
+      key: "centerId",
+    },
   ];
 
   const handleView = (data) => {
@@ -126,120 +123,127 @@ const CenterRegistrar = () => {
     console.log(campus, year);
     console.log(
       "test is kal ",
-       student.filter((stu) => stu.programType == campus  )
+      student.filter((stu) => stu.programType == campus)
     );
-    console.log("ggg ", campus)
-    if (campus,year) {
-      return student.filter((student) => student.programType == campus && student.program == year);
-      conso
-
-    } else if (campus) {
+    console.log("ggg ", campus);
+    if ((campus, year)) {
       return student.filter(
-        (student) => student.programType == campus);
-    }
-   else {
+        (student) => student.programType == campus && student.program == year
+      );
+      conso;
+    } else if (campus) {
+      return student.filter((student) => student.programType == campus);
+    } else {
       return student;
     }
   };
-  
-  return (
-    <div className="bg-[#F9FAFB] min-h-[100vh]  ">
-        {/* <SiderGenerator navigate={navigate}/> */}
-    <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Center Registrar Management System</h1>
-    </div>
-    <div class="flex gap-30 p-10 ml-[2%]">
-    <Space direction="horizontal" size={16}>
-    {noUsers.map(item => (
-         <Card
-         key={item.id}
-         size="medium"
-         title={item.name}
-         headStyle={{fontSize:16 , fontWeight: 'bold' , color: 'black'}}
-       //   extra={<a href="#">More</a>}
-         style={{
-           width: "100%",
-         }}
-       >
-         <p className='font-bold text-base text-gray-500'> {item.number} people</p>
-         <div style={{ display:'flex', flexDirection:'row'}}>
-         <p className='text-xl font-light'>increased by </p>
-         <p className='text-xl font-light text-green-500'>    {item.number/200}%</p>
-         </div>
-       </Card>
 
-    ))}
-  </Space>
-  
-   </div>
-    <div className="list-sub mb-10 ml-[2%]">
+  return (
+    <div className="mb-8 flex flex-col bg-white p-5 rounded-md">
+      {/* <SiderGenerator navigate={navigate}/> */}
+      <p className="!font-jakarta text-left text-[#000000] text-[20px] font-bold align-middle  mb-8 ml-5">
+        Center Registrar Management System{" "}
+      </p>
       
-      <div className="list-sub mb-10 ml-[0%] mt-[2%]">
-        <div className="list-filter">
-          <Select
-            bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-            placeholder="--Select Program ---"
-            style={{ width: 220 }}
-            onChange={handleCampusChange}
-          >
-            {campuses?.map((item, i) => (
-              <Option key={item.id} value={item.name} lable={item.name}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-          {selectedCampus && (
+      <div class="flex gap-30 p-10">
+        <Space direction="horizontal" size={16}>
+          {noUsers.map((item) => (
+            <Card
+              key={item.id}
+              size="medium"
+              title={item.name}
+              headStyle={{ fontSize: 16, fontWeight: "bold", color: "black" }}
+              //   extra={<a href="#">More</a>}
+              style={{
+                width: "100%",
+              }}
+            >
+              <p className="font-bold text-base text-gray-500">
+                {" "}
+                {item.number} people
+              </p>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <p className="text-xl font-light">increased by </p>
+                <p className="text-xl font-light text-green-500">
+                  {" "}
+                  {item.number / 200}%
+                </p>
+              </div>
+            </Card>
+          ))}
+        </Space>
+      </div>
+      <div className="list-sub mb-10 ml-[2%]">
+        <div className="list-sub mb-10 ml-[0%] mt-[2%]">
+          <div className="list-filter">
             <Select
               bordered={false}
               className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+              placeholder="--Select Program ---"
               style={{ width: 220 }}
-              placeholder="--Select Program Type---"
-              onChange={handleYearChange}
+              onChange={handleCampusChange}
             >
-              {Acadamic?.map((item, i) => (
-                <Option key={item.key} value={item.year} lable={item.year}>
-                  {item.year}
+              {campuses?.map((item, i) => (
+                <Option key={item.id} value={item.name} lable={item.name}>
+                  {item.name}
                 </Option>
               ))}
             </Select>
-          )}
-      </div>
- </div>
- <div className="list-sub mb-10 ml-[1%]">
- <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
- 
-        <Grid item xs={12} sm={12} md={12}>
-          <Card
-            bordered={false}
-            className="w-[100%] min-h-[419px]"
-          >
-            <div>
-            <div>
-        {/* Display student records based on selected campus and year */}
-        {/* {selectedCampus && selectedYear && ( */}
-          <div className="" >
-          <h2 className="text-xl  font-[600] font-jakarta ">Student Records for {selectedYear} </h2>
-            <Table
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => handleView(record), // click row
-          };
-        }}
-        style={{ marginTop: 20 }}
-        columns={columns}
-        dataSource={getFilteredStudentRecords(selectedCampus, selectedYear)}
-        pagination={{ position: ["bottomCenter"] }}
-      />
+            {selectedCampus && (
+              <Select
+                bordered={false}
+                className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+                style={{ width: 220 }}
+                placeholder="--Select Program Type---"
+                onChange={handleYearChange}
+              >
+                {Acadamic?.map((item, i) => (
+                  <Option key={item.key} value={item.year} lable={item.year}>
+                    {item.year}
+                  </Option>
+                ))}
+              </Select>
+            )}
           </div>
-      </div>    
-            </div>
-          </Card>
-        </Grid> 
-        </Grid> 
+        </div>
+        <div className="list-sub mb-10 ml-[1%]">
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 1, md: 1 }}
+          >
+            <Grid item xs={12} sm={12} md={12}>
+              <Card bordered={false} className="w-[100%] min-h-[419px]">
+                <div>
+                  <div>
+                    {/* Display student records based on selected campus and year */}
+                    {/* {selectedCampus && selectedYear && ( */}
+                    <div className="">
+                      <h2 className="text-xl  font-[600] font-jakarta ">
+                        Student Records for {selectedYear}{" "}
+                      </h2>
+                      <Table
+                        onRow={(record, rowIndex) => {
+                          return {
+                            onClick: (event) => handleView(record), // click row
+                          };
+                        }}
+                        style={{ marginTop: 20 }}
+                        columns={columns}
+                        dataSource={getFilteredStudentRecords(
+                          selectedCampus,
+                          selectedYear
+                        )}
+                        pagination={{ position: ["bottomCenter"] }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </Grid>
+          </Grid>
         </div>
       </div>
-    
     </div>
   );
 };

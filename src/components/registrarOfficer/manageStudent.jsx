@@ -3,101 +3,12 @@ import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { apiurl } from "../constants";
+import { tailspin } from "ldrs";
+import axiosInstance from "@/configs/axios";
 
-const StudentStatusManagement = () => {
-  const [students, setStudents] = useState([]);
-  const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState([]);
-  const [sections, setSections] = useState([]);
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [studStatus, setStudStatus] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStatus, setNewStatus] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
 
-  const [filterDepartment, setFilterDepartment] = useState("");
-  const [filterSection, setFilterSection] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
-  const [changeReason, setChangeReason] = useState("");
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments`
-        );
-        setDepartments(response.data);
-        console.log("Departiments", response.data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-    const fetchSections = async () => {
-      try {
-        const response = await axios.get(`${apiurl}/api/Section`);
-        setSections(response.data);
-        console.log("Sections", response.data);
-      } catch (error) {
-        console.error("Error fetching sections:", error);
-      }
-    };
-    const fetchSectionStudentEnroll = async () => {
-      try {
-        const response = await axios.get(
-          `${apiurl}/api/SectionStudEnroll`
-        );
-        setSectionStudEnroll(response.data);
-        console.log("sectionStudEnroll", response.data);
-      } catch (error) {
-        console.error("Error fetching sections:", error);
-      }
-    };
-
-    const fetchApplicants = async () => {
-      try {
-        const response = await axios.get(
-          `${apiurl}/api/Applicants`
-        );
-        setStudents(response.data);
-        console.log("Students", response.data);
-      } catch (error) {
-        console.error("Error fetching terms:", error);
-      }
-    };
-    const fetchStudentStatus = async () => {
-      try {
-        const response = await axios.get(
-          `${apiurl}/api/StudentStatus`
-        );
-        setStudStatus(response.data);
-        console.log("status", response.data);
-      } catch (error) {
-        console.error("Error fetching terms:", error);
-      }
-    };
-
-    fetchDepartments();
-    fetchSections();
-    fetchApplicants();
-    fetchStudentStatus();
-    fetchSectionStudentEnroll();
-  }, []);
-
-  const handleSectionChange = (event) => {
-    const selectedData = event.target.options[
-      event.target.selectedIndex
-    ].getAttribute("data");
-
-    setSelectedSection({
-      ...JSON.parse(selectedData),
-    });
-  };
-
-  const TableRow = styled.tr`
+const TableRow = styled.tr`
     background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
     padding: 10px;
   `;
@@ -167,6 +78,105 @@ const StudentStatusManagement = () => {
     }
   `;
 
+
+const StudentStatusManagement = () => {
+  const [students, setStudents] = useState([]);
+  const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [studStatus, setStudStatus] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState("Active");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+
+  const [filterDepartment, setFilterDepartment] = useState("");
+  const [filterSection, setFilterSection] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [changeReason, setChangeReason] = useState("Pass");
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/Departments`
+        );
+        setDepartments(response.data);
+        console.log("Departiments", response.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    const fetchSections = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/Section`);
+        setSections(response.data);
+        console.log("Sections", response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+    const fetchSectionStudentEnroll = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/SectionStudEnroll`
+        );
+        setSectionStudEnroll(response.data);
+        console.log("sectionStudEnroll", response.data);
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+
+    const fetchApplicants = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/Applicants`
+        );
+        setStudents(response.data);
+        console.log("Students", response.data);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+      }
+    };
+    const fetchStudentStatus = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/StudentStatus`
+        );
+        setStudStatus(response.data);
+        console.log("status", response.data);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+      }
+    };
+
+    fetchDepartments();
+    fetchSections();
+    fetchApplicants();
+    fetchStudentStatus();
+    fetchSectionStudentEnroll();
+  }, []);
+
+  const handleSectionChange = (event) => {
+    const selectedData = event.target.options[
+      event.target.selectedIndex
+    ].getAttribute("data");
+
+    setSelectedSection({
+      ...JSON.parse(selectedData),
+    });
+  };
+  
+
+  
+
   const ModalForm = () => {
     const statusOptions = [
       "Active",
@@ -222,19 +232,30 @@ const StudentStatusManagement = () => {
     e.preventDefault();
 
     const encodedStudId = encodeURIComponent(selectedStudent.studId);
+    const StudentStatusChange = selectedStudent.statusChangeDate;
+
+    let currentDate = new Date();
+
+    let year = currentDate.getFullYear();
+    let month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+    let day = String(currentDate.getDate()).padStart(2, '0');
+
+    let formattedDate = `${year}-${month}-${day}`;
+
+    
 
     const updatedStatus = {
-      studId: selectedStudent.studId,
-      currentStatus: newStatus,
-      prevStatus: selectedStudent.currentStatus,
-      statusChangeDate: new Date().toISOString(),
-      changeReason: changeReason,
-      readmissionDate: null,
+      StudId: selectedStudent.studId,
+      CurrentStatus: newStatus,
+      PrevStatus: selectedStudent.currentStatus,
+      StatusChangeDate: formattedDate,
+      ChangeReason: changeReason,
+      ReadmissionDate: null,
     };
-    console.log(updatedStatus);
-    axios
+    console.log(updatedStatus, StudentStatusChange);
+    axiosInstance
       .put(
-        `${apiurl}/api/StudentStatus/${encodedStudId}`,
+        `/api/StudentStatus/${encodedStudId}/${StudentStatusChange}`,
         updatedStatus
       )
       .then((response) => {
@@ -351,7 +372,7 @@ const StudentStatusManagement = () => {
                 ? studStatus
                     .filter((status) =>
                       sectionStudEnroll.some(
-                        (stud) => stud.studId === status.studId
+                        (stud) => stud.studId === status.studId && stud.sectionId === selectedSection.sectionId
                       )
                     )
                     .map((status, index) => (
@@ -388,7 +409,7 @@ const StudentStatusManagement = () => {
                         </TableCell>
                         <TableCell>
                           <StyledButton onClick={() => handleOpenModal(status)}>
-                            Change
+                            Edit
                           </StyledButton>
                         </TableCell>
                       </TableRow>

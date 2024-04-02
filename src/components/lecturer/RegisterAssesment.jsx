@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Input, Button, Row, Col } from 'antd';
 
+
 const { Option } = Select;
 
 const AssessmentRegistration = () => {
@@ -30,6 +31,7 @@ const AssessmentRegistration = () => {
     fetchData();
   }, []);
 
+
   const handleSave = () => {
     // Add your save logic here
     console.log({
@@ -41,12 +43,12 @@ const AssessmentRegistration = () => {
       weight,
     });
     // Clear form fields after saving
-    setAcademicYear('');
-    setSemester('');
-    setCourse('');
-    setAssessmentType('');
-    setAssessmentTitle('');
-    setWeight('');
+    setAcademicYear("");
+    setSemester("");
+    setCourse("");
+    setAssessmentType("");
+    setAssessmentTitle("");
+    setWeight("");
   };
 
   return (
@@ -153,9 +155,10 @@ const AssessmentRegistration = () => {
           <Button type="primary"   style={{ marginBottom: 16 , margingLeft:20, marginTop :20, color:'#333', backgroundColor:'#FFF' , justifySelf:'flex-end', display:'flex' }}>
             Cancel
           </Button>
+
           </div>
-    </div>
-    </div>
+        </div>
+      </div>
     </div>
   );
 };

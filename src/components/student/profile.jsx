@@ -24,6 +24,7 @@ import { platformSettingsData, conversationsData, projectsData } from "@/data";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { apiurl } from "../constants";
+import axiosInstance from "@/configs/axios";
 
 export function Profile() {
 
@@ -34,8 +35,8 @@ export function Profile() {
   useEffect(() => {
     const fetchApplicant = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Applicants`
+        const response = await axiosInstance.get(
+          `/api/Applicants`
         );
         setStudents(response.data);
         console.log(response.data);

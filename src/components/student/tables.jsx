@@ -105,16 +105,16 @@ export function Tables() {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+        <CardHeader variant="gradient"  className="mb-8 p-6 bg-[#4279A6]/90">
           <Typography variant="h6" color="white">
             Course Lists
           </Typography>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-          <div className="mb-4 px-2">
+          <div className="mb-4 pl-6">
             <label className="mr-2">Academic Year:</label>
             <select
-              className="p-1 mr-2 border rounded"
+              className="px-10 py-2 mr-2 border rounded"
               onChange={(e) => setAcademicYearFilter(e.target.value)}
               value={academicYearFilter}
             >
@@ -124,7 +124,7 @@ export function Tables() {
 
             <label className="ml-4 mr-2">Semester:</label>
             <select
-              className="p-1 mr-2 border rounded"
+              className="px-10 py-2 mr-2 border rounded"
               onChange={(e) => setSemesterFilter(e.target.value)}
               value={semesterFilter}
             >
@@ -137,7 +137,7 @@ export function Tables() {
             </select>
           </div>
           <table
-            className="w-full min-w-[640px] table-auto px-2"
+            className="w-full min-w-[640px] table-auto px-6 shadow-md"
             {...getTableProps()}
           >
             <thead>

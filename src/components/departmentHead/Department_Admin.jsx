@@ -29,23 +29,8 @@ const DepartmentAdmin = () => {
   }
 
   return (
-    <div>
-          <nav style={{ padding: '20px', backgroundColor: '#eee',justifyContent:'start' , display:'flex', flexDirection:'row' }}>
-     <img style={{paddingLeft:'10px',paddingRight:'20px'}} src={('../../../assets/logo1.png')} className="w-20" 
-    //   onClick={()=> handlehome()}  
-     />
-          <button style={{paddingLeft:'10px',paddingRight:'30px' }}
-          onClick={()=> handleGrade()}
-          > <p style={{fontSize:16, fontWeight:'bold'}}>Approve Grade Submitted </p></button>
-
-          <button style={{paddingLeft:'20px',paddingRight:'30px' }}
-            onClick={() => handleCourse()}
-          ><p style={{fontSize:16, fontWeight:'bold'}}>Approve Course Offering </p></button>
-  
-          <button style={{textAlign:'right'}}
-          onClick={() => handlelogout()}
-          > <p style={{fontSize:16, fontWeight:'bold'}}>Logout </p></button>
-    </nav>
+    <div className='mb-8 flex flex-col gap-6 bg-white p-5 rounded-md'>
+          
     <div style={{ padding: '20px' }}>
        {isGrade?  <DepartmentHead  /> : null }   
       <div>

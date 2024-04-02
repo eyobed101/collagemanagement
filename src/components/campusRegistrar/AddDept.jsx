@@ -3,6 +3,7 @@ import { Table, Button, Modal, Form, Input, Popconfirm, Select } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import { api } from '../constants';
+import axiosInstance from '@/configs/axios';
 
 
 const { Option } = Select;
@@ -19,7 +20,7 @@ const AddDepartment = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    await axios.get(`${api}/api/Departments`)
+    await axiosInstance.get(`/api/Departments`)
       .then(response => {
         setData(response.data);
       })
@@ -131,7 +132,7 @@ const AddDepartment = () => {
      };
 
      console.log("test ", postData);
-      await axios.put(`${api}/api/Departments/`+ editingKey, postData)
+      await axiosInstance.put(`/api/Departments/`+ editingKey, postData)
       .then(response => {
         console.log('Department updated successfully:', response.data);
         setData(updatedData);
@@ -155,7 +156,7 @@ const AddDepartment = () => {
     };
     console.log(newDepartment)
   
-    await axios.post(`${api}/api/Departments`, newDepartment)
+    await axiosInstance.post(`/api/Departments`, newDepartment)
       .then(response => {
         console.log('Department created successfully:', response.data);
         setData(newDepartment);
@@ -264,8 +265,8 @@ const AddDepartment = () => {
   );
 
   return (
-    <div>
-      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }} >
+    <div className='mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md'>
+      <Button onClick={showCreateModal} type="primary" style={{ marginBottom: 16, fontWeight:"bold",backgroundColor: '#4279A6', padding: '12px 24px', height: 'auto' , maxWidth:"18%"}} >
         Create New Department
       </Button>
       <Table dataSource={data} columns={columns} rowKey="key" bordered pagination={false} />

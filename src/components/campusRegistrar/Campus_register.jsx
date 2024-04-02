@@ -6,6 +6,7 @@ import { api } from '../constants';
 // import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
+import axiosInstance from '@/configs/axios';
 
 
 // Mock data
@@ -46,7 +47,7 @@ const CampusRegistrar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/Applicants`);
+        const response = await axiosInstance.get(`/api/Applicants`);
         setStudent(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -142,7 +143,7 @@ const CampusRegistrar = () => {
   };
   
   return (
-    <div className="bg-[#F9FAFB] min-h-[100vh]  ">
+    <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
         {/* <SiderGenerator navigate={navigate}/> */}
     <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
       <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Campus Registrar Management System</h1>

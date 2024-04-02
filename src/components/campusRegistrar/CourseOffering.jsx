@@ -1,52 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { Select, Table, Button , message } from 'antd';
-import axios from 'axios';
-import { api } from '../constants';
+import React, { useState, useEffect } from "react";
+import { Select, Table, Button, message } from "antd";
+import axios from "axios";
+import { api } from "../constants";
+import axiosInstance from "@/configs/axios";
 
 const { Option } = Select;
 
 const CourseOffering = () => {
-  const [selectedSection, setSelectedSection] = useState('');
-  const [selectedProgram, setSelectedProgram] = useState('');
+  const [selectedSection, setSelectedSection] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState("");
   const [mainTableData, setMainTableData] = useState([]);
   const [otherTableData, setOtherTableData] = useState([]);
-  const [termOptions , setTermOptions] = useState([]);
+  const [termOptions, setTermOptions] = useState([]);
   const [selectedCourseDetails, setSelectedCourseDetails] = useState(null);
 
   const [sections, setSections] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [curriculum , setCurriculum] = useState([]);
-  const [excludedCourses , setExcludedCourses] = useState([]);
+  const [curriculum, setCurriculum] = useState([]);
+  const [excludedCourses, setExcludedCourses] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sectionResponse = await axios.get(`${api}/api/Section`);
+        const sectionResponse = await axiosInstance.get(`/api/Section`);
         setSections(sectionResponse.data);
 
-        const courseResponse = await axios.get(`${api}/api/Courses`); // Replace with your course API endpoint
+        const courseResponse = await axiosInstance.get(`/api/Courses`); // Replace with your course API endpoint
         setCourses(courseResponse.data);
 
-        const curriculumResponse = await axios.get(`${api}/api/Curricula`); // Replace with your course API endpoint
+        const curriculumResponse = await axiosInstance.get(`/api/Curricula`); // Replace with your course API endpoint
         setCurriculum(curriculumResponse.data);
 
-        const excludedResponse = await axios.get(`${api}/api/SecCourseAssgts`); // Replace with your course API endpoint
+        const excludedResponse = await axiosInstance.get(
+          `/api/SecCourseAssgts`
+        ); // Replace with your course API endpoint
         setExcludedCourses(excludedResponse.data);
 
-        console.log("exc"  , excludedCourses)
-
-
+        console.log("exc", excludedCourses);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
     const fetchTerms = async () => {
       try {
-        const response = await axios.get(`${api}/api/Terms`);
-        const currentTerms = response.data.filter((term) => new Date(term.endDate) > Date.now());
+        const response = await axiosInstance.get(`/api/Terms`);
+        const currentTerms = response.data.filter(
+          (term) => new Date(term.endDate) > Date.now()
+        );
         setTermOptions(currentTerms);
       } catch (error) {
-        console.error('Error fetching terms:', error);
+        console.error("Error fetching terms:", error);
       }
     };
 
@@ -54,36 +57,41 @@ const CourseOffering = () => {
     fetchData();
   }, []);
 
-
-
   const handleSectionChange = (value) => {
     setSelectedSection(value);
   };
-   
-  const selectedSectionObject = sections.find((section) => section.dcode === selectedSection);
-  const selectedSectionId = selectedSectionObject ? selectedSectionObject.sectionId : null;
 
-
+  const selectedSectionObject = sections.find(
+    (section) => section.dcode === selectedSection
+  );
+  const selectedSectionId = selectedSectionObject
+    ? selectedSectionObject.sectionId
+    : null;
 
   const handleAssignCourses = async () => {
     try {
       if (termOptions.length === 0) {
-        message.error('No active terms available for course assignment.');
+        message.error("No active terms available for course assignment.");
         return;
       }
 
-        
-  
       // Assuming you want the first active term, modify as needed
       const termId = termOptions[0].termId;
-  
-      const selectedSectionData = sections.find((data) => data.dcode === selectedSection );
-      const sectionId = selectedSectionData ? selectedSectionData.sectionId : '';
-  
+
+      const selectedSectionData = sections.find(
+        (data) => data.dcode === selectedSection
+      );
+      const sectionId = selectedSectionData
+        ? selectedSectionData.sectionId
+        : "";
+
       console.log("test ", termId);
       console.log("selected", sectionId);
-      console.log("selected line", otherTableData.map((record) => record.courseNo));
-  
+      console.log(
+        "selected line",
+        otherTableData.map((record) => record.courseNo)
+      );
+
       // Iterate over each course in otherTableData and make individual POST requests
       for (const record of otherTableData) {
         // Prepare the data for the post request
@@ -91,81 +99,93 @@ const CourseOffering = () => {
           courseNo: record.courseNo,
           sectionId: sectionId,
           termId: termId,
-          instrId: 'AD/C/04/23', 
+          instrId: "AD/C/04/23",
         };
 
-        console.log("POST" ,postData)
-  
+        console.log("POST", postData);
+
         // Perform the post request
         try {
           // Perform the post request
-          const response = await axios.post(`${api}/api/SecCourseAssgts`, [postData], {
-            headers: {
-              'Content-Type': 'application/json', // Set Content-Type to application/json
-            },
-          });
-        
-          console.log('Post request successful:', response.data);
+          const response = await axiosInstance.post(
+            `/api/SecCourseAssgts`,
+            [postData],
+            {
+              headers: {
+                "Content-Type": "application/json", // Set Content-Type to application/json
+              },
+            }
+          );
+
+          console.log("Post request successful:", response.data);
         } catch (error) {
-          console.error('Error assigning courses:', error);
-          if (error.response && error.response.data && error.response.data.errors) {
-            const errorMessage = Object.values(error.response.data.errors).join('; ');
+          console.error("Error assigning courses:", error);
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.errors
+          ) {
+            const errorMessage = Object.values(error.response.data.errors).join(
+              "; "
+            );
             message.error(`Error assigning courses: ${errorMessage}`);
           } else {
-            message.error('Error assigning courses. Please try again.');
+            message.error("Error assigning courses. Please try again.");
           }
         }
-
       }
-  
 
+      message.success("Courses assigned successfully!");
 
-      message.success('Courses assigned successfully!');
-  
       // Clear the otherTableData after successful assignment
       setOtherTableData([]);
     } catch (error) {
-      console.error('Error assigning courses:', error);
-      message.error('Error assigning courses. Please try again.');
+      console.error("Error assigning courses:", error);
+      message.error("Error assigning courses. Please try again.");
     }
   };
 
   const mergedCurriculum = curriculum.map((curriculumItem) => {
-    const matchingCourse = courses.find((course) => course.courseNo === curriculumItem.courseNo);
+    const matchingCourse = courses.find(
+      (course) => course.courseNo === curriculumItem.courseNo
+    );
     if (matchingCourse) {
       return { ...curriculumItem, courseName: matchingCourse.courseName };
     }
     return curriculumItem;
   });
-  
 
-  const handleSectionProgramChange =(value) =>{
+  const handleSectionProgramChange = (value) => {
     setSelectedProgram(value);
-
-  }
+  };
 
   const handleRowClick = (record) => {
-    const courseAlreadyAssigned = otherTableData.some((data) => data.courseNo === record.courseNo);
+    const courseAlreadyAssigned = otherTableData.some(
+      (data) => data.courseNo === record.courseNo
+    );
     if (!courseAlreadyAssigned) {
       const updatedMainTableData = mainTableData.filter((data) => {
         // Check if the course matches the selected section and program
         const matchesSection = data.dcode === selectedSection;
         const matchesProgram = data.program === selectedProgram;
         // Only keep the course if it doesn't match the selected section and program
-        return !(matchesSection && matchesProgram && data.courseNo === record.courseNo);
+        return !(
+          matchesSection &&
+          matchesProgram &&
+          data.courseNo === record.courseNo
+        );
       });
       setMainTableData(updatedMainTableData);
       setOtherTableData([...otherTableData, { ...record }]);
     }
   };
-  
 
   const columns = [
-    { title: 'Course ID', dataIndex: 'courseNo', key: 'courseNo' },
-    { title: 'Course Name', dataIndex: 'courseName', key: 'courseName' },
+    { title: "Course ID", dataIndex: "courseNo", key: "courseNo" },
+    { title: "Course Name", dataIndex: "courseName", key: "courseName" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Button onClick={() => handleRowClick(record)}>Assign</Button>
       ),
@@ -173,16 +193,18 @@ const CourseOffering = () => {
   ];
 
   const otherTableColumns = [
-    { title: 'Course ID', dataIndex: 'courseNo', key: 'courseNo' },
-    { title: 'Course Name', dataIndex: 'courseName', key: 'courseName' },
+    { title: "Course ID", dataIndex: "courseNo", key: "courseNo" },
+    { title: "Course Name", dataIndex: "courseName", key: "courseName" },
   ];
 
   return (
-    <div>
+    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
+      <div>
       <Select
         placeholder="Select Section"
         style={{ width: 200, marginBottom: 16 }}
         onChange={handleSectionChange}
+        
       >
         {sections.map((section) => (
           <Option key={section.sectionId} value={section.dcode}>
@@ -190,47 +212,55 @@ const CourseOffering = () => {
           </Option>
         ))}
       </Select>
-      {selectedSection && 
-      <Select
-        placeholder="Select Program"
-        style={{ width: 200, marginBottom: 16  , marginLeft:30}}
-        onChange={handleSectionProgramChange}
-      >
-       <Option value="TVET">TVET</Option>
-       <Option value="Diploma">Diploma</Option>
-       <Option value="Degree">Degree</Option>
-        <Option value="Masters">Masters</Option>
-       
-      </Select>
-      } 
-      <h2>Course </h2>
+      {selectedSection && (
+        <Select
+          placeholder="Select Program"
+          style={{ width: 200, marginBottom: 16, marginLeft: 30 }}
+          onChange={handleSectionProgramChange}
+        >
+          <Option value="TVET">TVET</Option>
+          <Option value="Diploma">Diploma</Option>
+          <Option value="Degree">Degree</Option>
+          <Option value="Masters">Masters</Option>
+        </Select>
+      )}
+      </div>
+      <p className="!font-jakarta text-left text-[#3b608e] text-[17px] font-bold align-middle">
+        Courses{" "}
+      </p>
+      <div className="bg-white p-5 rounded-md shadow-md">
+      
       <Table
-  dataSource={mergedCurriculum.filter((course) => {
-    const shouldBeExcluded = excludedCourses.some((excludedCourse) => {
-      const shouldBeExcluded =
-        excludedCourse.courseNo === course.courseNo &&
-        excludedCourse.sectionId === selectedSectionId;
-      console.log(
-        `Course: ${course.courseNo} - Section: ${course.sectionId} - Excluded: ${shouldBeExcluded}`
-      );
-      return shouldBeExcluded;
-    });
-    console.log(
-      `Course: ${course.courseNo} - Section: ${course.sectionId} - Should be excluded: ${shouldBeExcluded}`
-    );
-    return (
-      course.dcode === selectedSection &&
-      course.program === selectedProgram &&
-      !shouldBeExcluded
-    );
-  })}
-  columns={columns}
-  rowKey="courseNo"
-  bordered
-  pagination={false}
-/>
+        dataSource={mergedCurriculum.filter((course) => {
+          const shouldBeExcluded = excludedCourses.some((excludedCourse) => {
+            const shouldBeExcluded =
+              excludedCourse.courseNo === course.courseNo &&
+              excludedCourse.sectionId === selectedSectionId;
+            console.log(
+              `Course: ${course.courseNo} - Section: ${course.sectionId} - Excluded: ${shouldBeExcluded}`
+            );
+            return shouldBeExcluded;
+          });
+          console.log(
+            `Course: ${course.courseNo} - Section: ${course.sectionId} - Should be excluded: ${shouldBeExcluded}`
+          );
+          return (
+            course.dcode === selectedSection &&
+            course.program === selectedProgram &&
+            !shouldBeExcluded
+          );
+        })}
+        columns={columns}
+        rowKey="courseNo"
+        bordered
+        pagination={false}
+      />
+</div>
+      <p className="!font-jakarta text-left text-[#3b608e] text-[17px] mt-8 font-bold align-middle">
+      Offered Courses{" "}
+      </p>
+      <div className="bg-white p-5 rounded-md shadow-md">
 
-      <h2 style={{ margin: '2%' }}>Offered Courses </h2>
       <Table
         dataSource={otherTableData}
         columns={otherTableColumns}
@@ -238,7 +268,12 @@ const CourseOffering = () => {
         bordered
         pagination={false}
       />
-      <Button onClick={handleAssignCourses} type="primary" style={{ marginBottom: 16, backgroundColor: '#4279A6' }}>
+      </div>
+      <Button
+        onClick={handleAssignCourses}
+        type="primary"
+        style={{ marginBottom: 16, backgroundColor: "#4279A6" , padding: '12px 24px', height: 'auto', maxWidth:"15%", marginLeft:"auto"}}
+      >
         Assign Courses
       </Button>
     </div>

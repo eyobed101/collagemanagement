@@ -3,6 +3,7 @@ import styled from "styled-components";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { apiurl } from "../constants";
+import axiosInstance from "@/configs/axios";
 
 const StudentCourses = () => {
   const [students, setStudents] = useState([]);
@@ -11,7 +12,7 @@ const StudentCourses = () => {
   const [selectedDepartment, setSelectedDepartment] = useState([]);
   const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [grades, setGrades] = useState([]);
+  const [courseTaken, setCourseTaken] = useState([]);
   const [courses, setCourses] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +29,8 @@ const StudentCourses = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Departments`
+        const response = await axiosInstance.get(
+          `/api/Departments`
         );
         setDepartments(response.data);
         console.log("Departiments", response.data);
@@ -39,7 +40,7 @@ const StudentCourses = () => {
     };
     const fetchSections = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Section`);
+        const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
         console.log("Sections", response.data);
       } catch (error) {
@@ -48,8 +49,8 @@ const StudentCourses = () => {
     };
     const fetchSectionStudentEnroll = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/SectionStudEnroll`
+        const response = await axiosInstance.get(
+          `/api/SectionStudEnroll`
         );
         setSectionStudEnroll(response.data);
         console.log("sectionStudEnroll", response.data);
@@ -60,8 +61,8 @@ const StudentCourses = () => {
 
     const fetchApplicants = async () => {
       try {
-        const response = await axios.get(
-          `${apiurl}/api/Applicants`
+        const response = await axiosInstance.get(
+          `/api/Applicants`
         );
         setStudents(response.data);
         console.log("Students", response.data);
@@ -69,10 +70,10 @@ const StudentCourses = () => {
         console.error("Error fetching terms:", error);
       }
     };
-    const fetchGrades = async () => {
+    const fetchCourseRegistration = async () => {
       try {
-        const response = await axios.get(`${apiurl}:5169/api/Grades`);
-        setGrades(response.data);
+        const response = await axiosInstance.get(`/api/CourseRegistrationPendings`);
+        setCourseTaken(response.data);
         console.log("grades", response.data);
       } catch (error) {
         console.error("Error fetching grades:", error);
@@ -80,7 +81,7 @@ const StudentCourses = () => {
     };
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${apiurl}/api/Courses`);
+        const response = await axiosInstance.get(`/api/Courses`);
         setCourses(response.data);
         console.log("courses", response.data);
       } catch (error) {
@@ -91,7 +92,7 @@ const StudentCourses = () => {
     fetchDepartments();
     fetchSections();
     fetchApplicants();
-    fetchGrades();
+    fetchCourseRegistration();
     fetchSectionStudentEnroll();
     fetchCourses();
   }, []);
@@ -250,9 +251,9 @@ const StudentCourses = () => {
       readmissionDate: null,
     };
     console.log(updatedStatus);
-    axios
+    axiosInstance
       .put(
-        `${apiurl}/api/StudentStatus/${encodedStudId}`,
+        `/api/StudentStatus/${encodedStudId}`,
         updatedStatus
       )
       .then((response) => {
@@ -344,7 +345,7 @@ const StudentCourses = () => {
         </div>
         <div style={{ width: "25%", minWidth: "200px" }}>
           <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            filter by Students
+            Students
           </label>
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
@@ -395,14 +396,14 @@ const StudentCourses = () => {
           <tbody>
             {selectedSection
               ? selectedStudent
-                ? grades
-                    .filter((grad) => grad.studId === selectedStudent.studId)
+                ? courseTaken
+                    .filter((grad) => grad.StudID === selectedStudent.studId)
                     .map((grade, index) => (
                       <TableRow key={index} isOdd={index % 2 !== 0}>
-                        <TableCell>{grade.courseNo}</TableCell>
+                        <TableCell>{grade.CourseNo}</TableCell>
                         <TableCell>
                           {courses
-                            .filter((cor) => cor.courseNo === grade.courseNo)
+                            .filter((cor) => cor.courseNo === grade.CourseNo)
                             .map((cors) => 
                               cors.courseName
                             )}
