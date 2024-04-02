@@ -4,10 +4,8 @@ import axios from 'axios';
 import {api  } from '../constants'
 import { tailspin } from "ldrs";
 
-
 import {
   MdWork,
-  MdAddLocation,
   MdHowToReg,
   MdLocationOn,
 
@@ -28,6 +26,7 @@ function CampusForm({ onSubmit }) {
 
 
   tailspin.register();
+
 
 
   const handleSubmit = async () => {

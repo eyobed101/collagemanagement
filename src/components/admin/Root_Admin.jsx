@@ -15,8 +15,6 @@ import {
   HomeIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/solid";
-import { IconButton } from "@mui/material";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
 import { LogoutOutlined } from "@mui/icons-material";
 
@@ -99,17 +97,8 @@ function RootAdmin() {
         {/* <NavBar /> */}
         <DashboardNavbar />
         <Configurator />
-        {/* <IconButton
-          size="lg"
-          color="white"
-          className="fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900/10"
-          ripple={false}
-          onClick={() => setOpenConfigurator(dispatch, true)}
-        >
-          <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton> */}
+      
         <div>
-          {/* <Sidenav brandName="Admas University" routes={routes} /> */}
           <div style={{ padding: "20px" }}>
             {isCampus ? (
               <CampusForm onSubmit={handleCampusSubmit} />
@@ -118,7 +107,6 @@ function RootAdmin() {
             )}
             {isCenterRegister ? <UserForm onSubmit={handleUserSubmit} /> : null}
             {isHome ? <RootHome /> : null}
-            {/* <div></div> */}
           </div>
         </div>
         <div className="text-blue-gray-600">

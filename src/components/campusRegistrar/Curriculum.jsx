@@ -23,6 +23,7 @@ const Curriculum = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [filteredCourses, setFilteredCourses] = useState([]);
+  const [filtereApiu , setFilteredApiu] = useState([]); 
 
   // Function to filter courses based on selected department
  
@@ -75,9 +76,20 @@ const Curriculum = () => {
   };
 
   const handleDepartmentChange = (value) => {
-    const filtered = courses.filter(course => course.dcode === value);
-    setFilteredCourses(filtered);
-  };
+    // Filter courses based on the selected department code (dcode)
+    const filteredCourses = courses.filter(course => course.dcode === value);
+    setFilteredCourses(filteredCourses);
+
+    // Filter out the courses from filteredCourses that are already in the curriculum
+    const filteredCoursesNotInCurriculum = filteredCourses.filter(course => {
+        // Check if the courseNo is not present in the curriculum
+        return !curriculum.some(curriculumCourse => curriculumCourse.courseNo === course.courseNo);
+    });
+
+    setFilteredApiu(filteredCoursesNotInCurriculum);
+    console.log("filter", filteredCoursesNotInCurriculum);
+}
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -353,7 +365,7 @@ setEditingKey(null)
       </Form.Item>
       <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
           <Select>
-            {filteredCourses.map(course => (
+            {filtereApiu.map(course => (
               <Option key={course.courseNo} value={course.courseNo}>
                 {course.courseName}
               </Option>

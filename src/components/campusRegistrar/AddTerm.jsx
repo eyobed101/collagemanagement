@@ -8,6 +8,7 @@ import axiosInstance from '@/configs/axios';
 const AddTerm = () => {
   const [data, setData] = useState([]);
   const [loading , setLoading]= useState(false)
+  const [TermValues , setTermValues] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
@@ -39,12 +40,52 @@ const AddTerm = () => {
         const response = await axiosInstance.get(`/api/Terms`);
         console.log('Response:', response.data); // Log the response data
         setData(response.data);
-        // console.log("Response" , response.data)
-        // console.log("Response" )
 
+        const currentDate = new Date();
+        let ltfo = null;
+    
+        // Assuming the response data is an array of terms
+        response.data.forEach(term => {
+          // const startDate = new Date(term.startDate);
+          // const endDate = new Date(term.endDate);
+          const startDate = new Date(term.startDate);
+          const endDate = new Date(term.endDate);
+          console.log('Term Start Date:', startDate);
+          console.log('Term End Date:', endDate);
+          console.log('Current Date:', currentDate)
+    
+          if (currentDate >= startDate && currentDate <= endDate) {
+            ltfo = term.centerId; // Assuming studyCenter contains the LTFO value
+          }
+        });
+    
+        console.log(ltfo)
+        message.success(ltfo)
+    
+        if (ltfo) {
+          const termResponse = await axios.get(`${api}/api/Terms/GenerateTerm/${ltfo}`, {
+            params: {
+              program: 'Degree',
+              programType: 'Regular'
+            }
+          });
+         
+     
+          console.log("term " , termResponse.data)
+          setTermValues(termResponse.data)
+          // Further processing with termResponse...
+        } else {
+          console.log('No active term found for the current date.');
+          // Handle this case accordingly
+        }
       } catch (error) {
-        console.error('Error fetching data:', error);
-      } 
+        console.error('Error fetching term data:', error);
+      }
+        
+
+      // } catch (error) {
+      //   console.error('Error fetching data:', error);
+      // } 
     };
 
     fetchData();
@@ -228,6 +269,8 @@ function getNextTerm(previousTerm) {
     }
   };
 
+ 
+
   const handleOk = async() => {
     const values = form.getFieldsValue();
 
@@ -236,14 +279,14 @@ function getNextTerm(previousTerm) {
     try {
       // Make a POST request to the API endpoint
       const newRecord = {
-        "termId":`${values.centerId}/${nextTerm}/${values.acadYear}`,
+        "termId":`${TermValues.centerId}/${nextTerm}/${values.acadYear}`,
         "name": nextTerm,
-        "acadYear": values.acadYear,
+        "acadYear": TermValues.acadYear,
         "startDate":moment(StartDate).format('YYYY-MM-DD'), // Format date as needed
         "endDate":moment(EndDate).format('YYYY-MM-DD'), // Format date as needed
-        "program": values.program,
-        "programType": values.programType,
-        "centerId":values.centerId, //
+        "program": TermValues.program,
+        "programType": TermValues.programType,
+        "centerId": TermValues.centerId, //
        };
       console.log("Response iss" , newRecord)
       const response = await axiosInstance.post(`/api/Terms/Terms`, newRecord);
@@ -360,7 +403,7 @@ function getNextTerm(previousTerm) {
             style={{ width: '100%' }} onChange={onChangeEnd}  />
           </Form.Item>
         
-         {!editingKey && (
+         {/* {!editingKey && (
       <>      
           <Form.Item
             label="Acadamic Year"
@@ -400,7 +443,7 @@ function getNextTerm(previousTerm) {
         </Select>
       </Form.Item>
       </>
-       )}
+       )} */}
         </Form>
       </Modal>     
         </div>

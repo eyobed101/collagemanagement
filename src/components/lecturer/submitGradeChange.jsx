@@ -161,9 +161,9 @@ const GradeChangeSubmission = () => {
         placeholder="Select Academic Year"
          style={{ marginRight: '8px', width:350 , height:40 }}>
           {/* Add academic year options */}
-          <Option value="2021/22">2021/22</Option>
-            <Option value="2022/23">2022/23</Option>
-            <Option value="2023/24">2023/24</Option>
+          <Option value="2023/24">2023/24</Option>
+            <Option value="2024/25">2024/25</Option>
+            <Option value="2025/26">2025/26</Option>
         </Select>
         </div>
         <div style={{display:'flex' , flexDirection:'column'  }}>
@@ -172,9 +172,9 @@ const GradeChangeSubmission = () => {
         placeholder="Select Course"
          style={{ marginRight: '8px', width:350 , height:40 }}>
           {/* Add academic year options */}
-          <Option value="Section A| Introduction to Computer">Section A| Introduction to Computer</Option>
-            <Option value="Section B| Introduction to Computer">Section B| Introduction to Computer</Option>
-            <Option value="Section C| Introduction to Computer">Section C| Introduction to Computer</Option>
+          <Option value=" Introduction to Computer"> Introduction to Computer</Option>
+            <Option value="Introduction to Computer Science 2">Introduction to Computer Science 2</Option>
+            <Option value="Introduction to Computer programming"> Introduction to Computer Programming</Option>
         </Select>
         </div>
           {/* <Select
