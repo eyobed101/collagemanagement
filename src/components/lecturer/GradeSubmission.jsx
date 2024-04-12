@@ -4,6 +4,8 @@ import * as XLSX from 'xlsx';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import axios from 'axios';
 import { api } from '../constants';
+import axiosInstance from "@/configs/axios";
+
 
 const { Option } = Select;
 
@@ -15,6 +17,8 @@ const GradeSubmission = () => {
   const [dataSource , setDataSource ] = useState([]);
   const [gradeValue , setGradeValue] = useState([]);
   const [data, setData] = useState([]);
+  // const [, setData] = useState([]);
+
   const [courseNo , setCourseNo] = useState([]);
   const [term , setTermNo] = useState([]);
   const [empId , setempId] = useState([]);
@@ -22,10 +26,13 @@ const GradeSubmission = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${api}/api/SecCourseAssgts`);
-        setData(response.data);
-        console.log("test" , data)
+    
+  try {
+        const excludedResponse = await axiosInstance.get(
+          `/api/InstCourseAssgts`
+        ); // Replace with your course API endpoint
+        setData(excludedResponse.data);
+        console.log("exc", excludedResponse.data);
        
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -36,6 +43,27 @@ const GradeSubmission = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchCoursePending = async () => {
+    // 0919767497
+  try {
+        const courseResponse = await axiosInstance.get(
+          `/api/CourseRegistrationPendings`
+        ); // Replace with your course API endpoint
+        setStudentData(courseResponse.data);
+        console.log("course", courseResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchCoursePending();
+  }, []);
+
 
   
   // const generateExcel = () => {
@@ -373,14 +401,17 @@ useEffect(() => {
   <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent: 'flex-start' , display:'flex' }}>
 
       <div style={{display:'flex' , flexDirection:'column', marginRight:'20%'}}>
-      <label>Acadamic Year</label>  
+      <label>Section</label>  
       <Select 
   value={academicYear} 
    onChange={handleAcadamic} 
   // placeholder="Select Academic Year"
   style={{ marginRight: '8px', width:350 , height:40 }}
->
-  <Option value={ "2024/25"}>2024/2025</Option>
+>     {data.map(center => (
+            <Option key={center.sectionId} value={center.sectionId}>
+              {center.sectionId}
+            </Option>
+          ))}
 </Select>
         </div>
 
@@ -389,7 +420,11 @@ useEffect(() => {
         <Select value={course} onChange={handleCourse} placeholder="Select Course" style={{
              marginRight: '8px',  width:350 , height:40 }}>
           {/* Add course options */}
-          <Option value={"AcFn 101"}>AcFn 101</Option>
+          {data.map(center => (
+            <Option key={center.courseNo} value={center.courseNo}>
+              {center.courseNo}
+            </Option>
+          ))}
         </Select>
         </div>
       </div>
@@ -402,7 +437,11 @@ useEffect(() => {
         <Select value={semester} onChange={handleSemister} placeholder="Select Semester" 
         style={{ marginRight: '8px',  width:350 , height:40 }}>
           {/* Add semester options */}
-          <Option value={"I"}>I</Option>
+          {data.map(center => (
+            <Option key={center.termId} value={center.termId}>
+              {center.termId}
+            </Option>
+          ))}
 
         </Select>
         </div>

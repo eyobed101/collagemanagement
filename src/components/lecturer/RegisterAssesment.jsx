@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Input, Button, Row, Col } from 'antd';
+import axiosInstance from "@/configs/axios";
+
 
 
 const { Option } = Select;
@@ -11,7 +13,7 @@ const AssessmentRegistration = () => {
   const [assessmentType, setAssessmentType] = useState('');
   const [assessmentTitle, setAssessmentTitle] = useState('');
   const [weight, setWeight] = useState('');
-  const [section , setSection]= useState('');
+  const [section , setSection]= useState([]);
   
 
  
@@ -19,8 +21,11 @@ const AssessmentRegistration = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${api}/api/SecCourseAssgts`);
-        setSection(response.data);
+        const excludedResponse = await axiosInstance.get(
+          `/api/InstCourseAssgts`
+        ); // Replace with your course API endpoint
+        setSection(excludedResponse.data);
+        console.log("exc", excludedResponse.data);;
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

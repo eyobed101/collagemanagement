@@ -1,5 +1,5 @@
 import React, { useState , useEffect , useRef } from 'react';
-import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm , DatePicker } from 'antd';
+import { Modal, Form, Select, Button, Table, Space,Input,Popconfirm , DatePicker ,message } from 'antd';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -144,19 +144,22 @@ const Curriculum = () => {
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        "dcode": parseInt(values.dcode), 
-        "courseNo": values.courseNo,
-        "approvedDate":moment(approvedDate).format('YYYY-MM-DD'), 
+        "Dcode": parseInt(values.dcode), 
+        "CourseNo": values.courseNo,
+        "ApprovedDate":moment(approvedDate).format('YYYY-MM-DD'), 
         "program": values.program,
-        "effectiveSdate": moment(startDate).format('YYYY-MM-DD'),
-        "effectiveEdate": moment(endDate).format('YYYY-MM-DD'),
+        "EffectiveSdate": moment(startDate).format('YYYY-MM-DD'),
+        "EffectiveEdate": moment(endDate).format('YYYY-MM-DD'),
         "campusId": values.campusId ,
+        "courseType": values.courseType
        };
       console.log("Response iss" , postData)
       const response = await axiosInstance.post(`/api/Curricula`, [postData]);
       console.log('POST request successful:', response.data);
       
       showCurriculumModal(false);
+      message.success("The curriculum of the is updated .");
+
 
       // You can handle success, e.g., show a success message or redirect to another page
     }  catch (error) {
@@ -193,6 +196,7 @@ setEditingKey(null)
       "effectiveSdate": moment(record.effectiveSdate).format('YYYY-MM-DD'),
       "effectiveEdate": moment(record.effectiveEdate).format('YYYY-MM-DD'),
       "campusId": record.campusId ,
+      "courseType": record.courseType     
      };
 
      const response = await axiosInstance.delete(`/api/Curricula`, postData);
@@ -316,6 +320,7 @@ setEditingKey(null)
       "effectiveSdate":(startDate?  moment(startDate).format('YYYY-MM-DD'): moment(values.effectiveSdate).format('YYYY-MM-DD')),
       "effectiveEdate": (endDate?  moment(endDate).format('YYYY-MM-DD') :moment(values.effectiveEdate).format('YYYY-MM-DD')),
       "campusId": values.campusId ,
+      "courseType": values.courseType
      };
        
      const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
@@ -421,6 +426,15 @@ setEditingKey(null)
           ))}
         </Select>
         </Form.Item>
+        <Form.Item name="courseType" label="Course Type" rules={[{ required: true }]}>
+        <Select>
+        <Option value="Major">Major</Option>
+        <Option value="Supportive">Supportive</Option>
+          <Option value="Common">Common</Option>
+          <Option value="elective">elective</Option>
+          <Option value="minor">minor</Option>
+        </Select>
+      </Form.Item>
         </Form>
       </Modal>
       <Table dataSource={curriculum} columns={columns}  bordered  loading={loading}

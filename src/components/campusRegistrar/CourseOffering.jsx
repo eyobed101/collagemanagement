@@ -41,6 +41,7 @@ const CourseOffering = () => {
         console.error("Error fetching data:", error);
       }
     };
+    
     const fetchTerms = async () => {
       try {
         const response = await axiosInstance.get(`/api/Terms`);
@@ -57,8 +58,10 @@ const CourseOffering = () => {
     fetchData();
   }, []);
 
+
   const handleSectionChange = (value) => {
     setSelectedSection(value);
+    console.log("Exec ", excludedCourses)
   };
 
   const selectedSectionObject = sections.find(
@@ -118,6 +121,8 @@ const CourseOffering = () => {
           );
 
           console.log("Post request successful:", response.data);
+          message.success("post  course assignment.");
+
         } catch (error) {
           console.error("Error assigning courses:", error);
           if (
@@ -237,18 +242,18 @@ const CourseOffering = () => {
               excludedCourse.courseNo === course.courseNo &&
               excludedCourse.sectionId === selectedSectionId;
             console.log(
-              `Course: ${course.courseNo} - Section: ${course.sectionId} - Excluded: ${shouldBeExcluded}`
+              `Course: ${course.courseNo} - Section: ${excludedCourse.sectionId} - Excluded: ${shouldBeExcluded}`
             );
             return shouldBeExcluded;
           });
           console.log(
-            `Course: ${course.courseNo} - Section: ${course.sectionId} - Should be excluded: ${shouldBeExcluded}`
+            `Course: ${course.courseNo}  - Should be excluded: ${shouldBeExcluded}`
           );
           return (
             course.dcode === selectedSection &&
             course.program === selectedProgram &&
             !shouldBeExcluded
-          );
+           );
         })}
         columns={columns}
         rowKey="courseNo"

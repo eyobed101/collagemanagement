@@ -50,6 +50,7 @@ export function SignIn() {
       .then((res) => {
         console.log("test", res);
         setFinished(true)
+
         // if (data.email === 'onetest@gmail.com') {
         //   // Handle specific case
         // }
