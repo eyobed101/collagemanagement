@@ -42,7 +42,7 @@ export function CreateUser() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-   console.log("campus")
+    console.log("campus");
   }, []);
 
   const handleInputChange = (e) => {
@@ -88,7 +88,7 @@ export function CreateUser() {
       Email: formData.email,
       Password: formData.password,
       CenterId: "Defualt",
-      roles:formData.roles
+      roles: formData.roles,
     };
 
     const { ...restFormData } = data;
@@ -98,9 +98,11 @@ export function CreateUser() {
     const apiUrl = `/api/Authenticate/Register`;
 
     try {
-      const response = await axiosInstance.post(apiUrl, restFormData, { params: {
-        roles: formData.roles
-      }});
+      const response = await axiosInstance.post(apiUrl, restFormData, {
+        params: {
+          roles: formData.roles,
+        },
+      });
 
       setSuccess(true);
       setError(null);
@@ -180,7 +182,6 @@ export function CreateUser() {
                       />
                     </div>
 
-                    
                     <div className="col-span-6 sm:col-span-3 m-2">
                       <label
                         htmlFor="role"
@@ -198,32 +199,15 @@ export function CreateUser() {
                       >
                         <option value="">Roles</option>
 
-                            <option
-                              value={"CampusRegistrar"}
-                            >
-                              Campus Registrar
-                            </option>
-                            <option
-                              value={"RegistrarOfficer"}
-                            >
-                              Registrar Officer
-                            </option>
-                            <option
-                              value={"Department"}
-                            >
-                              Department Head
-                            </option>
-                            <option
-                              value={"Lecturer"}
-                            >
-                              Lecturer
-                            </option>
-                            <option
-                              value={"Student"}
-                            >
-                              Student
-                            </option>
-
+                        <option value={"CampusRegistrar"}>
+                          Campus Registrar
+                        </option>
+                        <option value={"RegistrarOfficer"}>
+                          Registrar Officer
+                        </option>
+                        <option value={"Department"}>Department Head</option>
+                        <option value={"Lecturer"}>Lecturer</option>
+                        <option value={"Student"}>Student</option>
                       </select>
                     </div>
                   </div>
@@ -241,21 +225,21 @@ export function CreateUser() {
                       class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       {spining ? (
-              <l-tailspin
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-                size="60"
-                stroke="5"
-                speed="0.9"
-                color="#4279A6"
-              ></l-tailspin>
-            ) : (
-              ""
-            )}
+                        <l-tailspin
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                          }}
+                          size="60"
+                          stroke="5"
+                          speed="0.9"
+                          color="#4279A6"
+                        ></l-tailspin>
+                      ) : (
+                        ""
+                      )}
                       Submit
                     </button>
                   </div>

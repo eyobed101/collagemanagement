@@ -500,7 +500,7 @@ const AddTerm = () => {
       </Form.Item>
       </>
        )} */}
-       )} */}
+        
         </Form>
       </Modal>
     </div>
