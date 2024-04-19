@@ -21,11 +21,10 @@ export function UserForm() {
   // let [data, setData] = useState({});
   const [departments, setDepartments] = useState([]);
   const [dep, setDep] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [studyCenters, setStudyCenters] = useState([]);
   const [terms, setTerms] = useState([]);
   const [loadingCenters, setLoadingCenters] = useState(true);
-  const [spining, setSpining] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
@@ -69,7 +68,7 @@ export function UserForm() {
   // Handler for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSpining(true);
+    setLoading(true);
 
     const token = localStorage.getItem("token");
 
@@ -109,7 +108,7 @@ export function UserForm() {
       setError(error.message);
       console.error(error);
     } finally {
-      setSpining(false);
+      setLoading(false);
     }
   };
   return (
@@ -117,7 +116,7 @@ export function UserForm() {
       <div className="mt-12 mb-8 flex flex-col gap-12">
         <div class="mt-10 sm:mt-0">
           <div class="mt-5 md:mt-0 md:col-span-2">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="relative">
               <div class="shadow overflow-hidden sm:rounded-md">
                 <div class="px-4 py-5 bg-white sm:p-6">
                   {/* <div class="grid grid-cols-6 gap-6"> */}
@@ -252,34 +251,22 @@ export function UserForm() {
                       type="submit"
                       class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                      {loading && (
-                        <svg
-                          className="animate-spin absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5 w-5 mr-3"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M16 4s-4 1-4 4"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M22 12h-6M18 12a6 6 0 01-6 6H6"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 20V12"
-                          />
-                        </svg>
-                      )}
+                      {loading ? (
+              <l-tailspin
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+                size="60"
+                stroke="5"
+                speed="0.9"
+                color="#4279A6"
+              ></l-tailspin>
+            ) : (
+              ""
+            )}
                       Submit
                     </button>
                   </div>

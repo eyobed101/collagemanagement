@@ -91,7 +91,7 @@ export function AddStudent() {
           `/api/Departments?sortOrder=name desc&pageNumber=1`
         );
         setDepartments(response.data);
-        console.log(departments);
+        console.log(response.data);
 
         setLoading(false);
       } catch (error) {
@@ -102,24 +102,14 @@ export function AddStudent() {
       try {
         const response = await axiosInstance.get(`/api/Section`);
         setSections(response.data);
-        console.log(sections);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching sections:", error);
       }
     };
 
-    const fetchStudyCenters = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `/api/StudyCenters`
-        );
-        setStudyCenters(response.data);
-        setLoadingCenters(false);
-      } catch (error) {
-        console.error("Error fetching study centers:", error);
-      }
-    };
+    
 
     const fetchTerms = async () => {
       try {
@@ -133,7 +123,6 @@ export function AddStudent() {
     };
 
     fetchDepartments();
-    fetchStudyCenters();
     fetchSections();
     fetchTerms();
   }, []);
@@ -250,6 +239,9 @@ export function AddStudent() {
           SectionID: SectionId,
           TermId: TermId,
         },
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       setSuccess(true);
@@ -878,40 +870,9 @@ export function AddStudent() {
                             <option value="Regular">Regular</option>
                             <option value="Distance">Distance</option>
                             <option value="Extension">Extension</option>
-                            <option value="Night">Night</option>
                           </select>
                         </div>
-                        <div className="col-span-6 sm:col-span-3">
-                          <label
-                            htmlFor="study_center"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            Study Center
-                          </label>
-                          <select
-                            id="study_center"
-                            name="centerId"
-                            value={formData.centerId}
-                            onChange={handleInputChange}
-                            autoComplete="study_center"
-                            className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                          >
-                            <option value="">All Study Centers</option>
-
-                            {loadingCenters ? (
-                              <option>Loading study centers...</option>
-                            ) : (
-                              studyCenters.map((center) => (
-                                <option
-                                  key={center.CenterId}
-                                  value={center.CenterId}
-                                >
-                                  {center.CenterName}
-                                </option>
-                              ))
-                            )}
-                          </select>
-                        </div>
+                        
                         <div className="col-span-6 sm:col-span-3">
                           <label
                             htmlFor="department"

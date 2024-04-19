@@ -26,6 +26,8 @@ const AddSection = () => {
   const [editingKey, setEditingKey] = useState("");
   const [createDate, setCreateDate] = useState(null);
   const [endDate, setEndDate] = useState(new Date());
+  const [activeTerm, setActiveTerm] = useState(null);
+  const [campusCenterId, setcampusCenterId] = useState(null);
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -34,6 +36,29 @@ const AddSection = () => {
     console.log("onChange is ", dateString);
     setCreateDate(dateString);
   };
+
+  useEffect(() => {
+    const fetchActiveTerm = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/Terms`);
+        const currentDate = new Date();
+
+        // Find the active term
+        const activeTermData = response.data.find((term) => {
+          const startDate = new Date(term.startDate);
+          const endDate = new Date(term.endDate);
+          return currentDate >= startDate && currentDate <= endDate;
+        });
+
+        setActiveTerm(activeTermData);
+        setcampusCenterId(activeTermData.centerId)
+      } catch (error) {
+        console.error("Error fetching active term:", error);
+      }
+    };
+
+    fetchActiveTerm(); // Fetch active term when component mounts
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +101,23 @@ const AddSection = () => {
     SetData();
     fetchDepartments();
   }, []);
+
+  const sectionNameGenerator = (dept) => {
+    const sections = dataSource
+      .filter((data) => data.dcode === dept)
+      .map((section) => {
+        return section;
+      });
+
+    let firstDigit = 1;
+    let lastDigit = sections.length > 0 ? sections.length % 10 : 1;
+    let middleName = dept;
+
+    const sectionName = `${firstDigit}${middleName}${lastDigit}`;
+    console.log("Section Name", sectionName);
+
+    return `${firstDigit}${middleName}${lastDigit}`;
+  };
 
   const columns = [
     {
@@ -197,8 +239,8 @@ const AddSection = () => {
       try {
         // Make a POST request to the API endpoint
         const postData = {
-          sectionId: values.sectionId,
-          campusId: values.campusId,
+          sectionId: campusCenterId,
+          campusId: campusCenterId,
           sectionName: values.sectionName,
           dateCreated: moment(values.dateCreated).format("YYYY-MM-DD"),
           acadYear: values.acadYear,
@@ -226,14 +268,21 @@ const AddSection = () => {
   const handleOk = async () => {
     const values = form.getFieldsValue();
 
+    const deprt = department
+      .filter((dep) => dep.did === values.dcode)
+      .map((deprt) => {
+        return deprt;
+      });
     // Log the values to the console
-    console.log("Form values:", values);
+    const dname = sectionNameGenerator(deprt[0].dcode);
+
+    console.log("Name", dname);
     try {
       // Make a POST request to the API endpoint
       const postData = {
-        SectionId: `${values.campusId}/${values.sectionName}/${values.acadYear}`,
-        campusId: values.campusId,
-        sectionName: values.sectionName,
+        SectionId: `${campusCenterId}/${dname}/${values.acadYear}`,
+        campusId: campusCenterId,
+        sectionName: dname,
         dateCreated: moment(createDate).format("YYYY-MM-DD"),
         acadYear: values.acadYear,
         program: values.program,
@@ -330,9 +379,7 @@ const AddSection = () => {
 
   return (
     <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
-
       <div className="list-sub">
-
         <Button
           type="primary"
           onClick={showModal}
@@ -342,7 +389,7 @@ const AddSection = () => {
             backgroundColor: "#4279A6",
             padding: "12px 24px",
             height: "auto",
-            maxWidth: "15%",
+            width: "20%",
           }}
         >
           Create New Section
@@ -376,15 +423,16 @@ const AddSection = () => {
         onOk={editingKey ? handleEdit : handleOk}
         okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
       >
-        <Form form={form} onFinish={onFinish}>
-          {/* <Form.Item
+        {activeTerm ? (
+          <Form form={form} onFinish={onFinish}>
+            {/* <Form.Item
             label="Section ID"
             name="sectionId"
             rules={[{ required: true, message: 'Please input Sectiont ID!' }]}
           >
             <Input />
           </Form.Item> */}
-          <Form.Item
+            {/* <Form.Item
             label="Section Name"
             name="sectionName"
             rules={[
@@ -392,68 +440,70 @@ const AddSection = () => {
             ]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item
-            label="Acadamic Year"
-            name="acadYear"
-            rules={[{ required: true, message: "Please input Acadamic Year!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Date Created"
-            name="dateCreated"
-            rules={[{ required: true, message: "Please select date created!" }]}
-          >
-            <DatePicker
-              value={createDate && moment(createDate)}
-              style={{ width: "100%" }}
-              onChange={onChangeEnd}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Department"
-            name="dcode"
-            rules={[{ required: true, message: "Please select department!" }]}
-          >
-            <Select key="dcodeId">
-              {department.map((department) => (
-                <Option key={department.did} value={department.did}>
-                  {department.dname}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Study Center" name="campusId" required>
-            <Select key="centerId">
-              {studyCenter.map((center) => (
-                <Option key={center.CenterId} value={center.CenterId}>
-                  {center.CenterId}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Program"
-            name="program"
-            rules={[{ required: true, message: "Please select Program !" }]}
-          >
-            <Select style={{ width: "100%" }}>
-              <Option value="Degree">Degree</Option>
-              <Option value="Masters">Masters</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Program Type"
-            name="programType"
-            rules={[{ required: true, message: "Please select program type!" }]}
-          >
-            <Select style={{ width: "100%" }}>
-              <Option value="Regular">Regular</Option>
-              <Option value="Extension">Extension</Option>
-            </Select>
-          </Form.Item>
-        </Form>
+          </Form.Item> */}
+            <Form.Item
+              label="Academic Year"
+              name="acadYear"
+              initialValue={activeTerm.acadYear}
+              rules={[
+                { required: true, message: "Please input Academic Year!" },
+              ]}
+            >
+              <Input disabled />
+            </Form.Item>
+            <Form.Item
+              label="Date Created"
+              name="dateCreated"
+              rules={[
+                { required: true, message: "Please select date created!" },
+              ]}
+            >
+              <DatePicker
+                value={createDate && moment(createDate)}
+                style={{ width: "100%" }}
+                onChange={onChangeEnd}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Department"
+              name="dcode"
+              rules={[{ required: true, message: "Please select department!" }]}
+            >
+              <Select key="dcodeId">
+                {department.map((department) => (
+                  <Option key={department.did} value={department.did}>
+                    {department.dname}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            
+            <Form.Item
+              label="Program"
+              name="program"
+              rules={[{ required: true, message: "Please select Program !" }]}
+            >
+              <Select style={{ width: "100%" }}>
+                <Option value="Degree">Degree</Option>
+                <Option value="Masters">Masters</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Program Type"
+              name="programType"
+              rules={[
+                { required: true, message: "Please select program type!" },
+              ]}
+            >
+              <Select style={{ width: "100%" }}>
+                <Option value="Regular">Regular</Option>
+                <Option value="Extension">Extension</Option>
+              </Select>
+            </Form.Item>
+          </Form>
+        ) : (
+          <p>No active term found.</p>
+        )}
       </Modal>
     </div>
   );

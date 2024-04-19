@@ -3,6 +3,7 @@ import courseTableData from "@/data/courses";
 import addDropTableData from "@/data/addrop";
 import axios from "axios";
 import { apiurl } from "../constants";
+import { message } from "antd";
 
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
@@ -17,6 +18,7 @@ const StudentCourseRegistration = () => {
   const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
   const [secCourseAss, setSecCourseAss] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [termOptions, setTermOptions] = useState([]);
 
   const [courseRegistrationPendings, setCourseRegistrationPendings] = useState(
     []
@@ -91,10 +93,31 @@ const StudentCourseRegistration = () => {
           `/api/CourseRegistrationPendings`
         );
         setCourseRegistrationPendings(response.data);
+        console.log("Pending,", response.data);
       } catch (error) {
-        console.error("Error fetching applicants:", error);
+        console.error("Error fetching CourseRegistrationPendings:", error);
       }
     };
+    const fetchTerms = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/Terms`);
+        const currentTerms = response.data.filter(
+          (term) => new Date(term.endDate) > Date.now()
+        );
+        const filteCenter = currentTerms
+          .filter((terms) => terms.centerId === "ADHO")
+          .map((term) => {
+            return term;
+          });
+        console.log("current terms", currentTerms);
+        console.log("current ADHO terms", filteCenter);
+        setTermOptions(filteCenter);
+      } catch (error) {
+        console.error("Error fetching terms:", error);
+      }
+    };
+
+    fetchTerms();
 
     fetchSections();
     fetchSectionStudentEnroll();
@@ -162,10 +185,15 @@ const StudentCourseRegistration = () => {
   };
 
   const handleTransaction = async () => {
-    
     try {
+      if (termOptions.length === 0) {
+        message.error("No active terms available for course assignment.");
+        return;
+      }
       setLoading(true);
-    console.log(loading)
+
+      // Assuming you want the first active term, modify as needed
+      const termId = termOptions[0].termId;
       const currentDate = new Date();
 
       const year = currentDate.getFullYear();
@@ -188,7 +216,7 @@ const StudentCourseRegistration = () => {
               sectionId: course.sectionId,
               submitBy: "AD/C/04/23",
               dateSubmitted: formattedDate,
-              termId: course.termId,
+              termId: termId,
               registered: "Yes",
               dateRegistered: formattedDate,
             };
@@ -207,7 +235,7 @@ const StudentCourseRegistration = () => {
         setSuccess(true);
         setError(null);
 
-        console.log("MY DD",response.data);
+        console.log("MY DD", response.data);
       });
     } catch (error) {
       console.error("Error:", error.message);
@@ -364,7 +392,11 @@ const StudentCourseRegistration = () => {
               <div>
                 {sectionStudEnroll
                   .filter(
-                    (section) => section.sectionId === selectedSection.sectionId
+                    (section) =>
+                      section.sectionId === selectedSection.sectionId &&
+                      !courseRegistrationPendings.some(
+                        (pending) => pending.StudId === section.studId
+                      )
                   )
                   .map((student, index) => (
                     <div
