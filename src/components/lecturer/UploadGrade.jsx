@@ -50,3 +50,93 @@ const UploadGrade = ({ studentRecords, setStudentRecords }) => {
 };
 
 export default UploadGrade;
+
+// const columns = [
+//   {
+//     title: 'S.No',
+//     dataIndex: 'id',
+//     key: 'id',
+//     render: (text, record, index) => index + 1
+//   },
+//   {
+//     title: 'ID No',
+//     dataIndex: 'id',
+//     key: 'id'
+//   },
+//   {
+//     title: 'Full Name',
+//     dataIndex: 'fullName',
+//     key: 'fullName'
+//   },
+//   {
+//     title: '25%',
+//     dataIndex: 'score1',
+//     key: 'score1'
+//   },
+//   {
+//     title: '15%',
+//     dataIndex: 'score2',
+//     key: 'score2'
+//   },
+//   {
+//     title: '10%',
+//     dataIndex: 'score3',
+//     key: 'score3'
+//   },
+//   {
+//     title: '50%',
+//     dataIndex: 'score4',
+//     key: 'score4'
+//   },
+//   {
+//     title: 'Total (100%)',
+//     key: 'total',
+//     render: (text, record) => {
+//       const total = record.score1 + record.score2 + record.score3 + record.score4;
+//       return <span>{total}</span>;
+//     }
+//   },
+//   {
+//     title: 'Grade',
+//     key: 'grade',
+//     render: (text, record) => {
+//       const total = record.score1 + record.score2 + record.score3 + record.score4;
+//       if (total === null) return '';
+//       if (total >= 90) return 'A';
+//       if (total >= 80) return 'B';
+//       if (total >= 70) return 'C';
+//       if (total >= 60) return 'D';
+//       return 'F';
+//     }
+//   },
+//   {
+//     title: 'NG',
+//     key: 'ng',
+//     render: (text, record) => {
+//       const total = record.score1 + record.score2 + record.score3 + record.score4;
+//       if (total === null) return 'NG';
+//       if (total < 40) return 'NG';
+//       return '';
+//     }
+//   },
+//   {
+//     title: 'IA',
+//     key: 'ia',
+//     render: (text, record) => {
+//       const total = record.score1 + record.score2 + record.score3 + record.score4;
+//       if (total === null) return 'IA';
+//       if (total < 40) return '';
+//       return 'IA';
+//     }
+//   },
+//   {
+//     title: 'F',
+//     key: 'f',
+//     render: (text, record) => {
+//       const total = record.score1 + record.score2 + record.score3 + record.score4;
+//       if (total === null) return 'F';
+//       if (total < 40) return 'F';
+//       return '';
+//     }
+//   }
+// ];
