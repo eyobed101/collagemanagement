@@ -56,6 +56,7 @@ const AddDropManagement = () => {
   };
   const handleAddedCourseSelection = (course) => {
     // const isSelected = borrowingCourses.some((selectedCourse) => selectedCourse.courseNo === course.courseNo);
+    console.log("addd", course);
     setSectionAddCourseAss((prevCourses) =>
       prevCourses.map((selectedCourse) =>
         selectedCourse.courseNo === course.courseNo
@@ -70,18 +71,18 @@ const AddDropManagement = () => {
   };
 
   const handleAddDropFunction = () => {
-    setNewCourceList((prev) => [
-      ...prev,
-      ...sectionCourseAss
-        .filter((sec) => sec.sectionId === selectedSection.sectionId)
-        .filter((sec2) => sec2.isSelected === false)
-        .map((course) => course),
-    ]);
+    // setNewCourceList((prev) => [
+    //   ...prev,
+    //   ...sectionCourseAss
+    //     .filter((sec) => sec.sectionId === selectedSection.sectionId)
+    //     .filter((sec2) => sec2.isSelected === false)
+    //     .map((course) => course),
+    // ]);
 
     setNewCourceList((prev) => [
       ...prev,
       ...sectionAddCourseAss
-        .filter((sec) => sec.sectionId === selectedSection.sectionId)
+        .filter((sec) => sec.sectionId === selectedOffSection.sectionId)
         .filter((sec2) => sec2.isSelected)
         .map((course) => course),
     ]);
@@ -131,22 +132,39 @@ const AddDropManagement = () => {
 
         formData.push(data);
       });
-      console.log(formData);
+      console.log("dropped", dropped);
 
       const endpoint = `/api/CourseRegistrationPendings`;
       const add_and_drop_endpoint = `/api/AddDropCourses`;
       const drop_endpoint = `/api/CourseRegistrationPendings`;
+
+      for (const item of dropped) {
+        const drop_response = await axiosInstance.delete(drop_endpoint, {
+          data: item, // Send the current item as data
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("Response data:", drop_response.data);
+
+      }
+
+      console.log("new course fromdata to be added in ", formData)
+
 
       const response = await axiosInstance.post(endpoint, formData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      const drop_response = await axiosInstance.delete(drop_endpoint, dropped, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+
+      for (const item of dropped) {
+        formData.push(item)
+      }
+
+
+      console.log("fromdata to be added in add&drop", formData)
+
       const add_and_drop_response = await axiosInstance.post(
         add_and_drop_endpoint,
         formData,
@@ -200,9 +218,7 @@ const AddDropManagement = () => {
         console.log(sectionStudEnrollResponse.data);
         // #######################################################
 
-        const fetchSecCourses = await axiosInstance.get(
-          `/api/SecCourseAssgts`
-        );
+        const fetchSecCourses = await axiosInstance.get(`/api/SecCourseAssgts`);
         setSectionCourseAss(
           fetchSecCourses.data.map((course) => {
             return {
@@ -211,7 +227,14 @@ const AddDropManagement = () => {
             };
           })
         );
-        setSectionAddCourseAss(fetchSecCourses.data);
+        setSectionAddCourseAss(
+          fetchSecCourses.data.map((course) => {
+            return {
+              ...course,
+              isSelected: false,
+            };
+          })
+        );
         // #######################################################
 
         const fetchStudents = await axiosInstance.get(`/api/Applicants`);
@@ -561,7 +584,8 @@ const AddDropManagement = () => {
               offSections
                 .filter(
                   (section) => section.dcode === selectedOffDepartment.did
-                ).filter((secn)=> secn.sectionId !== selectedStudent.sectionId)
+                )
+                .filter((secn) => secn.sectionId !== selectedStudent.sectionId)
                 .map((section) => (
                   <option
                     key={section.sectionId}

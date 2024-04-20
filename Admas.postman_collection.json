@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "458b041b-d78e-460d-ac3d-76018d281d12",
+		"name": "Admas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25531493",
+		"_collection_link": "https://lively-firefly-405954.postman.co/workspace/New-Team-Workspace~21807980-9858-4bef-a060-66bbfb0c0dff/collection/25531493-458b041b-d78e-460d-ac3d-76018d281d12?action=share&source=collection_link&creator=25531493"
+	},
+	"item": [
+		{
+			"name": "Section",
+			"item": [
+				{
+					"name": "getSection",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "post Section",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sectionId\": \"ADOL/2Adold/2024/2025\",\r\n    \"sectionName\": \"2Adold\",\r\n    \"acadYear\": \"2024/2025\",\r\n    \"dateCreated\": \"2024-03-18\",\r\n    \"dcode\": 6,\r\n    \"campusId\": \"ADOL\",\r\n    \"program\": \"Degree\",\r\n    \"programType\": \"Regular\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Section",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Section"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Departiment",
+			"item": [
+				{
+					"name": "PostDepartiment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"dcode\": \"1\",\r\n  \"dname\": \"CS\",\r\n  \"depType\": \"Science\",\r\n  \"major\": \"Major\",\r\n  \"createdDate\": \"2024-02-28\"\r\n  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Departments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDepartiment",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Applicant",
+			"item": [
+				{
+					"name": "Student Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"studId\": \"ABC123\",\r\n  \"fname\": \"John\",\r\n  \"mname\": \"Doe\",\r\n  \"lname\": \"Smith\",\r\n  \"dname\": 123,\r\n  \"sex\": \"M\",\r\n  \"doB\": \"2024-02-28\",\r\n  \"placeOfBirth\": \"Cityville\",\r\n  \"nationality\": \"Countryland\",\r\n  \"maritalStatus\": \"Single\",\r\n  \"prevEducation\": \"High School\",\r\n  \"prevInstitution\": \"City High School\",\r\n  \"prevMajorDepartment\": \"Science\",\r\n  \"prevEducCgpa\": 3.8,\r\n  \"serviceyear\": 2,\r\n  \"program\": \"Computer Science\",\r\n  \"programType\": \"Undergraduate\",\r\n  \"centerId\": \"Center123\",\r\n  \"zone\": \"North\",\r\n  \"woreda\": \"Woreda123\",\r\n  \"kebele\": \"Kebele456\",\r\n  \"town\": \"Townville\",\r\n  \"tel\": \"123456789\",\r\n  \"pobox\": \"P.O. Box 789\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"persontoBeContacted\": \"Jane Doe\",\r\n  \"appDate\": \"2024-02-28\",\r\n  \"approved\": \"Yes\",\r\n  \"approvedDate\": \"2024-02-28\",\r\n  \"age\": 25,\r\n  \"ageInyear\": 2,\r\n  \"batch\": \"Batch2024\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Applicants",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Applicants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Student Registration Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"studId\": \"sfsfsf\",\r\n    \"fname\": \"Eyobed\",\r\n    \"mname\": \"Elias\",\r\n    \"lname\": \"Elias\",\r\n    \"dname\": 3,\r\n    \"sex\": \"M\",\r\n    \"sectionId\": \"\",\r\n    \"termId\": \"LTFD/I/2024/2025\",\r\n    \"doB\": \"2014-06-11\",\r\n    \"placeOfBirth\": \"Debre Birhan\",\r\n    \"nationality\": \"American\",\r\n    \"maritalStatus\": \"Married\",\r\n    \"prevEducation\": \"sjhdjfks\",\r\n    \"prevInstitution\": \"jskdlnv\",\r\n    \"prevMajorDepartment\": \"jfksldknv\",\r\n    \"prevEducCgpa\": \"3\",\r\n    \"serviceyear\": \"3\",\r\n    \"program\": \"Diploma\",\r\n    \"programType\": \"Distance\",\r\n    \"centerId\": \"LTFO\",\r\n    \"zone\": \"11 Addis Ababa\",\r\n    \"woreda\": \"\",\r\n    \"kebele\": \"08\",\r\n    \"town\": \"Addis Ababa\",\r\n    \"tel\": \"+251915561790\",\r\n    \"pobox\": \"1000\",\r\n    \"email\": \"eyocjjazz101@gmail.com\",\r\n    \"persontoBeContacted\": \"0293429384\",\r\n    \"appDate\": \"2024-02-28\",\r\n    \"approved\": \"\",\r\n    \"approvedDate\": \"2024-02-28\",\r\n    \"age\": 0,\r\n    \"ageInyear\": 0,\r\n    \"batch\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Applicants?TermID=LTFD/I/2024/2025&SectionId=LTFO/1AcFn2/2024/2025",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Applicants"
+							],
+							"query": [
+								{
+									"key": "TermID",
+									"value": "LTFD/I/2024/2025"
+								},
+								{
+									"key": "SectionId",
+									"value": "LTFO/1AcFn2/2024/2025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get students",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Study Center",
+			"item": [
+				{
+					"name": "getStudyCenter",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Terms",
+			"item": [
+				{
+					"name": "get Terms",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "post Term",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"termId\": \"ADOL/I/2024/2025\",\r\n    \"name\": \"I\",\r\n    \"acadYear\": \"2024/2025\",\r\n    \"startDate\": \"2024-03-17T10:18:55.556Z\",\r\n    \"endDate\": \"2024-06-17T10:18:58.762Z\",\r\n    \"program\": \"Degree\",\r\n    \"programType\": \"Regular\",\r\n    \"centerId\": \"ADOL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Terms/Terms",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Terms",
+								"Terms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Entry Exam",
+			"item": [
+				{
+					"name": "POST Exam",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SectionStudentEnroll",
+			"item": [
+				{
+					"name": "get sectionStudentEnroll",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "get Courses",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "course Lease",
+			"item": [
+				{
+					"name": "get courseLeases",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Post courseLeases",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n    \"courseNo\": \"AcFn 101\",\r\n    \"dname\": 4,\r\n    \"courseType\": \"Supportive\",\r\n    \"hasLabNew\": \"No\",\r\n    \"hasPreReq\": \"No\",\r\n    \"acadYearLevel\": 0,\r\n    \"termLevel\": 0,\r\n    \"courseLeaseId\": 0,\r\n    \"courseNoNavigation\": null,\r\n    \"dnameNavigation\": null\r\n}   \r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/CourseLeases",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"CourseLeases"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SecCourseAssignment",
+			"item": [
+				{
+					"name": "get secCourseAss",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "courseRegistrationPending",
+			"item": [
+				{
+					"name": "get CourseRegistrationPending",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "post CourseRegistrationPendings",
+					"request": {
+						"method": "POST",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add&Drop",
+			"item": [
+				{
+					"name": "get Add and Drop",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "New Request Copy",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "studentStatus",
+			"item": [
+				{
+					"name": "get studentStatus",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "put studentStatus",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "id",
+								"value": "AD/0002/23",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"StudId\": \"ADLT/0001/24\",\r\n    \"CurrentStatus\": \"Graduated\",\r\n    \"PrevStatus\": \"Admitted\",\r\n    \"StatusChangeDate\": \"2024-03-22T20:34:30.186Z\",\r\n    \"ChangeReason\": \"k\",\r\n    \"ReadmissionDate\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/StudentStatus/ADLT%2F0001%2F24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"StudentStatus",
+								"ADLT%2F0001%2F24"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Grades",
+			"item": [
+				{
+					"name": "get Grades",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "get Employee",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Post Employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"empId\": \"AD245953\",\r\n    \"Fname\": \"BoB\",\r\n    \"Mname\": \"Jacj\",\r\n    \"Lname\": \"laa\",\r\n    \"Dname\": 3,\r\n    \"Sex\": \"M\",\r\n    \"doB\": \"2024-02-28\",\r\n    \"PlaceOfBirth\": \"usa\",\r\n    \"Nationality\": \"American\",\r\n    \"title\": \"eyolin\",\r\n    \"MaritalStatus\": \"\",\r\n    \"empType\": \"head\",\r\n    \"empPosition\": \"Campus Registrar Head\",\r\n    \"administrativePosition\": \"pop\",\r\n    \"educLevel\": \"OP\",\r\n    \"qualification\": \"QOI\",\r\n    \"CenterId\": \"ADOL\",\r\n    \"Zone\": \"11 Addis Ababa\",\r\n    \"Woreda\": \"\",\r\n    \"Kebele\": \"\",\r\n    \"Town\": \"Addis Ababa\",\r\n    \"Tel\": \"+251915561790\",\r\n    \"Pobox\": \"\",\r\n    \"Email\": \"eyolinmail@gmail.com\",\r\n    \"PersontoBeContacted\": \"\",\r\n    \"hireDate\": \"2024-02-28\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Employees",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Employees"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"password\",\r\n  \"centerId\": \"ADOL\",\r\n  \"roles\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Authenticate/Register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Authenticate",
+								"Register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"password\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Authenticate/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Authenticate",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Registrar Officer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"password\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Authenticate/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Authenticate",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5169/api/Authenticate/CreateRole",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Authenticate",
+								"CreateRole"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJlZjYwNzA2ZS0wYzM4LTRhOWQtOTE1MC01NDY2OTYxYTkyNGMiLCJlbWFpbCI6ImRpcmliYW1kQGdtYWlsLmNvbSIsIkNhbXB1c0NlbnRlcklkIjoiQURITyIsInJvbGUiOiJSb290QWRtaW4iLCJuYmYiOjE3MTE2MjkyMzQsImV4cCI6MTcxMTYzMTAzNCwiaWF0IjoxNzExNjI5MjM0LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjcwMzIiLCJhdWQiOiJBZG1hcyJ9.ncobpcpgQfpGSkAMc9RebNhYYh4ar2c6st5ohZCZHns",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Eyobed\",\r\n    \"Email\": \"eyocjjazz101@gmail.com\",\r\n    \"Password\": \"12345678\",\r\n    \"CenterId\": \"LTFD\",\r\n    \"roles\": \"CampusAdmin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5169/api/Authenticate/AdminRegister?roles=CampusAdmin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5169",
+							"path": [
+								"api",
+								"Authenticate",
+								"AdminRegister"
+							],
+							"query": [
+								{
+									"key": "roles",
+									"value": "CampusAdmin"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

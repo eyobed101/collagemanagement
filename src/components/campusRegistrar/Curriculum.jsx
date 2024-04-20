@@ -148,10 +148,12 @@ const Curriculum = () => {
         "CourseNo": values.courseNo,
         "ApprovedDate":moment(approvedDate).format('YYYY-MM-DD'), 
         "program": values.program,
-        "EffectiveSdate": moment(startDate).format('YYYY-MM-DD'),
-        "EffectiveEdate": moment(endDate).format('YYYY-MM-DD'),
+
+        "programType": values.programType,
+        "effectiveSdate": moment(startDate).format('YYYY-MM-DD'),
+        "effectiveEdate": moment(endDate).format('YYYY-MM-DD'),
         "campusId": values.campusId ,
-        "courseType": values.courseType
+        "courseType":values.courseType
        };
       console.log("Response iss" , postData)
       const response = await axiosInstance.post(`/api/Curricula`, [postData]);
@@ -192,11 +194,13 @@ setEditingKey(null)
       "courseNo": record.courseNo,
       "dcode": parseInt(record.dcode), 
       "program": record.program,
+      "programType": record.programType,
       "approvedDate":moment(record.approvedDate).format('YYYY-MM-DD'), 
       "effectiveSdate": moment(record.effectiveSdate).format('YYYY-MM-DD'),
       "effectiveEdate": moment(record.effectiveEdate).format('YYYY-MM-DD'),
       "campusId": record.campusId ,
       "courseType": record.courseType     
+
      };
 
      const response = await axiosInstance.delete(`/api/Curricula`, postData);
@@ -274,6 +278,11 @@ setEditingKey(null)
       key: 'campusId',
     },
     {
+      title: 'Course Type',
+      dataIndex: 'courseType',
+      key: 'courseType',
+    },
+    {
       title: 'Action',
       dataIndex: 'action',
       render: (_, record) => {
@@ -321,6 +330,7 @@ setEditingKey(null)
       "effectiveEdate": (endDate?  moment(endDate).format('YYYY-MM-DD') :moment(values.effectiveEdate).format('YYYY-MM-DD')),
       "campusId": values.campusId ,
       "courseType": values.courseType
+
      };
        
      const testDate =moment(values.effectiveSdate).format('YYYY-MM-DD');
@@ -417,6 +427,16 @@ setEditingKey(null)
           <Option value="PHD">PHD</Option>
         </Select>
       </Form.Item>
+      <Form.Item name="programType" label="Program Type " rules={[{ required: true }]}>
+        <Select>
+        <Option value="Regular">Regular</Option>
+        <Option value="Extension">Extension</Option>
+        <Option value="Distance">Distance</Option>
+        {/* <Option value="Extension">Extension</Option> */}
+          {/* <Option value="Degree">Degree</Option> */}
+          
+        </Select>
+      </Form.Item>
       <Form.Item label="Study Center" name="campusId" required>
         <Select key="centerId">
           {studyCenters.map(center => (
@@ -436,6 +456,7 @@ setEditingKey(null)
         </Select>
       </Form.Item>
         </Form>
+
       </Modal>
       <Table dataSource={curriculum} columns={columns}  bordered  loading={loading}
       rowKey={(record) => record.termId}

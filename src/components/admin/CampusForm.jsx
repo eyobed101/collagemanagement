@@ -19,7 +19,7 @@ function CampusForm({ onSubmit }) {
   const [region, setRegion] = useState('');
   const [currentCenterThis, setcurrentCenterThis] = useState('');
   const [centerType, setcenterType] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
@@ -56,7 +56,7 @@ function CampusForm({ onSubmit }) {
       onSubmit(response.data);
     } catch (error) {
       console.error('Error posting data:', error);setSuccess(false);
-      setError(error.message);
+      setError(error.response.data);
       console.error(error);
     } finally {
       setLoading(false);
@@ -191,6 +191,7 @@ function CampusForm({ onSubmit }) {
             Save Center
           </button>
         </div>
+        <div className='flex w-full items-center'>
         {success && (
               <div
                 id="alert-border-3"
@@ -276,6 +277,7 @@ function CampusForm({ onSubmit }) {
                 </button>
               </div>
             )}
+            </div>
       </div>
     </div>
 
