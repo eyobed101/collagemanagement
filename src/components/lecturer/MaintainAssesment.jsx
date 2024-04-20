@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { Select, Button, Table, Input , Form } from 'antd';
+import axiosInstance from "@/configs/axios";
+
 
 const { Option } = Select;
 
@@ -8,7 +10,48 @@ const MaintainAssessment = () => {
   const [course, setCourse] = useState('');
   const [semester, setSemester] = useState('');
   const [studentData, setStudentData] = useState([]);
+  const [assesment, setAssement] = useState([])
   const [editingKey, setEditingKey] = useState('');
+
+  useEffect(() => {
+    const fetchAssesment = async () => {
+     try {
+        const excludedResponse = await axiosInstance.get(
+          `/api/AssessmentWeights`
+        ); // Replace with your course API endpoint
+        setAssement(excludedResponse.data);
+        console.log("assesment", excludedResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+    fetchAssesment();
+  }, []);
+
+  
+  useEffect(() => {
+    const fetchCoursePending = async () => {
+    // 0919767497
+  try {
+        const courseResponse = await axiosInstance.get(
+          `/api/CourseRegistrationPendings`
+        ); // Replace with your course API endpoint
+        setStudentData(courseResponse.data);
+        console.log("course", courseResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchCoursePending();
+  }, []);
+
 
   // Mock student data
   const mockStudentData = [
@@ -152,7 +195,7 @@ const MaintainAssessment = () => {
       </div>
       <div className="list-sub mb-10 ml-[2%] ">
         <div style={{ marginTop: '20px', marginBottom: '16px', flexDirection: 'row', justifyContent: 'flex-start', display: 'flex' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20%' }}>
+          {/* <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20%' }}>
             <label>Academic Year</label>
             <Select
               value={academicYear}
@@ -160,12 +203,11 @@ const MaintainAssessment = () => {
               placeholder="Select Academic Year"
               style={{ marginRight: '8px', width: 350, height: 40 }}
             >
-              {/* Add academic year options */}
               <Option value="2021/22">2021/22</Option>
               <Option value="2022/23">2022/23</Option>
               <Option value="2023/24">2023/24</Option>
             </Select>
-          </div>
+          </div> */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label>Course</label>
             <Select
@@ -175,24 +217,31 @@ const MaintainAssessment = () => {
               style={{ marginRight: '8px', width: 350, height: 40 }}
             >
               {/* Add course options */}
-              <Option value="Section A| Introduction to Computer">Section A| Introduction to Computer</Option>
-              <Option value="Section B| Introduction to Computer">Section B| Introduction to Computer</Option>
-              <Option value="Section C| Introduction to Computer">Section C| Introduction to Computer</Option>
+              <Select key="courseNo">
+              {assesment.map((department) => (
+                <Option key={department.courseNo} value={department.courseNo}>
+                  {department.courseNo}
+                </Option>
+              ))}
+            </Select>
+             
             </Select>
           </div>
         </div>
         <div style={{ marginBottom: '16px', flexDirection: 'row', justifyContent: 'flex-start', flex: 1, display: 'flex' }}>
           <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20%' }}>
-            <label>Semester</label>
+            <label>Term</label>
             <Select
               value={semester}
               onChange={handleSemester}
               placeholder="Select Semester"
               style={{ marginRight: '8px', width: 350, height: 40 }}
             >
-              {/* Add semester options */}
-              <Option value="1">Semester 1</Option>
-              <Option value="2">Semester 2</Option>
+             {assesment.map((department) => (
+                <Option key={department.termID} value={department.termID}>
+                  {department.termID}
+                </Option>
+              ))}
             </Select>
           </div>
           <Button type="primary" onClick={handleShowData} style={{ marginBottom: 16, margingRight: '20%', marginTop: 20, backgroundColor: '#4279A6', justifySelf: 'flex-end', }}>Show Data</Button>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, Input, Button, Row, Col } from 'antd';
+import { Select, Input, Button, Row, Col ,message } from 'antd';
 import axiosInstance from "@/configs/axios";
 
 
@@ -14,6 +14,8 @@ const AssessmentRegistration = () => {
   const [assessmentTitle, setAssessmentTitle] = useState('');
   const [weight, setWeight] = useState('');
   const [section , setSection]= useState([]);
+  const [empId , setempId] = useState('');
+
   
 
  
@@ -37,16 +39,30 @@ const AssessmentRegistration = () => {
   }, []);
 
 
-  const handleSave = () => {
-    // Add your save logic here
-    console.log({
-      academicYear,
-      semester,
-      course,
-      assessmentType,
-      assessmentTitle,
-      weight,
+  const handleSave = async () => {
+
+    const postData ={
+      "courseNo" : course,
+      "termId" : semester,
+      "empId": empId,
+      "assessmentTitle":assessmentTitle,
+       "assessmentWeight": weight,
+    }
+    // Add your save logic here 
+    console.log(postData);
+
+    await axiosInstance.post(`/api/AssessmentWeights`, postData)
+    .then(response => {
+      console.log('Assesment created successfully:', response.data);
+      message.success("Assessment Created Successfully")
+      
+    })
+    .catch(error => {
+      console.error('Error creating Assesment:', error);
+      message.error("Error creating Assesment")
+
     });
+
     // Clear form fields after saving
     setAcademicYear("");
     setSemester("");
@@ -55,6 +71,15 @@ const AssessmentRegistration = () => {
     setAssessmentTitle("");
     setWeight("");
   };
+
+  const handleCourse = async(value) =>{
+    setCourse(value);
+    const selectedItem = section.find(item => item.courseNo === value);
+    setempId(selectedItem.empId);
+    console.log("test" ,selectedItem.empId);
+
+
+  }
 
   return (
     <div className="bg-[#F9FAFB] min-h-[100vh]  ">
@@ -102,7 +127,7 @@ const AssessmentRegistration = () => {
         <label style={{paddingBottom:10 , color:'#333' , fontSize:14}}>Course</label>  
           <Select
             value={course}
-            onChange={(value) => setCourse(value)}
+            onChange={handleCourse}
             placeholder="Course"
             style={{ width: '100%', height: 40 }}
           >
