@@ -31,6 +31,7 @@ const AddCourse = () => {
   const [data , setData] = useState([]);
   const [modalDataState, setModalDataState] = useState([]);
   const [courseNo , setCourseNo] = useState([]);
+  const [program , setProgram] = useState(null);
 
 
 
@@ -140,6 +141,8 @@ const AddCourse = () => {
           .post(`/api/CoursePrerequisites`, postData)
           .then((response) => {
             console.log("POST request successful:", response.data);
+            message.success("The course of the is updated response .");
+
             // Close the modal
             setModalVisible(false);
           })
@@ -182,8 +185,9 @@ const AddCourse = () => {
       console.log("Response iss", postData);
       const response = await axiosInstance.post(`/api/Courses`, postData);
       console.log("POST request successful:", response.data);
+      message.success("The course is updated .");
 
-      // You can handle success, e.g., show a success message or redirect to another page
+
     } catch (error) {
       console.error("POST request failed:", error);
       // Reset form fields after submission
@@ -254,20 +258,12 @@ const AddCourse = () => {
 
     setEditingKey("delete");
 
-    // message.info('delete', )
-    // const postData = {
-    //   "courseNo": record.courseNo,
-    //   "courseNoPre": record.courseNoPre,
-    //   "dname": parseInt(record.dcode),
-    //   "preRequisiteMandatory": record.preRequisiteMandatory,
-    //  };
-    //  console.log('delete', postData)
-    // const response = await axios.delete('https://localhost:7032/api/CoursePrerequisites', postData);
-    // console.log('Delete request successful:', response.data);
-
-    // const newData = modalData.filter((item) => item.key !== record.key);
-    // setModalData(newData);
+  
   };
+
+  const handleProgramChange = (value) =>{
+    setProgram(value);
+  }
 
   const handleDepartmentChange = (value) => {
 
@@ -281,13 +277,19 @@ const AddCourse = () => {
     // Filter modalData based on selected department
     const filteredDatas = data.filter(department => department.did === value);
     const departmentNames = filteredDatas.map(department => department.dname);
-    console.log("test d" , departmentNames)
+    console.log("test d" , value)
 
-    const filteredData =  modalDataState.filter(item => item.dname === value);
+    const filteredData =  modalDataState.filter(item => item.dname === value );
     setModalData(filteredData);
 
-    const filteredCourses = tableData.filter(course => course.dcode === value);
+   if(program){
+    const filteredCourses = tableData.filter(course => course.dcode === value && course.program === program);
     setCourseNo(filteredCourses);
+   }
+
+   
+
+    console.log("test" ,courseNo)
 
 
     secondForm.setFieldsValue({
@@ -298,6 +300,10 @@ const AddCourse = () => {
   useEffect(() => {
     setModalDataState([...modalData]);
   }, [modalData]);
+
+  useEffect(() => {
+    console.log("Updated courseNo:", courseNo);
+  }, [courseNo]);
 
 
 
@@ -443,7 +449,7 @@ const AddCourse = () => {
         </Select>
       </Form.Item>
       <Form.Item name="program" label="Program" rules={[{ required: true }]}>
-        <Select>
+        <Select onChange={handleProgramChange}>
         <Option value="TVET">TVET</Option>
           <Option value="Diploma">Masters</Option>
           <Option value="Degree">Degree</Option>
@@ -491,47 +497,55 @@ const AddCourse = () => {
         />
         <div style={{ marginTop: "10%" }} />
         <Form form={secondForm} onFinish={onFinishType}>
-          {/* Second form items for CoursePrerequisites */}
-          <Form.Item
-            name="courseNo"
-            label="Course No"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="courseNoPre" label="Course No Pre" rules={[{ required: true }]}>
-          <Select key="courseNoPre">
-           {courseNo.map(course => (
-              <Option key={course.id} value={course.id}>
-                  {course.courseName}
-             </Option>
-            ))}
-          </Select>
-          </Form.Item>
-          <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-          <Select key="dcode" >
-          {data.map(department => (
-            <Option key={department.did} value={department.did}>
-              {department.dname}
-            </Option>
-          ))}
-        </Select>  
+  {/* Second form items for CoursePrerequisites */}
+  <Form.Item
+    name="courseNo"
+    label="Course No"
+    rules={[{ required: true }]}
+  >
+    <Input />
+  </Form.Item>
+  
+  {/* Conditionally render courseNoPre field */}
+  {courseNo.length > 0 && (
+ <Form.Item name="courseNoPre" label="Course No Pre" rules={[{ required: true }]}>
+ <Select key="courseNoPre">
+   {Array.from(new Set(courseNo.map(course => course.courseNo))).map(courseNoValue => (
+     <Option key={courseNoValue} value={courseNoValue}>
+       {courseNo.find(course => course.courseNo === courseNoValue).courseName}
+     </Option>
+   ))}
+ </Select>
+</Form.Item>
 
-          </Form.Item>
-          <Form.Item
-            name="preRequisiteMandatory"
-            label="Prerequisite"
-            rules={[{ required: true }]}
-          >
-            <Select>
-              <Option value="Optional">Optional</Option>
-              <Option value="Mandatory">Mandatory</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item name="checkbox" valuePropName="checked">
-            <Checkbox>Post values</Checkbox>
-          </Form.Item>
-        </Form>
+  )}
+
+  <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
+    <Select key="dcode">
+      {data.map(department => (
+        <Option key={department.did} value={department.did}>
+          {department.dname}
+        </Option>
+      ))}
+    </Select>
+  </Form.Item>
+
+  <Form.Item
+    name="preRequisiteMandatory"
+    label="Prerequisite"
+    rules={[{ required: true }]}
+  >
+    <Select>
+      <Option value="Optional">Optional</Option>
+      <Option value="Mandatory">Mandatory</Option>
+    </Select>
+  </Form.Item>
+
+  <Form.Item name="checkbox" valuePropName="checked">
+    <Checkbox>Post values</Checkbox>
+  </Form.Item>
+</Form>
+
       </Modal>
 
 
