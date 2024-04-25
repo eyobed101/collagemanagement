@@ -1,7 +1,6 @@
-import React, { useState , useEffect } from 'react';
-import { Select, Button, Table, Input , Form } from 'antd';
-import axiosInstance from "@/configs/axios";
-
+import React, { useState, useEffect } from 'react';
+import { Select, Button, Table, Input, Modal, Form } from 'antd';
+import axiosInstance from '@/configs/axios';
 
 const { Option } = Select;
 
@@ -10,62 +9,61 @@ const MaintainAssessment = () => {
   const [course, setCourse] = useState('');
   const [semester, setSemester] = useState('');
   const [studentData, setStudentData] = useState([]);
-  const [assesment, setAssement] = useState([])
+  const [assessment, setAssessment] = useState([]);
   const [editingKey, setEditingKey] = useState('');
+  const [editedAssessment, setEditedAssessment] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [updateData, setUpdateData] = useState([])
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    const fetchAssesment = async () => {
-     try {
-        const excludedResponse = await axiosInstance.get(
-          `/api/AssessmentWeights`
-        ); // Replace with your course API endpoint
-        setAssement(excludedResponse.data);
-        console.log("assesment", excludedResponse.data);
-       
+    const fetchAssessment = async () => {
+      try {
+        const response = await axiosInstance.get('/api/StudentMarks');
+        // setAssessment(response.data);
+        console.log("assessment", response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        // setLoading(false);
+        console.error('Error fetching assessment data:', error);
       }
     };
-    fetchAssesment();
+
+    fetchAssessment();
   }, []);
 
-  
+  useEffect(() => {
+    const fetchAssessment = async () => {
+      try {
+        const response = await axiosInstance.get('/api/AssessmentWeights');
+        setAssessment(response.data);
+        console.log("assessment", response.data);
+      } catch (error) {
+        console.error('Error fetching assessment data:', error);
+      }
+    };
+
+    fetchAssessment();
+  }, []);
+
   useEffect(() => {
     const fetchCoursePending = async () => {
-    // 0919767497
-  try {
-        const courseResponse = await axiosInstance.get(
-          `/api/CourseRegistrationPendings`
-        ); // Replace with your course API endpoint
-        setStudentData(courseResponse.data);
-        console.log("course", courseResponse.data);
-       
+      try {
+        const response = await axiosInstance.get('/api/CourseRegistrationPendings');
+        setStudentData(response.data);
+        console.log("studentData", response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        // setLoading(false);
+        console.error('Error fetching student data:', error);
       }
     };
 
     fetchCoursePending();
   }, []);
 
-
-  // Mock student data
-  const mockStudentData = [
-    { key: '1', id: 'UGR/1885/21', fullName: 'John Doe', midExam: 19, assessment: 12, presentation: 8, finalExam: 37, acadamic: '2021/22', course: 'Section A| Introduction to Computer' },
-    { key: '2', id: 'UGR/1897/21', fullName: 'Jane Smith', midExam: 20, assessment: 11, presentation: 7, finalExam: 24, acadamic: '2021/22', course: 'Section B| Introduction to Computer' },
-    // Add more student data here
-  ];
-
   const handleShowData = () => {
     // Filter student data based on selected academic year, course, and semester
     // Here, you should fetch the data from your API based on the selected filters
     // For demo purposes, filtering the mock data
-    const filteredData = mockStudentData.filter(student => {
-      return student.acadamic === academicYear && student.course === course;
+    const filteredData = studentData.filter(student => {
+      return student.academic === academicYear && student.course === course;
     });
     setStudentData(filteredData);
   };
@@ -86,22 +84,83 @@ const MaintainAssessment = () => {
 
   const edit = record => {
     setEditingKey(record.key);
+    setEditedAssessment(record);
+    setModalVisible(true);
+    form.setFieldsValue(record);
   };
 
   const cancel = () => {
     setEditingKey('');
+    setModalVisible(false);
   };
 
-  const save = key => {
-    const newData = [...studentData];
-    const index = newData.findIndex(item => key === item.key);
+  const save = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    const assessmentDate = `${year}-${month}-${day}`;
 
-    if (index > -1) {
-      const item = newData[index];
-      setStudentData(newData);
-      setEditingKey('');
-    }
+    form
+      .validateFields()
+      .then(values => {
+        const newData = [...studentData];
+        const index = newData.findIndex(item => editedAssessment.key === item.key);
+
+        if (index > -1) {
+          const updatedItem = newData[index];
+          newData.splice(index, 1, { ...updatedItem, ...values });
+          setStudentData(newData);
+          setEditingKey('');
+          setModalVisible(false);
+          newData[index].total = calculateTotal(updatedItem, values);
+
+        }
+        
+        console.log("new" , newData)
+        const assessments = [];
+        newData.forEach(data => {
+          const { StudId, CourseNo, TermId, SubmitBy, ...assessmentDetails } = data;
+          Object.entries(assessmentDetails).forEach(([assessmentName, assessmentWeight]) => {
+            // Skip keys that are not assessment names
+            if (!["CourseNo", "DateRegistered", "DateSubmitted", "KeyNames", "Registered", "Section", "SectionId", "Stud", "SubmitBy", "SubmitByNavigation", "Term", "TermId", "total" ,"CourseNoNavigation"].includes(assessmentName)) {
+              assessments.push({
+                studId: StudId,
+                courseNo: CourseNo,
+                termId: TermId,
+                instID : SubmitBy,
+                assessmentDate : assessmentDate,
+                assessmentName: assessmentName,
+                assessmentWeight: parseFloat(assessmentWeight)
+              });
+            }
+          });
+        });               
+        console.log("hawaii", assessments);
+        setUpdateData([...updateData , assessments]);
+
+      })
+      .catch(errorInfo => {
+        console.log('Save failed:', errorInfo);
+      });
   };
+
+  const calculateTotal = editedValues => {
+    let total = 0;
+    assessment.forEach(assessment => {
+      const score = editedValues[assessment.assessmentTitle.toLowerCase().replace(/\s+/g, '')] || 0;
+      total += parseFloat(score);
+    });
+    return total.toFixed(2);
+  };
+
+  const assessmentColumns = assessment.map(assessment => ({
+    title: `${assessment.assessmentTitle} (${assessment.assessWeight}%)`,
+    dataIndex: assessment.assessmentTitle.toLowerCase().replace(/\s+/g, ''),
+    key: assessment.assessmentTitle.toLowerCase().replace(/\s+/g, ''),
+    editable: true,
+  }));
 
   const columns = [
     {
@@ -112,43 +171,21 @@ const MaintainAssessment = () => {
     },
     {
       title: 'ID No',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'StudId',
+      key: 'StudId',
     },
-    {
-      title: 'Full Name',
-      dataIndex: 'fullName',
-      key: 'fullName',
-    },
-    {
-      title: 'Mid Exam',
-      dataIndex: 'midExam',
-      key: 'midExam',
-      editable: true,
-    },
-    {
-      title: 'Assessment',
-      dataIndex: 'assessment',
-      key: 'assessment',
-      editable: true,
-    },
-    {
-      title: 'Presentation',
-      dataIndex: 'presentation',
-      key: 'presentation',
-      editable: true,
-    },
-    {
-      title: 'Final Exam',
-      dataIndex: 'finalExam',
-      key: 'finalExam',
-      editable: true,
-    },
+    ...assessmentColumns,
     {
       title: 'Total',
       key: 'total',
-      render: (text, record) =>
-        record.midExam + record.assessment + record.presentation + record.finalExam,
+      render: (text, record) => {
+        let total = 0;
+        // assessment.forEach(assessment => {
+        //   const score = record[assessment.assessmentTitle.toLowerCase().replace(/\s+/g, '')] || 0;
+        //   total += ( assessment.assessWeight) ;
+        // });
+        return calculateTotal(record);
+      },
     },
     {
       title: 'Action',
@@ -157,11 +194,7 @@ const MaintainAssessment = () => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <a
-              href="#"
-              onClick={() => save(record.key)}
-              style={{ marginRight: 8 }}
-            >
+            <a href="#" onClick={save} style={{ marginRight: 8 }}>
               Save
             </a>
             <a onClick={cancel}>Cancel</a>
@@ -175,17 +208,6 @@ const MaintainAssessment = () => {
     },
   ];
 
-  const mergedColumns = columns.map(col => ({
-    ...col,
-    onCell: record => ({
-      record,
-      editable: col.editable,
-      dataIndex: col.dataIndex,
-      title: col.title,
-      handleSave: save,
-    }),
-  }));
-
   return (
     <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md ">
       <div className="list-header mb-2 ml-100">
@@ -195,19 +217,6 @@ const MaintainAssessment = () => {
       </div>
       <div className="list-sub mb-10 ml-[2%] ">
         <div style={{ marginTop: '20px', marginBottom: '16px', flexDirection: 'row', justifyContent: 'flex-start', display: 'flex' }}>
-          {/* <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20%' }}>
-            <label>Academic Year</label>
-            <Select
-              value={academicYear}
-              onChange={handleAcademic}
-              placeholder="Select Academic Year"
-              style={{ marginRight: '8px', width: 350, height: 40 }}
-            >
-              <Option value="2021/22">2021/22</Option>
-              <Option value="2022/23">2022/23</Option>
-              <Option value="2023/24">2023/24</Option>
-            </Select>
-          </div> */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label>Course</label>
             <Select
@@ -216,116 +225,38 @@ const MaintainAssessment = () => {
               placeholder="Select Course"
               style={{ marginRight: '8px', width: 350, height: 40 }}
             >
-              {/* Add course options */}
-              <Select key="courseNo">
-              {assesment.map((department) => (
+              {assessment.map((department) => (
                 <Option key={department.courseNo} value={department.courseNo}>
                   {department.courseNo}
                 </Option>
               ))}
             </Select>
-             
-            </Select>
           </div>
         </div>
-        <div style={{ marginBottom: '16px', flexDirection: 'row', justifyContent: 'flex-start', flex: 1, display: 'flex' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20%' }}>
-            <label>Term</label>
-            <Select
-              value={semester}
-              onChange={handleSemester}
-              placeholder="Select Semester"
-              style={{ marginRight: '8px', width: 350, height: 40 }}
-            >
-             {assesment.map((department) => (
-                <Option key={department.termID} value={department.termID}>
-                  {department.termID}
-                </Option>
-              ))}
-            </Select>
-          </div>
-          <Button type="primary" onClick={handleShowData} style={{ marginBottom: 16, margingRight: '20%', marginTop: 20, backgroundColor: '#4279A6', justifySelf: 'flex-end', }}>Show Data</Button>
-        </div>
+        <Button type="primary" onClick={handleShowData} style={{ marginBottom: 16, margingRight: '20%', marginTop: 20, backgroundColor: '#4279A6', justifySelf: 'flex-end' }}>Show Data</Button>
         <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
           dataSource={studentData}
-          columns={mergedColumns}
+          columns={columns}
           bordered
+          rowClassName="editable-row"
         />
+        <Modal
+          title="Edit Assessment"
+          visible={modalVisible}
+          onOk={save}
+          onCancel={cancel}
+        >
+          <Form form={form} layout="vertical">
+            {assessment.map(item => (
+              <Form.Item key={item.key} label={`${item.assessmentTitle} (${item.assessWeight}%)`} name={item.assessmentTitle.toLowerCase().replace(/\s+/g, '')}>
+                <Input />
+              </Form.Item>
+            ))}
+          </Form>
+        </Modal>
       </div>
     </div>
   );
-};
-
-const EditableCell = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef();
-  const form = useForm();
-  const { getFieldDecorator } = form;
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current.focus();
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({
-      [dataIndex]: record[dataIndex],
-    });
-  };
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
 };
 
 export default MaintainAssessment;

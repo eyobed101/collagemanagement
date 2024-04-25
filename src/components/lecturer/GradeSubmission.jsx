@@ -275,8 +275,8 @@ const assessmentDate = `${year}-${month}-${day}`;
       const firstItem = filteredData[0];
 
      
-      console.log("sort is is ", transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId)[0]);
-      for(let i=1 ; i<transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId).length ; i++ ){
+      console.log("sort is is ", transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId));
+      for(let i=0 ; i<transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId).length ; i++ ){
       await axiosInstance.post(`/api/StudentMarks`,transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId)[i])
       .then(response => {
         console.log('Assesment created successfully:', response.data);
@@ -327,6 +327,7 @@ const assessmentDate = `${year}-${month}-${day}`;
   const handleCourse = async(value) =>{
     setCourse(value);
     const selectedItem = data.find(item => item.courseNo === value);
+    console.log("test ourse" ,value);
     setempId(selectedItem.empId);
     console.log("test" ,selectedItem.empId);
 
@@ -468,90 +469,6 @@ const assessmentDate = `${year}-${month}-${day}`;
   
     return <Table columns={columns} dataSource={tableData} />;
   };
-//   const MyTableComponent = ({ data }) => {
-//     // Separate columns and data
-//     const [columns, ...dataSource] = data;
-  
-//     // Check if the "total" value exists in the column data
-//     const hasTotal = columns.includes('total');
-//     console.log('Has Total:', hasTotal);
-
-//     let antdColumns = columns.map((title, index) => {
-//       let columnDefinition = {
-//         title,
-//         dataIndex: index.toString(), // Use index as the dataIndex
-//         key: index.toString(),
-//       };
-
-//       return columnDefinition;
-//     });
-  
-//     // Check if the "total" value exists in the column data
-//     if (hasTotal) {
-//         // Add new columns for Grade, NG, IA, and F
-//         const newColumns = [
-//           {
-//             title: 'Grade',
-//             key: 'grade',
-//             render: (text, record) => {
-//               const total = record[columns.indexOf('total')];
-//               if (total === null) return '';
-//               if (total >= 85) return 'A';
-//               if (total >= 80) return 'A-';
-//               if (total >= 75) return 'B+';
-//               if (total >= 70) return 'B';
-//               if (total >= 60) return 'C+';
-//               if (total >= 50) return 'C';
-//               if (total >= 45) return 'D';
-//               return 'F';
-//             }
-//           },
-//           {
-//             title: 'NG',
-//             key: 'ng',
-//             render: (text, record) => {
-//               const total = record[columns.indexOf('total')];
-//               if (total === null || total < 40) return 'NG';
-//               return '';
-//             }
-//           },
-//           {
-//             title: 'IA',
-//             key: 'ia',
-//             render: (text, record) => {
-//               const total = record[columns.indexOf('total')];
-//               if (total === null || total < 40) return 'IA';
-//               return '';
-//             }
-//           },
-//           {
-//             title: 'F',
-//             key: 'f',
-//             render: (text, record) => {
-//               const total = record[columns.indexOf('total')];
-//               if (total === null || total < 40) return 'F';
-//               return '';
-//             }
-//           }
-//         ];
-    
-//         // Include new columns in the column definitions
-//         antdColumns = [...antdColumns, ...newColumns];
-//     }
-    
-   
-  
-//     // Transform data for Antd Table
-//     const antdDataSource = dataSource.map((rowData, rowIndex) => {
-//       const rowDataObject = {};
-//       rowData.forEach((cellData, cellIndex) => {
-//         rowDataObject[cellIndex.toString()] = cellData; // Use index as the key
-//       });
-//       return { key: rowIndex.toString(), ...rowDataObject };
-//     });
-  
-//     return <Table columns={antdColumns} dataSource={antdDataSource} />;
-// };
 
 
 function generateTable(data, ref) {
@@ -705,7 +622,7 @@ useEffect(() => {
      
 
       {/* Render the table using the ref */}
-      <div ref={tableRef}>
+      <div  style={{display:'none'}} ref={tableRef}>
       <table>
         <thead>
           <tr>
