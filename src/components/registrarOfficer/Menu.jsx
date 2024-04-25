@@ -18,6 +18,7 @@ import StudentCourseExemption from "./studentExemption";
 import StudentStatusManagement from "./manageStudent";
 import StudentCourses from "./CourseTaken"
 import MainMenu from "./menuTest";
+import StudentList from "./studentList";
 
 import {
   Configurator,
@@ -60,6 +61,7 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isExitExam, setIsExitExam] = useState(false);
   const [isRemedial, setIsRemedial] = useState(false);
   const [isCourseTaken, setIsCourseTaken] = useState(false);
+  const [isStudentList, setIsStudentList] = useState(false);
 
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -129,6 +131,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(true)
+    setIsStudentList(false)
    
     setIsStudentStatus(false)
   }
@@ -145,6 +148,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(false)
+    setIsStudentList(false)
+
 
 
   };
@@ -156,6 +161,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false)
     setIsCourseExemption(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+
 
 
 
@@ -172,6 +179,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(true)
     setIsCourseExemption(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -186,6 +194,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false);
     setIsCourseExemption(false);
     setIsStudentStatus(false)
+    setIsStudentList(false)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -193,15 +202,16 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseTaken(false)
 
   };
-  const handleGradeEntry = () => {
+  const handleStudentList = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
     setIsAddDrop(false);
-    setIsGradeEntry(true);
+    setIsGradeEntry(false);
     setIsCourseLease(false);
     setIsCourseExemption(false)
     setIsStudentStatus(false)
 
+    setIsStudentList(true)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -221,6 +231,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(false)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+
   }
 
   const handleExitExam =() =>{
@@ -235,6 +247,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(false)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+
   }
   const handleCourseExemption = () => {
     setIsAddStudent(false);
@@ -249,6 +263,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseTaken(false)
     setIsStudentStatus(false)
 
+    setIsStudentList(false)
 
 
   };
@@ -260,6 +275,7 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false);
     setIsCourseExemption(false)
     setIsStudentStatus(true)
+    setIsStudentList(false)
 
 
     setIsEntryExam(false)
@@ -280,6 +296,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(true)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+
 
   }
 
@@ -368,13 +386,13 @@ const RegistrarOfficerSiderGenerator = () => {
 
           
         },
-        // {
-        //   icon: <StarOutlineSharp {...icon} />,
-        //   name: "Students Status",
-        //   onClick: handleStudentStatus,
+        {
+          icon: <StarOutlineSharp {...icon} />,
+          name: "Applicant List",
+          onClick: handleStudentList,
 
           
-        // },
+        },
         // {
         //   icon: <FaGraduationCap {...icon} />,
         //   name: "Grade Entry",
@@ -425,6 +443,7 @@ const RegistrarOfficerSiderGenerator = () => {
           {isExitExam ? <ExitExam /> : null}
           {isRemedial ? <Remedial /> : null}
           {isCourseTaken ?<StudentCourses /> : null}
+          {isStudentList ?<StudentList /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />

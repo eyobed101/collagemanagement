@@ -27,6 +27,8 @@ export function AddStudent() {
   const [coursePreferences, setCoursePreferences] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
   const [academicTranscripts, setAcademicTranscripts] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocId, setSelectedDocId] = useState([]);
 
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [identificationCopy, setIdentificationCopy] = useState(null);
@@ -98,6 +100,14 @@ export function AddStudent() {
         console.error("Error fetching departments:", error);
       }
     };
+    const fetchDocuments = async () => {
+      try {
+        const response = await axiosInstance.get("/api/AppDocuments");
+        setDocuments(response.data);
+      } catch (error) {
+        console.error("Failed to fetch documents:", error);
+      }
+    };
     const fetchSections = async () => {
       try {
         const response = await axiosInstance.get(`/api/Section`);
@@ -108,8 +118,6 @@ export function AddStudent() {
         console.error("Error fetching sections:", error);
       }
     };
-
-    
 
     const fetchTerms = async () => {
       try {
@@ -125,6 +133,7 @@ export function AddStudent() {
     fetchDepartments();
     fetchSections();
     fetchTerms();
+    fetchDocuments();
   }, []);
 
   const handleInputChange = (e) => {
@@ -188,6 +197,9 @@ export function AddStudent() {
     setSpining(true);
     setLoading1(true);
 
+    const docIdsQueryString = selectedDocId.map(id => `DocId=${id}`).join('&');
+
+    console.log("DOCCCCCCC", docIdsQueryString)
     let getStudentID = generateStudentId();
 
     const data = {
@@ -234,14 +246,21 @@ export function AddStudent() {
     const apiUrl = `/api/Applicants`;
 
     try {
+      const docIdsParams = selectedDocId.reduce((acc, id) => {
+        acc[`DocId`] = acc[`DocId`] || [];
+        acc[`DocId`].push(id);
+        return acc;
+      }, {});
+
       const response = await axiosInstance.post(apiUrl, restFormData, {
         params: {
+          ...docIdsParams,
           SectionID: SectionId,
           TermId: TermId,
         },
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       setSuccess(true);
@@ -269,14 +288,16 @@ export function AddStudent() {
 
   const [currentTab, setCurrentTab] = useState(0);
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setCheckedItems((prevCheckedItems) => ({
-      ...prevCheckedItems,
-      [name]: checked,
-    }));
+  const handleCheckboxChange = (event) => {
+    const docId = event.target.value;
+    setSelectedDocId(prevSelectedDocIds =>
+      event.target.checked
+        ? [...prevSelectedDocIds, docId]
+        : prevSelectedDocIds.filter(id => id !== docId)
+    );
   };
 
+  
   const handlePassportPhotoChange = (event) => {
     setPassportPhoto(event.target.files[0]);
   };
@@ -736,93 +757,32 @@ export function AddStudent() {
                             class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                           />
                         </div>
-
-                        <div className="col-span-6 p-4  shadow-md rounded-md">
-                          <label className="block text-lg font-medium text-gray-700 mb-5">
-                            Submitted Documents
-                          </label>
-                          <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
-                              <input
-                                type="checkbox"
-                                id="grade_8_ministry"
-                                name="grade_8_ministry"
-                                onChange={handleCheckboxChange}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor="grade_8_ministry"
-                                className="ml-2 block text-sm text-gray-700"
-                              >
-                                8th Grade Ministry
-                              </label>
-                            </div>
-
-                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
-                              <input
-                                type="checkbox"
-                                id="grades_9_10_transcript"
-                                name="grades_9_10_transcript"
-                                onChange={handleCheckboxChange}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor="grades_9_10_transcript"
-                                className="ml-2 block text-sm text-gray-700"
-                              >
-                                9th and 10th Grade Transcript
-                              </label>
-                            </div>
-
-                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
-                              <input
-                                type="checkbox"
-                                id="grade_10_national_exam"
-                                name="grade_10_national_exam"
-                                onChange={handleCheckboxChange}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor="grade_10_national_exam"
-                                className="ml-2 block text-sm text-gray-700"
-                              >
-                                10th EGSECE
-                              </label>
-                            </div>
-
-                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
-                              <input
-                                type="checkbox"
-                                id="grades_11_12_transcript"
-                                name="grades_11_12_transcript"
-                                onChange={handleCheckboxChange}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor="grades_11_12_transcript"
-                                className="ml-2 block text-sm text-gray-700"
-                              >
-                                11th and 12th Grade Transcript
-                              </label>
-                            </div>
-
-                            <div className="flex items-start border-2 border-[#676767] px-5 py-4 rounded-md shadow-sm">
-                              <input
-                                type="checkbox"
-                                id="grade_12_national_exam"
-                                name="grade_12_national_exam"
-                                onChange={handleCheckboxChange}
-                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                              />
-                              <label
-                                htmlFor="grade_12_national_exam"
-                                className="ml-2 block text-sm text-gray-700"
-                              >
-                                12th NEAEA
-                              </label>
-                            </div>
-                          </div>
-                        </div>
+                        <div className="col-span-6 p-4 shadow-md rounded-md">
+      <label className="block text-lg font-medium text-gray-700 mb-5">
+        Submitted Documents
+      </label>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {documents.map((doc) => (
+          <div key={doc.docId} className="flex items-start">
+            <input
+              type="checkbox"
+              id={`doc_${doc.docId}`}
+              name={`doc_${doc.docId}`}
+              value={doc.docId}
+              onChange={handleCheckboxChange}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
+            <label
+              htmlFor={`doc_${doc.docId}`}
+              className="ml-2 block text-sm text-gray-700"
+            >
+              {doc.documentName}
+            </label>
+          </div>
+        ))}
+      </div>
+      
+    </div>
                       </div>
                     </TabPanel>
                     <TabPanel>
@@ -846,7 +806,7 @@ export function AddStudent() {
                             <option value="">Select Program</option>
 
                             <option value="Degree">Degree</option>
-                            <option value="Diploma">Diploma</option>
+                            <option value="TVET">TVET</option>
                             <option value="Masters">Masters</option>
                           </select>
                         </div>
@@ -872,7 +832,7 @@ export function AddStudent() {
                             <option value="Extension">Extension</option>
                           </select>
                         </div>
-                        
+
                         <div className="col-span-6 sm:col-span-3">
                           <label
                             htmlFor="department"

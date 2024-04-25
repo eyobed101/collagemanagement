@@ -29,9 +29,7 @@ export function SignIn() {
 
 
   const handleForgotPassword = () => {
-    // Implement logic to handle forgot password functionality, e.g., navigate to a forgot password page
-    // You can use React Router to navigate to the forgot password page
-    navigate('./forgot-password');
+    navigate('/forgot-password');
   };
 
   const onFinish = (e) => {
