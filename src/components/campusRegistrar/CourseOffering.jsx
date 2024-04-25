@@ -41,7 +41,6 @@ const CourseOffering = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     const fetchTerms = async () => {
       try {
         const response = await axiosInstance.get(`/api/Terms`);
@@ -59,7 +58,9 @@ const CourseOffering = () => {
     fetchData();
   }, []);
 
+
   const handleSectionChange = (value) => {
+
     setSelectedSection(JSON.parse(value));
     setOtherTableData([]);
   };
@@ -121,6 +122,8 @@ const CourseOffering = () => {
           );
 
           console.log("Post request successful:", response.data);
+          message.success("post  course assignment.");
+
         } catch (error) {
           console.error("Error assigning courses:", error);
           if (
@@ -230,6 +233,7 @@ const CourseOffering = () => {
         Courses{" "}
       </p>
       <div className="bg-white p-5 rounded-md shadow-md">
+
         <Table
           dataSource={mergedCurriculum.filter((course) => { 
             return (

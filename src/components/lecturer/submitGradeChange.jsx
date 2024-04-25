@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Select, InputNumber, Input, Button, Table, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Select, InputNumber, Input, Button, Table, Row, Col , message } from 'antd';
+import axiosInstance from '@/configs/axios';
 
 const { Option } = Select;
 
@@ -14,6 +15,66 @@ const GradeChangeSubmission = () => {
   const [newGrade, setNewGrade] = useState('');
   const [assessmentData, setAssessmentData] = useState([]);
   const [filteredAssessmentData, setFilteredAssessmentData] = useState([]);
+  const [studentData , setStudentData] = useState([])
+  const [assesment , setAssement] = useState([])
+
+
+
+  useEffect(() => {
+    const fetchAssessment = async () => {
+      try {
+        const response = await axiosInstance.get('/api/AssessmentWeights');
+        setAssement(response.data);
+        console.log("assessment", response.data);
+      } catch (error) {
+        console.error('Error fetching assessment data:', error);
+      }
+    };
+
+    fetchAssessment();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoursePending = async () => {
+      try {
+        const response = await axiosInstance.get('/api/CourseRegistrationPendings');
+        setStudentData(response.data);
+        console.log("studentData", response.data);
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
+
+    fetchCoursePending();
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchStudentMark = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/api/StudentMarks`
+        );
+  
+        // Filter assessment data based on studID, courseNo, and termID
+        const filteredData = response.data.filter(item => 
+          item.studID === student && 
+          item.courseNo === course && 
+          item.termID === semester
+        );
+        
+        setAssessmentData(filteredData);
+        console.log("test" ,filteredData);
+        setFilteredAssessmentData(filteredData); // Set filtered assessment data
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchStudentMark();
+  }, [student, course, semester]);
+  
 
 
   const assessmentDatas = [
@@ -35,19 +96,39 @@ const GradeChangeSubmission = () => {
     ]);
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
     // Add your save logic here
-    console.log({
-      academicYear,
-      course,
-      semester,
-      student,
-      prevTotalMark,
-      reason,
-      assessmentData,
-      newTotalMark,
-      newGrade,
-    });
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    const assessmentDate = `${year}-${month}-${day}`;
+
+    const transposedData = [];
+
+    for (let i = 0; i < assessmentData.length; i++) {
+ 
+        transposedData.push({ studID: assessmentData[i].studID, assessmentName: assessmentData[i].assessmentName, assessmentWeight: assessmentData[i].assessmentWeight ,courseNo: assessmentData[i].courseNo ,termID: assessmentData[i].termID , instID: assessmentData[i].instID , assessmentDate: assessmentDate  });
+      }
+   
+
+     console.log("transe" , transposedData)
+
+    for(let i=0 ; i<assessmentData.length ; i++ ){
+      await axiosInstance.put(`/api/StudentMarks/${assessmentData[i].id}`, transposedData)
+      .then(response => {
+        console.log('Assesment created successfully:', response.data);
+        message.success("Student mark Created Successfully")        
+      })
+      .catch(error => {
+        console.error('Error creating Assesment:', error);
+        message.error("Error creating student mark")
+  
+      });
+    }
+
+
     // Clear form fields after saving
     setAcademicYear('');
     setCourse('');
@@ -77,22 +158,16 @@ const GradeChangeSubmission = () => {
     },
     {
       title: 'Assessment Title',
-      dataIndex: 'assessmentTitle',
-      key: 'assessmentTitle',
-    //   render: (_, record) => (
-    //     <Input
-    //       value={record.assessmentTitle}
-    //       onChange={(e) => handleAssessmentTitleChange(e, record.key)}
-    //     />
-    //   ),
+      dataIndex: 'assessmentName',
+      key: 'assessmentName',
     },
     {
       title: 'Prev.Result',
-      dataIndex: 'prevResult',
-      key: 'prevResult',
+      dataIndex: 'assessmentWeight',
+      key: 'assessmentWeight',
       render: (_, record) => (
         <Input
-          value={record.prevResult}
+          value={record.assessmentWeight}
           onChange={(e) => handlePrevResultChange(e, record.key)}
         />
       ),
@@ -104,7 +179,7 @@ const GradeChangeSubmission = () => {
       render: (_, record) => (
         <Input
           value={record.newResult}
-          onChange={(e) => handleNewResultChange(e, record.key)}
+          onChange={(e) => handleNewResultChange(e, record)}
         />
       ),
     },
@@ -126,12 +201,15 @@ const GradeChangeSubmission = () => {
     setAssessmentData(newData);
   };
 
-  const handleNewResultChange = (e, key) => {
+  const handleNewResultChange = (e, record) => {
     const { value } = e.target;
-    const newData = assessmentData.map((item) =>
-      item.key === key ? { ...item, newResult: value } : item
+    if (value){
+      const newData = assessmentData.map((item) =>
+      item.key == record.key && item.assessmentName == record.assessmentName  ? { ...item, assessmentWeight: value } : item
     );
     setAssessmentData(newData);
+    console.log("best" , newData);
+    }  
   };
 
   const handleAcadamic = async (value) => {
@@ -144,6 +222,11 @@ const GradeChangeSubmission = () => {
        setSemester(value);
   }
 
+  const uniqueTerm = new Set(assesment.map((course) => course.termID));
+  const uniquecourse = new Set(assesment.map((course) => course.courseNo));
+
+
+
   return (
     <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
     {/* <SiderGenerator /> */}
@@ -155,26 +238,25 @@ const GradeChangeSubmission = () => {
   <div className="list-filter">
       {/* <Row gutter={16}> */}
       <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent:'flex-start' , display:'flex' }}>
-      <div style={{display:'flex' , flexDirection:'column', marginRight:'9%'}}>
+      {/* <div style={{display:'flex' , flexDirection:'column', marginRight:'9%'}}>
       <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Acadamic Year</label>  
         <Select value={academicYear} onChange={handleAcadamic} 
         placeholder="Select Academic Year"
          style={{ marginRight: '8px', width:350 , height:40 }}>
-          {/* Add academic year options */}
-          <Option value="2023/24">2023/24</Option>
-            <Option value="2024/25">2024/25</Option>
-            <Option value="2025/26">2025/26</Option>
+        
         </Select>
-        </div>
+        </div> */}
         <div style={{display:'flex' , flexDirection:'column'  }}>
       <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Course</label>  
         <Select value={course} onChange={handleCourse} 
         placeholder="Select Course"
          style={{ marginRight: '8px', width:350 , height:40 }}>
           {/* Add academic year options */}
-          <Option value=" Introduction to Computer"> Introduction to Computer</Option>
-            <Option value="Introduction to Computer Science 2">Introduction to Computer Science 2</Option>
-            <Option value="Introduction to Computer programming"> Introduction to Computer Programming</Option>
+          {[...uniquecourse].map((course , index) => (
+                    <Option key={index} value={course}>
+                      {course}
+                    </Option>
+                  ))}
         </Select>
         </div>
           {/* <Select
@@ -192,23 +274,27 @@ const GradeChangeSubmission = () => {
       <Select
             value={semester}
             onChange={handleSemister}
-            placeholder="Semister"
+            placeholder="Term ID"
             style={{ width: 350 , height:40 }}
           >
-           <Option value="1">Semester 1</Option>
-            <Option value="2">Semester 2</Option>
+              {[...uniqueTerm].map((course , index) => (
+                    <Option key={index} value={course}>
+                      {course}
+                    </Option>
+                  ))}
           </Select>
         </div>
         <div style={{display:'flex' , flexDirection:'column' , marginRight:40}}>
       <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Student</label>  
         <Select value={student} onChange={handleStudentChange} 
-        placeholder="Select Course"
+        placeholder="Select Student Name"
          style={{ marginRight: '8px', width:350 , height:40 }}>
           {/* Add academic year options */}
-          <Option value="UGR/1876/11 | Solomon Abdi">UGR/1876/11 | Solomon Abdi</Option>
-          <Option value="UGR/1886/12 | Kasahun Aminu ">UGR/1886/12 | Kasahun Aminu</Option> 
-          <Option value="UGR/1873/12 | Kalkidan Aminu ">UGR/1873/12 | Kalkidan Aminu</Option> 
-          <Option value="UGR/1896/12 | Kebede Debela ">UGR/1886/12 | Kebede Debela</Option> 
+          {studentData.map((department) => (
+                <Option key={department.StudId} value={department.StudId}>
+                  {department.StudId}
+                </Option>
+              ))}
         </Select>
         </div>
         </div>
@@ -229,9 +315,9 @@ const GradeChangeSubmission = () => {
         pagination={false}
         style={{ marginTop: '16px' }}
       />
-      <Button type="primary" onClick={handleAddAssessment}>
+      {/* <Button type="primary" onClick={handleAddAssessment}>
         Add Assessment
-      </Button>
+      </Button> */}
       <Row gutter={16} style={{ marginTop: '16px' }}>
         <Col span={6}>
           <InputNumber

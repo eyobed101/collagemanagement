@@ -1,9 +1,12 @@
 import React, { useState , useRef ,useEffect } from 'react';
-import { Select, Button, Table } from 'antd';
+import { Select, Button, Table , message} from 'antd';
 import * as XLSX from 'xlsx';
 import { DownloadTableExcel } from 'react-export-table-to-excel';
 import axios from 'axios';
 import { api } from '../constants';
+import axiosInstance from "@/configs/axios";
+import moment from 'moment';
+
 
 const { Option } = Select;
 
@@ -13,19 +16,28 @@ const GradeSubmission = () => {
   const [semester, setSemester] = useState('');
   const [studentData, setStudentData] = useState([]);
   const [dataSource , setDataSource ] = useState([]);
+  const [totalCalculate , setTotalCalculate] = useState([]);
   const [gradeValue , setGradeValue] = useState([]);
   const [data, setData] = useState([]);
+  const [assesment, setAssement] = useState([]);
+
+  // const [, setData] = useState([]);
+
   const [courseNo , setCourseNo] = useState([]);
   const [term , setTermNo] = useState([]);
-  const [empId , setempId] = useState([]);
+  const [empId , setempId] = useState('');
+
   const tableRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`${api}/api/SecCourseAssgts`);
-        setData(response.data);
-        console.log("test" , data)
+    
+  try {
+        const excludedResponse = await axiosInstance.get(
+          `/api/InstCourseAssgts`
+        ); // Replace with your course API endpoint
+        setData(excludedResponse.data);
+        console.log("exc", excludedResponse.data);
        
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -36,6 +48,67 @@ const GradeSubmission = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchAssesment = async () => {
+    
+  try {
+        const excludedResponse = await axiosInstance.get(
+          `/api/AssessmentWeights`
+        ); // Replace with your course API endpoint
+        setAssement(excludedResponse.data);
+        console.log("assesment", excludedResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchAssesment();
+  }, []);
+
+  useEffect(() => {
+    const fetchStudentMark = async () => {
+    
+  try {
+        const excludedResponse = await axiosInstance.get(
+          `/api/StudentMarks`
+        ); // Replace with your course API endpoint
+        setTermNo(excludedResponse.data);
+        console.log("marks", excludedResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchStudentMark();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoursePending = async () => {
+    // 0919767497
+  try {
+        const courseResponse = await axiosInstance.get(
+          `/api/CourseRegistrationPendings`
+        ); // Replace with your course API endpoint
+        setStudentData(courseResponse.data);
+        console.log("course", courseResponse.data);
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchCoursePending();
+  }, []);
+
 
   
   // const generateExcel = () => {
@@ -80,6 +153,8 @@ const GradeSubmission = () => {
   //   URL.revokeObjectURL(workbookUrl);
   // };
 
+
+
   const handleFileUploads = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -120,6 +195,7 @@ console.log('Second Part:', secondPart);
 console.log('Transposed First Part:', transposedFirstPart);
 console.log('Transposed Second Part:', transposedSecondPart);
 console.log('Transposed row Part:', transback);
+setGradeValue(transposedSecondPart)
   setDataSource(secondPart);
   setGradeValue(firstPart);
 
@@ -130,15 +206,26 @@ console.log('Transposed row Part:', transback);
   };
   const transposeData = (courseNo, term, empId) => {
     const transposedData = [];
+    const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-based
+const day = String(today.getDate()).padStart(2, '0');
+
+const assessmentDate = `${year}-${month}-${day}`;
+
+    console.log(assessmentDate)
+
     // Assuming the first row contains headers, excluding them from transposition
     for (let i = 1; i < dataSource.length; i++) {
       const row = dataSource[i];
       const studID = row[1]; // Assuming StudID is always at index 1
-      for (let j = 3; j < row.length - 1; j++) { // Skipping No., StudID, FullName, and total
+      for (let j = 2; j < row.length - 1; j++) { // Skipping No., StudID, FullName, and total
         const weight = dataSource[0][j];
         const result = row[j];
-        transposedData.push({ StudID: studID, weight: weight, result: result ,course: courseNo ,TermId: term , empId: empId });
+        if(weight !== undefined){
+        transposedData.push({ studID: studID, assessmentName: weight, assessmentWeight: result ,courseNo: courseNo ,termID: term , instID: empId , assessmentDate:assessmentDate  });
       }
+    }
     }
     return transposedData;
   };
@@ -163,8 +250,10 @@ console.log('Transposed row Part:', transback);
       else if (total >= 45) grade = 'D';
       else grade = 'F';
     }
+    if(total < 100){
       transposedData.push({ StudID: studID, total: total, letterGrade: grade ,course: courseNo, TermId: term, empId: empId });
-    }
+    } 
+  }
     return transposedData;
   };
   
@@ -173,20 +262,33 @@ console.log('Transposed row Part:', transback);
   
   // const [transposedData, setTransposedData] = useState();
  
-  const handleSubmitData = () => {
+  const handleSubmitData = async() => {
     const filteredData =  data
     .filter(item => item.courseNo === "AcFn 101") // Change the courseNo as needed
     .map(item => ({
       courseNo: item.courseNo,
       termId: item.termId,
-      instrId: item.instrId
+      empId: item.empId
     }));
 
     if (filteredData.length > 0) {
       const firstItem = filteredData[0];
+
      
-      console.log("sort is is ", transposeData(firstItem.courseNo, firstItem.termId, firstItem.instrId));
-      console.log("sort is is ", transposeDatas(firstItem.courseNo, firstItem.termId, firstItem.instrId));
+      console.log("sort is is ", transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId));
+      for(let i=0 ; i<transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId).length ; i++ ){
+      await axiosInstance.post(`/api/StudentMarks`,transposeData(firstItem.courseNo, firstItem.termId, firstItem.empId)[i])
+      .then(response => {
+        console.log('Assesment created successfully:', response.data);
+        message.success("Student mark Created Successfully")        
+      })
+      .catch(error => {
+        console.error('Error creating Assesment:', error);
+        message.error("Error creating student mark")
+  
+      });
+    }
+      console.log("sort is is ", transposeDatas(firstItem.courseNo, firstItem.termId, firstItem.empId));
 
     } else {
       console.log("Filtered data is empty");
@@ -224,95 +326,149 @@ console.log('Transposed row Part:', transback);
   };
   const handleCourse = async(value) =>{
     setCourse(value);
+    const selectedItem = data.find(item => item.courseNo === value);
+    console.log("test ourse" ,value);
+    setempId(selectedItem.empId);
+    console.log("test" ,selectedItem.empId);
+
+
   }
   const handleSemister = async (value) => {
        setSemester(value);
   }
-
   const MyTableComponent = ({ data }) => {
     // Separate columns and data
     const [columns, ...dataSource] = data;
   
     // Check if the "total" value exists in the column data
     const hasTotal = columns.includes('total');
-    console.log('Has Total:', hasTotal);
-
-    let antdColumns = columns.map((title, index) => {
-      let columnDefinition = {
-        title,
-        dataIndex: index.toString(), // Use index as the dataIndex
-        key: index.toString(),
-      };
-
-      return columnDefinition;
-    });
   
-    // Check if the "total" value exists in the column data
-    if (hasTotal) {
-        // Add new columns for Grade, NG, IA, and F
-        const newColumns = [
-          {
-            title: 'Grade',
-            key: 'grade',
-            render: (text, record) => {
-              const total = record[columns.indexOf('total')];
-              if (total === null) return '';
-              if (total >= 85) return 'A';
-              if (total >= 80) return 'A-';
-              if (total >= 75) return 'B+';
-              if (total >= 70) return 'B';
-              if (total >= 60) return 'C+';
-              if (total >= 50) return 'C';
-              if (total >= 45) return 'D';
-              return 'F';
-            }
-          },
-          {
-            title: 'NG',
-            key: 'ng',
-            render: (text, record) => {
-              const total = record[columns.indexOf('total')];
-              if (total === null || total < 40) return 'NG';
-              return '';
-            }
-          },
-          {
-            title: 'IA',
-            key: 'ia',
-            render: (text, record) => {
-              const total = record[columns.indexOf('total')];
-              if (total === null || total < 40) return 'IA';
-              return '';
-            }
-          },
-          {
-            title: 'F',
-            key: 'f',
-            render: (text, record) => {
-              const total = record[columns.indexOf('total')];
-              if (total === null || total < 40) return 'F';
-              return '';
-            }
+    // State to track whether columns have been processed
+    const [columnsProcessed, setColumnsProcessed] = useState(false);
+  
+    // Initialize antdColumns with the basic columns
+    let antdColumns = columns.map((title, index) => ({
+      title,
+      dataIndex: index.toString(),
+      key: index.toString(),
+    }));
+  
+    if (!columnsProcessed) {
+      // Calculate the total for each student dynamically
+      dataSource.forEach((rowData, rowIndex) => {
+        let total = 0;
+        rowData.forEach((cellData, cellIndex) => {
+          // Check if the cell data is a number and if the cell index is greater than 1 (excluding 'No.' and 'StudID' columns)
+          if (!isNaN(cellData) && cellIndex > 1 && cellIndex !== rowData.length - 1) {
+            total += parseFloat(cellData);
           }
-        ];
-    
-        // Include new columns in the column definitions
-        antdColumns = [...antdColumns, ...newColumns];
+        });
+        // Add the calculated total to the row data
+        dataSource[rowIndex].push(total);
+      });
+  
+      // Add the new "total" column definition
+      antdColumns.push({
+        title: 'Total',
+        dataIndex: 'total',
+        key: 'total',
+      });
+  
+      // Add new columns for Grade, NG, IA, and F
+      const newColumns = [
+        {
+          title: 'Grade',
+          dataIndex: 'grade',
+          key: 'grade',
+          render: (text, record) => {
+            if (record['total'] === null) return '';
+            if (record['total'] >= 85) return 'A';
+            if (record['total'] >= 80) return 'A-';
+            if (record['total'] >= 75) return 'B+';
+            if (record['total'] >= 70) return 'B';
+            if (record['total'] >= 60) return 'C+';
+            if (record['total'] >= 50) return 'C';
+            if (record['total'] >= 45) return 'D';
+            return 'F';
+          }
+        },
+        {
+          title: 'NG',
+          dataIndex: 'ng',
+          key: 'ng',
+          render: (text, record) => {
+            if (record['total'] === null || record['total'] < 40) return 'NG';
+            return '';
+          }
+        },
+        {
+          title: 'IA',
+          dataIndex: 'ia',
+          key: 'ia',
+          render: (text, record) => {
+            if (record['total'] === null || record['total'] < 40) return 'IA';
+            return '';
+          }
+        },
+        {
+          title: 'F',
+          dataIndex: 'f',
+          key: 'f',
+          render: (text, record) => {
+            if (record['total'] === null || record['total'] < 40) return 'F';
+            return '';
+          }
+        }
+      ];
+  
+      // Include new columns in the column definitions
+      antdColumns = [...antdColumns, ...newColumns];
+  
+      // Set the state to indicate columns have been processed
+      setColumnsProcessed(true);
     }
-    
-   
   
     // Transform data for Antd Table
     const antdDataSource = dataSource.map((rowData, rowIndex) => {
       const rowDataObject = {};
       rowData.forEach((cellData, cellIndex) => {
-        rowDataObject[cellIndex.toString()] = cellData; // Use index as the key
+        rowDataObject[cellIndex.toString()] = cellData;
       });
       return { key: rowIndex.toString(), ...rowDataObject };
     });
   
     return <Table columns={antdColumns} dataSource={antdDataSource} />;
-};
+  };
+  
+  const MyTableData = ({ data }) => {
+    // Extract unique assessment names
+    const uniqueAssessmentNames = [...new Set(data.map(item => item.assessmentName))];
+  
+    // Generate table data
+    const tableData = [];
+    const uniqueStudIDs = new Set(data.map(item => item.studID));
+    let index = 0;
+    uniqueStudIDs.forEach(studID => {
+      const rowData = {
+        No: ++index,
+        StudId: studID,
+      };
+      uniqueAssessmentNames.forEach(assessmentName => {
+        const assessmentWeight = data.find(item => item.studID === studID && item.assessmentName === assessmentName)?.assessmentWeight || '';
+        rowData[assessmentName] = assessmentWeight;
+      });
+      tableData.push(rowData);
+    });
+  
+    // Generate columns for table
+    const columns = ['No', 'StudId', ...uniqueAssessmentNames].map((title, index) => ({
+      title,
+      dataIndex: title,
+      key: title,
+    }));
+  
+    return <Table columns={columns} dataSource={tableData} />;
+  };
 
 
 function generateTable(data, ref) {
@@ -331,7 +487,7 @@ function generateTable(data, ref) {
     });
 
     tbody.appendChild(row);
-  });
+  }); 
 
   // Add the tbody to the table
   table.appendChild(tbody);
@@ -344,19 +500,37 @@ function generateTable(data, ref) {
   return table;
 }
 
+
 const jsonData = [
   [null, 'Admas University'],
   [null, 'Office of the Registrar'],
   [null, 'Student Assessment sheet'],
-  [null, 'CourseName: (AcFn 101) Introduction to Accounting'],
-  [null, 'Term: ADOL/I/2024/2025', null, ' Semester:I', 'AcadYear: 2024/2025', null, null, 'Instructor: (EMi234) (Kalkidan)'],
-  ['No.', 'StudID', 'FullName'],
+  [null, `CourseName: (${course}) `],
+  [null, `Term: ${semester}`, null, ,` Section: ${academicYear}`, null, null, `Instructor: ${empId}`],
+
 
   // Add more rows here if needed
 ];
+
+const filteredAssessmentData = assesment.filter(item => item.courseNo === course);
+
+// Extract assessment titles from filtered data
+const assessmentTitles = filteredAssessmentData.map(item => item.assessmentTitle);
+
+// Add the assessment titles to the jsonData
+const jsonDataWithAssessmentTitles = [
+  ...jsonData,
+  ['No.', 'StudID', ...assessmentTitles], // Add assessment titles as a new row
+];
+
+// Now, you can map over the studentData as before to add the student IDs
+const jsonDataFinal = [
+  ...jsonDataWithAssessmentTitles,
+  ...studentData.map((student, index) => [` ${index + 1}.`, `'${student.StudId}'`]),
+];
 useEffect(() => {
-  generateTable(jsonData, tableRef);
-}, [jsonData]);
+  generateTable(jsonDataFinal, tableRef);
+}, [jsonDataFinal]);
 
 
  
@@ -373,14 +547,17 @@ useEffect(() => {
   <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' , justifyContent: 'flex-start' , display:'flex' }}>
 
       <div style={{display:'flex' , flexDirection:'column', marginRight:'20%'}}>
-      <label>Acadamic Year</label>  
+      <label>Section</label>  
       <Select 
   value={academicYear} 
    onChange={handleAcadamic} 
   // placeholder="Select Academic Year"
   style={{ marginRight: '8px', width:350 , height:40 }}
->
-  <Option value={ "2024/25"}>2024/2025</Option>
+>     {data?.map(center => (
+            <Option key={center.sectionId} value={center.sectionId}>
+              {center.sectionId}
+            </Option>
+          ))}
 </Select>
         </div>
 
@@ -389,7 +566,11 @@ useEffect(() => {
         <Select value={course} onChange={handleCourse} placeholder="Select Course" style={{
              marginRight: '8px',  width:350 , height:40 }}>
           {/* Add course options */}
-          <Option value={"AcFn 101"}>AcFn 101</Option>
+          {data?.map(center => (
+            <Option key={center.courseNo} value={center.courseNo}>
+              {center.courseNo}
+            </Option>
+          ))}
         </Select>
         </div>
       </div>
@@ -402,7 +583,11 @@ useEffect(() => {
         <Select value={semester} onChange={handleSemister} placeholder="Select Semester" 
         style={{ marginRight: '8px',  width:350 , height:40 }}>
           {/* Add semester options */}
-          <Option value={"I"}>I</Option>
+          {data?.map(center => (
+            <Option key={center.termId} value={center.termId}>
+              {center.termId}
+            </Option>
+          ))}
 
         </Select>
         </div>
@@ -426,13 +611,44 @@ useEffect(() => {
       </DownloadTableExcel>
         <Button type="primary" onClick={handleSubmitData} style={{ marginBottom: 16 , margingLeft:20, marginTop :20, backgroundColor:'#4279A6'  }}>Submit</Button>
         </div>
-        {dataSource && dataSource.length > 0 && <MyTableComponent data={dataSource} />}    </div>
+        {dataSource.length >0 ?
+        <MyTableComponent data={dataSource}  /> :
+        <MyTableData data={term}  />
+      }
+        
+           </div>
 
         <div>
      
 
       {/* Render the table using the ref */}
-      <div ref={tableRef}></div>
+      <div  style={{display:'none'}} ref={tableRef}>
+      <table>
+        <thead>
+          <tr>
+            <th colSpan="2">{course}</th>
+          </tr>
+          <tr>
+            <th colSpan="2">Term: {semester}, Section: {academicYear}, Instructor: {empId}</th>
+          </tr>
+          <tr>
+            <th>No.</th>
+            <th>StudID</th>
+          </tr>
+        </thead>
+      </table>
+      <table>
+        <tbody>
+          {studentData.map((student, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{student.StudId}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      </div>
     </div>
     </div>
   );
