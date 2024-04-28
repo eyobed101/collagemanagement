@@ -1,342 +1,587 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-// import { Transition } from "@headlessui/react";
-
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { api } from "../constants";
-import "react-tabs/style/react-tabs.css";
+import { Modal, Button, Form, Input, Tabs, Select } from "antd";
 import axiosInstance from "@/configs/axios";
-// import Calendar from "react-calendar";
-// import "react-calendar/dist/Calendar.css";
+import styled from "styled-components";
+import moment from "moment";
 
-const generateStudentId = () => {
-  const prefix = "AD";
-  const currentYear = new Date().getFullYear().toString().slice(-2);
-  const randomNumber = Math.floor(Math.random() * 10000)
-    .toString()
-    .padStart(4, "0");
+// import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
-  const empId = `${prefix}${currentYear}${randomNumber}`;
-  return empId;
-};
+const { Search } = Input;
 
-export function CreateUser() {
-  const initialFormData = {
-    username: "",
-    password: "",
-    centerId: "",
-    email: "",
-    roles: "",
-  };
+const TableRow = styled.tr`
+  background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
+  padding: 10px;
+`;
 
-  const [formData, setFormData] = useState(initialFormData);
-  // let [data, setData] = useState({});
-  const [departments, setDepartments] = useState([]);
-  const [dep, setDep] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [studyCenters, setStudyCenters] = useState([]);
+const TableCell = styled.td`
+  padding: 8px;
+  border: 2px solid #e2e8f0;
+  border-collapse: collapse;
+`;
+
+const TableHeader = styled.th`
+  border: 2px solid #e2e8f0;
+  border-collapse: collapse;
+  padding: 12px;
+  text-align: left;
+  background-color: #f0f0f0;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  margin-top: 12px;
+`;
+
+const ModalWrapper = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 4px;
+  z-index: 999;
+  width: 30%;
+  font-family: "Arial", sans-serif; /* Specify your desired font type */
+`;
+
+const ModalOverlay = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+`;
+
+const StyledButton = styled.button`
+  padding: 3px 16px;
+  border: 0.5px #4279a6 solid;
+  background-color: none;
+  color: white;
+  // border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Arial", sans-serif; /* Specify your desired font type */
+  font-size: 16px; /* Specify your desired font size */
+  color: #4279a6;
+
+  &:hover {
+    background-color: #4278a6;
+    color: white;
+  }
+`;
+
+const CreateUser = ({ sectionId }) => {
+  const [students, setStudents] = useState([]);
+  const [sectionStudEnroll, setSectionStudEnroll] = useState([]);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [sections, setSections] = useState([]);
   const [terms, setTerms] = useState([]);
-  const [loadingCenters, setLoadingCenters] = useState(true);
-  const [spining, setSpining] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [departments, setDepartments] = useState([]);
+
+  const [selectedDepartment, setSelectedDepartment] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  const [applicants, setApplicants] = useState([]);
+  const [dep, setDep] = useState(0);
+
+  const [isCreateVisible, setIsCreateVisible] = useState(false);
+  const [specialChar, setSpecialChar] = useState('!');
+  const [twoDigits, setTwoDigits] = useState('01');
+  const [generatedAccounts, setGeneratedAccounts] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const pageNeighbours = 2;
+
+  const [form] = Form.useForm();
 
   useEffect(() => {
-    console.log("campus");
-  }, []);
+    fetchDepartments();
+    fetchSectionStudentEnroll();
+    fetchApplicant();
+    fetchSections();
+    fetchTerms();
+  }, [sectionId]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "centerId") {
-      const selectedCenter = studyCenters.find(
-        (center) => center.CenterId === value
-      );
-      console.log(selectedCenter.CenterId);
-
-      if (selectedCenter) {
-        setFormData((prevData) => ({
-          ...prevData,
-          centerId: selectedCenter.CenterId,
-        }));
-      }
-    } else {
-      console.log(value);
-      setFormData((prevData) => ({
-        ...prevData,
-
-        [name]: value,
-      }));
+  const fetchSectionStudentEnroll = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/SectionStudEnroll`);
+      setSectionStudEnroll(response.data);
+    } catch (error) {
+      console.error("Error fetching sections:", error);
     }
   };
-
-  // Handler for form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSpining(true);
-
-    const token = localStorage.getItem("token");
-
-    // Set the Authorization header with the token
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    const data = {
-      Username: formData.username,
-      Email: formData.email,
-      Password: formData.password,
-      CenterId: "Defualt",
-      roles: formData.roles,
-    };
-
-    const { ...restFormData } = data;
-
-    console.log("data", data);
-
-    const apiUrl = `/api/Authenticate/Register`;
-
+  const fetchDepartments = async () => {
     try {
-      const response = await axiosInstance.post(apiUrl, restFormData, {
-        params: {
-          roles: formData.roles,
-        },
-      });
-
-      setSuccess(true);
-      setError(null);
-      setFormData(initialFormData);
-      // setData({});
+      const response = await axiosInstance.get(`/api/Departments`);
+      setDepartments(response.data);
+      console.log("Departiments", response.data);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+  const fetchSections = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/Section`);
+      setSections(response.data);
       console.log(response.data);
     } catch (error) {
-      setSuccess(false);
-      setError(error.response.data);
-      console.error(error);
-    } finally {
-      setSpining(false);
+      console.error("Error fetching sections:", error);
     }
   };
+
+  const fetchTerms = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/Terms`);
+      setTerms(response.data);
+    } catch (error) {
+      console.error("Error fetching terms:", error);
+    }
+  };
+
+  const fetchApplicant = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/Applicants`);
+      setApplicants(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+    }
+  };
+
+  function formatDoB(date) {
+    return date && moment(date, "YYYY-MM-DD").isValid()
+      ? moment(date, "YYYY-MM-DD")
+      : null;
+  }
+
+  const handleDepartmentChange = (value) => {
+    const selectedDepartments = departments.find(
+      (department) => department.dcode === value
+    );
+    setDep(selectedDepartments.did);
+  };
+
+  const showModal = (student) => {
+    const studentData = {
+      ...student,
+      fullname: `${student.fname} ${student.mname || ""} ${student.lname}`,
+    };
+
+    setEditingStudent(studentData);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    console.log("Closing modal");
+
+    setIsModalVisible(false);
+    setEditingStudent(null);
+  };
+
+
+  const showCreateModal = () => setIsCreateVisible(true);
+  const handleCreateCancel = () => setIsCreateVisible(false);
+
+  const handleGenerateAccounts = () => {
+    const accounts = currentItems.map(student => ({
+      username: student.studId,
+      email: student.email,
+      password: `${student.fname}${student.lname}${specialChar}${twoDigits}`,
+      centerId: student.centerId
+    }));
+    setGeneratedAccounts(accounts);
+  };
+
+  const handleExportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(generatedAccounts);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Accounts");
+    const exportFileName = `${selectedDepartment.dname}Accounts.xlsx`;
+    XLSX.writeFile(wb, exportFileName);
+  };
+  const handleSubmit = async () => {
+    for (const account of generatedAccounts) {
+      await axiosInstance.post('/api/Authenticate/student/register', account);
+    }
+    setIsCreateVisible(false);
+  };
+
+  // const filteredApplicants = applicants
+  //   .filter((student) => {
+  //     if (!selectedDepartment) return true; // No department selected, show all applicants
+  //     return student.dname === selectedDepartment.did;
+  //   })
+  //   .filter((student) => {
+  //     const fullName = `${student.fname} ${student.mname || ""} ${
+  //       student.lname
+  //     }`.toLowerCase();
+  //     return fullName.includes(searchText);
+  //   });
+
+  const filteredApplicants = applicants
+    .filter((student) => {
+      if (selectedDepartment && Object.keys(selectedDepartment).length !== 0) {
+        // Assuming student.departmentId needs to match selectedDepartment.did
+        return student.dname === selectedDepartment.did;
+      }
+      return true;
+    })
+    .filter((student) => {
+      // Always apply the search filter
+      const fullName = `${student.fname} ${student.mname || ""} ${
+        student.lname
+      }`.toLowerCase();
+      return fullName.includes(searchText);
+    });
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * pageSize;
+  const indexOfFirstItem = indexOfLastItem - pageSize;
+  const currentItems = filteredApplicants.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const totalPages = Math.ceil(filteredApplicants.length / pageSize);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Generates the range of page numbers to be displayed
+  const fetchPageNumbers = () => {
+    const totalNumbers = pageNeighbours * 2 + 3;
+    const totalBlocks = totalNumbers + 2;
+
+    if (totalPages > totalBlocks) {
+      const startPage = Math.max(2, currentPage - pageNeighbours);
+      const endPage = Math.min(totalPages - 1, currentPage + pageNeighbours);
+
+      let pages = [1];
+      for (let page = startPage; page <= endPage; page++) {
+        pages.push(page);
+      }
+      pages.push(totalPages);
+
+      // Insert ellipses
+      if (startPage > 2) {
+        pages.splice(1, 0, "...");
+      }
+      if (endPage < totalPages - 1) {
+        pages.splice(pages.length - 1, 0, "...");
+      }
+
+      return pages;
+    }
+
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  };
+
+  const handleSectionChange = (event) => {
+    const selectedData = event.target.options[
+      event.target.selectedIndex
+    ].getAttribute("data");
+    console.log(selectedData);
+    setSelectedSection({
+      ...JSON.parse(selectedData),
+    });
+  };
+  const activeTerms = terms.filter(
+    (term) => new Date(term.endDate) > new Date()
+  );
+
+  const onSearch = (value) => {
+    setSearchText(value.trim().toLowerCase());
+  };
+
+  const handleEditSubmit = async (values) => {
+    const data = { ...editingStudent, ...values };
+    console.log("LLL", activeTerms);
+
+    const metaData = {
+      StudId: data.studId,
+      Fname: data.fname,
+      Mname: data.mname,
+      Lname: data.lname,
+      Dname: dep,
+      Sex: data.sex,
+      SectionId: data.SectionId[0],
+      TermId: activeTerms[0].termId,
+      DoB: data.doB,
+      PlaceOfBirth: data.placeOfBirth,
+      Nationality: data.nationality,
+      MaritalStatus: data.maritalStatus,
+      PrevEducation: data.prevEducation,
+      PrevInstitution: data.prevInstitution,
+      PrevMajorDepartment: data.prevMajorDepartment,
+      PrevEducCgpa: data.prevEducCgpa,
+      Serviceyear: data.serviceyear,
+      Program: data.program,
+      ProgramType: data.programType,
+      CenterId: data.centerId,
+      Zone: data.zone,
+      Woreda: data.woreda,
+      Kebele: data.kebele,
+      Town: data.town,
+      Tel: data.tel,
+      Pobox: data.pobox,
+      Email: data.email,
+      PersontoBeContacted: data.persontoBeContacted,
+      AppDate: data.appDate,
+      Approved: data.approved,
+      ApprovedDate: data.approvedDate,
+      Age: data.age,
+      AgeInyear: data.ageInyear,
+      Batch: data.batch,
+    };
+
+    console.log("IIIIIIIII", metaData);
+
+    try {
+      await axiosInstance.put(
+        `/api/Applicants/${encodeURIComponent(data.studId)}`,
+        metaData,
+        {
+          params: {
+            SectionID: data.SectionId[0],
+            TermId: activeTerms[0].termId,
+          },
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setIsModalVisible(false);
+      setEditingStudent(null);
+      fetchApplicant();
+      // fetchStudents(); // Refetch students to show the updated data
+    } catch (error) {
+      console.error("Failed to update student", error);
+    }
+  };
+
+  const createAccount = async () => {
+    console.log("first")
+    // setIsModalVisible(true);  // Assuming you have a modal that takes in inputs for batch processing
+    // You could also loop here and post each student to your registration endpoint
+  };
+
   return (
-    <>
-      <div className="mt-12 mb-8 flex flex-col gap-12">
-        <div class="mt-10 sm:mt-0">
-          <div class="mt-5 md:mt-0 md:col-span-2">
-            <form onSubmit={handleSubmit} className="relative">
-              <div class="shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 bg-white sm:p-6">
-                  {/* <div class="grid grid-cols-6 gap-6"> */}
-                  <div class="grid grid-cols-6 mt-10 border-2 shadow-lg p-5">
-                    <div className="col-span-6 md:col-span-3 mx-2 my-2">
-                      <label
-                        // for="full_name"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        User Name
-                      </label>
-                      <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        id="first_name"
-                        placeholder="User Name"
-                        autocomplete="given-name"
-                        onChange={handleInputChange}
-                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                      />
-                    </div>
+    <div>
+      <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+        <div className="flex justify-between w-full">
+          <div className="mb-2 space-y-4">
+            <select
+              className="px-8 py-3 w-full bg-blue-gray-50 border-[#676767] text-black block shadow-md sm:text-sm rounded-md"
+              onChange={(e) =>
+                setSelectedDepartment(
+                  departments.find((dept) => dept.dcode === e.target.value)
+                )
+              }
+              value={selectedDepartment ? selectedDepartment.dcode : ""}
+            >
+              <option value={[]}>Select Department</option>
+              {departments.map((dept, index) => (
+                <option key={dept.dcode} value={dept.dcode}>
+                  {dept.dname}
+                </option>
+              ))}
+            </select>
 
-                    <div class="col-span-6 md:col-span-3 m-2">
-                      <label
-                        for="email_address"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Email address
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        placeholder="Email address"
-                        onChange={handleInputChange}
-                        id="email"
-                        autocomplete="email"
-                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                      />
-                    </div>
-                    <div class="col-span-6 md:col-span-3 m-2">
-                      <label
-                        for="email_address"
-                        class="block text-sm font-medium text-gray-700"
-                      >
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="Password"
-                        id="password"
-                        class="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                      />
-                    </div>
+            <button
+              className="px-8 py-3 w-full bg-blue-500 text-white  hover:bg-blue-600  block shadow-md sm:text-sm rounded-md"
+              onClick={showCreateModal}
+              disabled={!selectedDepartment || (selectedDepartment && Object.keys(selectedDepartment).length === 0)}
+            >
+            {selectedDepartment && Object.keys(selectedDepartment).length !== 0 ? `Generate Accounts for ${selectedDepartment.dname}` : "Select Department to Generate"}
+            </button>
+          </div>
+          
 
-                    <div className="col-span-6 sm:col-span-3 m-2">
-                      <label
-                        htmlFor="role"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Role
-                      </label>
-                      <select
-                        id="roles"
-                        name="roles"
-                        value={formData.roles}
-                        onChange={handleInputChange}
-                        autoComplete=" "
-                        className="m-1 p-3 w-full bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
-                      >
-                        <option value="">Roles</option>
+          <div className="mb-4">
+            <Search
+              placeholder="Search by student name"
+              onSearch={onSearch}
+              className="w-full bg-blue-gray-50 sm:text-sm rounded-md"
 
-                        <option value={"CampusRegistrar"}>
-                          Campus Registrar
-                        </option>
-                        <option value={"RegistrarOfficer"}>
-                          Registrar Officer
-                        </option>
-                        <option value={"Department"}>Department Head</option>
-                        <option value={"Lecturer"}>Lecturer</option>
-                        <option value={"Student"}>Student</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                      marginTop: "40px",
-                      padding: "10px",
-                      alignSelf: "end",
-                    }}
-                  >
-                    <button
-                      type="submit"
-                      class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      {spining ? (
-                        <l-tailspin
-                          style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                          }}
-                          size="60"
-                          stroke="5"
-                          speed="0.9"
-                          color="#4279A6"
-                        ></l-tailspin>
-                      ) : (
-                        ""
-                      )}
-                      Submit
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-            {/* {spining && <div className="loading-spinner">Loading...</div>} */}
-            {success && (
-              <div
-                id="alert-border-3"
-                class="flex items-center mt-5 p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
+            />
+          </div>
+        </div>
+        <div className="border-2 px-5 py-4 rounded-md shadow-md">
+          <StyledTable>
+            <thead className="border-2 px-5 py-4 rounded-md shadow-md">
+              <TableRow>
+                <TableHeader>ID</TableHeader>
+                <TableHeader>Full Name</TableHeader>
+                <TableHeader>Sex</TableHeader>
+                <TableHeader>Date of Birth</TableHeader>
+                <TableHeader>Place of Birth</TableHeader>
+                <TableHeader>Email</TableHeader>
+                <TableHeader>Action</TableHeader>
+              </TableRow>
+            </thead>
+            <tbody>
+              {currentItems.map((student, index) => (
+                <tr
+                  key={student.studId}
+                  className={index % 2 !== 0 ? "bg-gray-100" : ""}
                 >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">
-                  Submission successful!
-                </div>
+                  <TableCell>{student.studId}</TableCell>
+                  <TableCell>{`${student.fname} ${student.mname || ""} ${
+                    student.lname
+                  }`}</TableCell>
+                  <TableCell>{student.sex}</TableCell>
+                  <TableCell>{student.doB}</TableCell>
+                  <TableCell>{student.placeOfBirth}</TableCell>
+                  <TableCell>{student.email}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => showModal(student)}>Edit</Button>
+                  </TableCell>
+                </tr>
+              ))}
+              {filteredApplicants.length === 0 && (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center" }}>
+                    No results found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </StyledTable>
+          <div
+            className="pagination"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            {fetchPageNumbers().map((page, index) =>
+              page === "..." ? (
+                <span
+                  key={index}
+                  style={{ margin: "0 5px", alignSelf: "center" }}
+                >
+                  ...
+                </span>
+              ) : (
                 <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-3"
-                  aria-label="Close"
+                  key={index}
+                  style={{
+                    margin: "0 5px",
+                    padding: "5px 10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    backgroundColor: currentPage === page ? "#007bff" : "",
+                    color: currentPage === page ? "white" : "",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handlePageChange(page)}
                 >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
+                  {page}
                 </button>
-              </div>
-            )}
-
-            {error && (
-              <div
-                id="alert-border-2"
-                class="flex items-center mt-5 p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-400 dark:bg-gray-800 dark:border-red-800"
-                role="alert"
-              >
-                <svg
-                  class="flex-shrink-0 w-4 h-4"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <div class="ms-3 text-sm font-medium">Error: {error}</div>
-                <button
-                  type="button"
-                  class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
-                  data-dismiss-target="#alert-border-2"
-                  aria-label="Close"
-                >
-                  <span class="sr-only">Dismiss</span>
-                  <svg
-                    class="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                </button>
-              </div>
+              )
             )}
           </div>
         </div>
-      </div>
-    </>
-  );
+        {editingStudent &&
+        <Modal
+          title={editingStudent.fullname}
+          visible={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+          destroyOnClose={true}
+        >
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleEditSubmit}
+            autoComplete="off"
+          >
+            <Form.Item
+              name="username"
+              label="User Name"
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
+            >
+              <Input placeholder="User Name" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email Address"
+              rules={[
+                { type: "email", message: "The input is not a valid email!" },
+                { required: true, message: "Please input your email address!" },
+              ]}
+            >
+              <Input type="email" placeholder="Email Address" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input type="password" placeholder="Password" />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ backgroundColor: "#4279A6" }}
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+        
 }
+      </div>
+      <Modal
+        title="Generate Custom Passwords"
+        visible={isCreateVisible}
+        onCancel={handleCreateCancel}
+        footer={null}
+      >
+        <Form layout="vertical" onFinish={handleGenerateAccounts}>
+          <Form.Item label="Special Character">
+            <Input value={specialChar} onChange={e => setSpecialChar(e.target.value)} maxLength={1} />
+          </Form.Item>
+          <Form.Item label="Two Digits">
+            <Input value={twoDigits} onChange={e => setTwoDigits(e.target.value)} maxLength={2} />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" className=" bg-blue-500 text-white  hover:bg-blue-600 mb-4">
+            Generate
+          </Button>
+        </Form>
+        <div className="flex justify-between">
+          <Button onClick={handleExportToExcel} disabled={!generatedAccounts.length}>
+            Export to Excel
+          </Button>
+          <Button onClick={handleSubmit} type="primary" disabled={!generatedAccounts.length} className=" bg-blue-500 text-white  hover:bg-blue-600">
+            Submit All
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+};
 
 export default CreateUser;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Modal, Button, Form, Input, Tabs, Select } from "antd"; // Assuming you are using Ant Design as in your previous code
+import { Modal, Button, Form, Input, Tabs, Select } from "antd"; 
 import axiosInstance from "@/configs/axios";
 import styled from "styled-components";
 import moment from "moment";
@@ -87,6 +87,7 @@ const StudentList = ({ sectionId }) => {
   const [terms, setTerms] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [prevSectionId, setPrevSectionId] = useState('');
 
   const [selectedDepartment, setSelectedDepartment] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -97,6 +98,7 @@ const StudentList = ({ sectionId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const pageNeighbours = 2;
+  
 
   const [form] = Form.useForm();
 
@@ -170,6 +172,7 @@ const StudentList = ({ sectionId }) => {
 
   const showModal = (student) => {
 
+
     const studentData = {
       ...student,
       SectionId: sectionStudEnroll
@@ -183,6 +186,7 @@ const StudentList = ({ sectionId }) => {
           return dep.dname;
         }),
     };
+    setPrevSectionId(studentData.SectionId)
 
     setEditingStudent(studentData);
     setIsModalVisible(true);
@@ -294,7 +298,7 @@ const StudentList = ({ sectionId }) => {
       Lname: data.lname,
       Dname: dep,
       Sex: data.sex,
-      SectionId: data.SectionId[0],
+      SectionId: data.SectionId,
       TermId: activeTerms[0].termId,
       DoB: data.doB,
       PlaceOfBirth: data.placeOfBirth,
@@ -325,6 +329,7 @@ const StudentList = ({ sectionId }) => {
     };
 
     console.log("IIIIIIIII", metaData);
+    console.log("XXXXXXXXX", prevSectionId);
 
     try {
       await axiosInstance.put(
@@ -332,8 +337,9 @@ const StudentList = ({ sectionId }) => {
         metaData,
         {
           params: {
-            SectionID: data.SectionId[0],
+            NewSectionID: metaData.SectionId,
             TermId: activeTerms[0].termId,
+            PrevSectionID: prevSectionId
           },
           headers: {
             "Content-Type": "application/json",
@@ -465,6 +471,7 @@ const StudentList = ({ sectionId }) => {
           onCancel={handleCancel}
           footer={null}
           width={700}
+          destroyOnClose={true}
         >
           <Form initialValues={editingStudent} onFinish={handleEditSubmit}>
             <Tabs defaultActiveKey="1">
@@ -613,14 +620,15 @@ const StudentList = ({ sectionId }) => {
                     { required: true, message: "Please select a program!" },
                   ]}
                 >
-                  <Select
+                  <Input disabled/>
+                  {/* <Select
                     placeholder="Select Program"
                     onChange={(value) => handleInputChange("program", value)}
                   >
                     <Option value="Degree">Degree</Option>
                     <Option value="Diploma">TVET</Option>
                     <Option value="Masters">Masters</Option>
-                  </Select>
+                  </Select> */}
                 </Form.Item>
                 <Form.Item
                   name="programType"
@@ -632,11 +640,13 @@ const StudentList = ({ sectionId }) => {
                     },
                   ]}
                 >
-                  <Select placeholder="Select Program Type" allowClear>
+                  {/* <Select placeholder="Select Program Type" allowClear>
                     <Option value="Regular">Regular</Option>
                     <Option value="Distance">Distance</Option>
                     <Option value="Extension">Extension</Option>
-                  </Select>
+                  </Select> */}
+                  <Input disabled/>
+
                 </Form.Item>
                 <Form.Item
                   name="dname"
@@ -656,6 +666,19 @@ const StudentList = ({ sectionId }) => {
                     ))}
                   </Select>
                 </Form.Item>
+                {/* <Form.Item
+                  name="termId"
+                  label="Term"
+                  rules={[{ required: true, message: "Please select a term!" }]}
+                >
+                  <Select showSearch placeholder="Select Term" allowClear>
+                    {terms.map((term) => (
+                      <Option key={term.termId} value={term.termId}>
+                        {term.name} - {term.acadYear}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item> */}
                 <Form.Item
                   name="SectionId"
                   label="Section"
@@ -663,7 +686,7 @@ const StudentList = ({ sectionId }) => {
                     { required: true, message: "Please select a section!" },
                   ]}
                 >
-                  <Select showSearch allowClear>
+                  <Select>
                     {sections
                       .filter((section) => dep === section.dcode)
                       .map((section) => (
@@ -676,19 +699,7 @@ const StudentList = ({ sectionId }) => {
                       ))}
                   </Select>
                 </Form.Item>
-                {/* <Form.Item
-                  name="termId"
-                  label="Term"
-                  rules={[{ required: true, message: "Please select a term!" }]}
-                >
-                  <Select showSearch placeholder="Select Term" allowClear>
-                    {activeTerms.map((term) => (
-                      <Option key={term.termId} value={term.termId}>
-                        {term.name} - {term.acadYear}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item> */}
+                
                 <Form.Item
                   name="appDate"
                   label="Application Date"

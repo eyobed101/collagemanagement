@@ -19,6 +19,7 @@ const loginUser = createAsyncThunk("user/loginUser", async (data) => {
       roleName:response.data.roleName[0]
     };
     localStorage.setItem('accessToken', response.data.token);
+    localStorage.setItem('username', response.data.username);
     return responseData;
   } catch (error) {
     throw new Error(error.response.data.message);

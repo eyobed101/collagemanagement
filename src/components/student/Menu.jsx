@@ -12,6 +12,7 @@ import { Layout, Menu } from "antd";
 import Grades from "./grades";
 import Profile from "./profile";
 import Tables from "./tables";
+import PasswordChanger from "./password-changer";
 
 import {
   Configurator,
@@ -27,10 +28,11 @@ import {
 // import { IconButton } from "@mui/material";
 import { BookOpenIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { setSidenavType } from "@/context";
-import { LogoutOutlined } from "@mui/icons-material";
+import { LogoutOutlined, PasswordOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
 import { FaGraduationCap, FaSchool } from "react-icons/fa";
+import Password from "antd/es/input/Password";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -41,6 +43,7 @@ const StudentSiderGenerator = () => {
   const [isProfile, setIsProfile] = useState(true);
   const [isGrade, setIsGrade] = useState(false);
   const [isCourse, setIsCourse] = useState(false);
+  const [isPasswordChange, setIsPasswordChange] = useState(false);
   
 
   const drawerWidth = 240;
@@ -53,17 +56,29 @@ const StudentSiderGenerator = () => {
     setIsCourse(false);
     setIsGrade(false);
     setIsProfile(true);
+    setIsPasswordChange(false);
 
   };
   const handleGrade= () => {
     setIsCourse(false);
     setIsProfile(false);
     setIsGrade(true);
+    setIsPasswordChange(false);
+
   };
   const handleCourse = () => {
     setIsCourse(true);
     setIsGrade(false);
     setIsProfile(false);
+    setIsPasswordChange(false);
+
+  };
+  const handlePassword = () => {
+    setIsCourse(false);
+    setIsGrade(false);
+    setIsProfile(false);
+    setIsPasswordChange(true);
+
   };
   
   const handlelogout = () => {
@@ -90,6 +105,11 @@ const StudentSiderGenerator = () => {
           icon: <BookOpenIcon {...icon} />,
           name: "Grades",
           onClick: handleGrade,
+        },
+        {
+          icon: <PasswordOutlined {...icon} />,
+          name: "Change Password",
+          onClick: handlePassword,
         },
         {
           icon: <MdLogout {...icon} />,
@@ -129,6 +149,7 @@ const StudentSiderGenerator = () => {
           {isProfile ? <Profile /> : null}
           {isGrade ? <Grades /> : null}
           {isCourse ? <Tables /> : null}
+          {isPasswordChange ? <PasswordChanger /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />

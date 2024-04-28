@@ -205,7 +205,7 @@ const StudentCourseRegistration = () => {
       selectedStudent.map(async (stud) => {
         let formData = [];
 
-        secCourseAss
+        selectedCourses
           .filter(
             async (section) => section.sectionId === selectedSection.sectionId
           )
