@@ -1,3 +1,4 @@
+import axiosInstance from "@/configs/axios";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import { useState } from "react";
 //   import { useDispatch } from "react-redux";
@@ -6,6 +7,7 @@ import { useState } from "react";
 
 export function PasswordChanger() {
   const [currentPassword, setCurrentPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,12 +23,17 @@ export function PasswordChanger() {
 
     setLoading(true);
     const data = {
-      currentPassword,
-      newPassword,
+      "email": email,
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "confirmPassword": confirmPassword
+
     };
 
-    axios
-      .post("/api/change-password", data)
+    console.log(data);
+
+    axiosInstance
+      .post("/api/Authenticate/PasswordReset", data)
       .then((res) => {
         alert("Password successfully updated.");
         setLoading(false);
@@ -63,6 +70,21 @@ export function PasswordChanger() {
           onSubmit={handleChangePassword}
         >
           <div className="mb-6 flex flex-col gap-6">
+            <Typography
+              variant="small"
+              color="blue-gray"
+              className="-mb-3 font-medium"
+            >
+              Email
+            </Typography>
+            <Input
+              type="email"
+              size="lg"
+              placeholder="Email"
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <Typography
               variant="small"
               color="blue-gray"

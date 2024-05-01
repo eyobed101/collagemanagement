@@ -402,7 +402,7 @@ const AddSection = () => {
               width: "30%",
               marginBottom: 16,
               paddingTop: "15px",
-              height: "auto",
+              height: "45px",
             }}
           />
         </div>
@@ -449,7 +449,8 @@ const AddSection = () => {
                 { required: true, message: "Please input Academic Year!" },
               ]}
             >
-              <Input disabled />
+              <Input disabled style={{ width: "100%", padding:"12px" }}
+ />
             </Form.Item>
             <Form.Item
               label="Date Created"
@@ -460,8 +461,9 @@ const AddSection = () => {
             >
               <DatePicker
                 value={createDate && moment(createDate)}
-                style={{ width: "100%" }}
                 onChange={onChangeEnd}
+                style={{ width: "100%", padding:"12px" }}
+
               />
             </Form.Item>
             <Form.Item
@@ -469,7 +471,8 @@ const AddSection = () => {
               name="dcode"
               rules={[{ required: true, message: "Please select department!" }]}
             >
-              <Select key="dcodeId">
+              <Select key="dcodeId"  style={{ width: "100%", height:"45px" }}
+>
                 {department.map((department) => (
                   <Option key={department.did} value={department.did}>
                     {department.dname}
@@ -483,7 +486,7 @@ const AddSection = () => {
               name="program"
               rules={[{ required: true, message: "Please select Program !" }]}
             >
-              <Select style={{ width: "100%" }}>
+              <Select style={{ width: "100%", height:"45px" }}>
                 <Option value="Degree">Degree</Option>
                 <Option value="Masters">Masters</Option>
               </Select>
@@ -495,9 +498,10 @@ const AddSection = () => {
                 { required: true, message: "Please select program type!" },
               ]}
             >
-              <Select style={{ width: "100%" }}>
+              <Select style={{ width: "100%", height:"45px" }}>
                 <Option value="Regular">Regular</Option>
                 <Option value="Extension">Extension</Option>
+                <Option value="Extension">Weekend</Option>
               </Select>
             </Form.Item>
           </Form>

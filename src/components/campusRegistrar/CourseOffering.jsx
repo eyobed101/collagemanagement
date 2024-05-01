@@ -208,7 +208,7 @@ const CourseOffering = () => {
       <div>
         <Select
           placeholder="Select Section"
-          style={{ width: 200, marginBottom: 16 }}
+          style={{ width: 200, marginBottom: 16, height:"45px" }}
           onChange={handleSectionChange}
         >
           {sections.map((section) => (
@@ -220,7 +220,7 @@ const CourseOffering = () => {
         {selectedSection && (
           <Select
             placeholder="Select Program"
-            style={{ width: 200, marginBottom: 16, marginLeft: 30 }}
+            style={{ width: 200, marginBottom: 16, marginLeft: 30 , height:"45px"}}
             onChange={handleSectionProgramChange}
           >
             <Option value="TVET">TVET</Option>
@@ -229,9 +229,19 @@ const CourseOffering = () => {
           </Select>
         )}
       </div>
-      <p className="!font-jakarta text-left text-[#3b608e] text-[17px] font-bold align-middle">
-        Courses{" "}
-      </p>
+      
+      <h2
+        style={{
+          color: "black",
+          padding: "10px",
+          fontSize: "21px",
+          borderRadius: "8px",
+          backgroundColor:"#E9F4FC",
+          textAlign:"center"
+        }}
+      >
+        Courses
+      </h2>
       <div className="bg-white p-5 rounded-md shadow-md">
 
         <Table
@@ -250,9 +260,21 @@ const CourseOffering = () => {
           pagination={false}
         />
       </div>
-      <p className="!font-jakarta text-left text-[#3b608e] text-[17px] mt-8 font-bold align-middle">
+      {/* <p className="!font-jakarta text-left text-[#3b608e] text-[17px] mt-8 font-bold align-middle">
         Offered Courses{" "}
-      </p>
+      </p> */}
+      <h2
+        style={{
+          color: "black",
+          padding: "10px",
+          fontSize: "21px",
+          borderRadius: "8px",
+          backgroundColor:"#E9F4FC",
+          textAlign:"center"
+        }}
+      >
+       Offered Courses
+      </h2>
       <div className="bg-white p-5 rounded-md shadow-md">
         <Table
           dataSource={otherTableData}

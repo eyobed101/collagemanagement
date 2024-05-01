@@ -28,12 +28,10 @@ const AddCourse = () => {
   const [secondForm] = Form.useForm();
   const [editingKey, setEditingKey] = useState("");
   const [tableData, setTableData] = useState([]);
-  const [data , setData] = useState([]);
+  const [data, setData] = useState([]);
   const [modalDataState, setModalDataState] = useState([]);
-  const [courseNo , setCourseNo] = useState([]);
-  const [program , setProgram] = useState(null);
-
-
+  const [courseNo, setCourseNo] = useState([]);
+  const [program, setProgram] = useState(null);
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -186,8 +184,6 @@ const AddCourse = () => {
       const response = await axiosInstance.post(`/api/Courses`, postData);
       console.log("POST request successful:", response.data);
       message.success("The course is updated .");
-
-
     } catch (error) {
       console.error("POST request failed:", error);
       // Reset form fields after submission
@@ -257,44 +253,40 @@ const AddCourse = () => {
     });
 
     setEditingKey("delete");
-
-  
   };
 
-  const handleProgramChange = (value) =>{
+  const handleProgramChange = (value) => {
     setProgram(value);
-  }
+  };
 
   const handleDepartmentChange = (value) => {
-
     // Check if department is selected
     if (!value) {
-      message.error('Please choose a department first');
+      message.error("Please choose a department first");
       setModalData([...modalDataState]);
       return;
     }
 
     // Filter modalData based on selected department
-    const filteredDatas = data.filter(department => department.did === value);
-    const departmentNames = filteredDatas.map(department => department.dname);
-    console.log("test d" , value)
+    const filteredDatas = data.filter((department) => department.did === value);
+    const departmentNames = filteredDatas.map((department) => department.dname);
+    console.log("test d", value);
 
-    const filteredData =  modalDataState.filter(item => item.dname === value );
+    const filteredData = modalDataState.filter((item) => item.dname === value);
     setModalData(filteredData);
 
-   if(program){
-    const filteredCourses = tableData.filter(course => course.dcode === value && course.program === program);
-    setCourseNo(filteredCourses);
-   }
+    if (program) {
+      const filteredCourses = tableData.filter(
+        (course) => course.dcode === value && course.program === program
+      );
+      setCourseNo(filteredCourses);
+    }
 
-   
-
-    console.log("test" ,courseNo)
-
+    console.log("test", courseNo);
 
     secondForm.setFieldsValue({
-      dname : value
-    }); 
+      dname: value,
+    });
   };
 
   useEffect(() => {
@@ -305,24 +297,11 @@ const AddCourse = () => {
     console.log("Updated courseNo:", courseNo);
   }, [courseNo]);
 
-
-
   const columns = [
     { title: "Course No", dataIndex: "courseNo", key: "courseNo" },
     { title: "Course Name", dataIndex: "courseName", key: "courseName" },
     { title: "Credit Hour", dataIndex: "creditHour", key: "creditHour" },
-    // { title: 'Contact Hour', dataIndex: 'contactHour', key: 'contactHour' },
-    {
-      title: "Acad Term Level",
-      dataIndex: "acadTermLevel",
-      key: "acadTermLevel",
-    },
-    {
-      title: "Acad Year Level",
-      dataIndex: "acadYearLevel",
-      key: "acadYearLevel",
-    },
-    // { title: 'Course Order', dataIndex: 'courseOrder', key: 'courseOrder' },
+
     {
       title: "Department",
       dataIndex: "dcode",
@@ -334,8 +313,7 @@ const AddCourse = () => {
       },
     },
     { title: "Program", dataIndex: "program", key: "program" },
-    { title: "Has Prereq", dataIndex: "hasPreReq", key: "hasPreReq" },
-    { title: "Has Lab", dataIndex: "hasLab", key: "hasLab" },
+
   ];
 
   const column1 = [
@@ -405,84 +383,149 @@ const AddCourse = () => {
 
   return (
     <div>
-   <Form form={form} onFinish={onFinish} layout="vertical">
-  <Row gutter={16}>
-    <Col span={12}>
-      <Form.Item name="courseNo" label="Course No" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="courseName" label="Course Name" rules={[{ required: true }]}>
-        <Input />
-      </Form.Item>
-      <Form.Item name="creditHour" label="Credit Hour" rules={[{ required: true }]}>
-        <Input type="number" />
-      </Form.Item>
-      <Form.Item name="contacthour" label="Contact Hour" rules={[{ required: true }]}>
-        <Input type="number" />
-      </Form.Item>
-      <Form.Item name="courseOrder" label="Course Order" rules={[{ required: true }]}>
-        <Input  type="number" />
-      </Form.Item>
-      <Form.Item name="thesis" label="Has Thesis" rules={[{ required: true }]}>
-        <Radio.Group>
-          <Radio value={true}>Yes</Radio>
-          <Radio value={false}>No</Radio>
-        </Radio.Group>
-      </Form.Item>
-    
-    </Col>
-    <Col span={12}>
-    <Form.Item name="acadTermLevel" label="Acad Term Level" rules={[{ required: true }]}>
-        <Input  type="number" />
-      </Form.Item>
-      <Form.Item name="acadYearLevel" label="Acad Year Level" rules={[{ required: true }]}>
-        <Input type="number" />
-      </Form.Item>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        layout="vertical"
+        className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md "
+      >
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="courseNo"
+              label="Course No"
+              rules={[{ required: true }]}
+            >
+              <Input style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="courseName"
+              label="Course Name"
+              rules={[{ required: true }]}
+            >
+              <Input style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="creditHour"
+              label="Credit Hour"
+              rules={[{ required: true }]}
+            >
+              <Input type="number" style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="contacthour"
+              label="Contact Hour"
+              rules={[{ required: true }]}
+            >
+              <Input type="number" style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="courseOrder"
+              label="Course Order"
+              rules={[{ required: true }]}
+            >
+              <Input type="number" style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="thesis"
+              label="Has Thesis"
+              rules={[{ required: true }]}
+            >
+              <Radio.Group style={{ width: "100%", height: "45px" }}>
+                <Radio value={true}>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="acadTermLevel"
+              label="Acad Term Level"
+              rules={[{ required: true }]}
+            >
+              <Input type="number" style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
+            <Form.Item
+              name="acadYearLevel"
+              label="Acad Year Level"
+              rules={[{ required: true }]}
+            >
+              <Input type="number" style={{ width: "100%", height: "45px" }} />
+            </Form.Item>
 
-      <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-      <Select key="dcode" onChange={handleDepartmentChange}>
-          {data.map(department => (
-            <Option key={department.did} value={department.did}>
-              {department.dname}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item name="program" label="Program" rules={[{ required: true }]}>
-        <Select onChange={handleProgramChange}>
-        <Option value="TVET">TVET</Option>
-          <Option value="Diploma">Masters</Option>
-          <Option value="Degree">Degree</Option>
-          <Option value="Masters">Masters</Option>
-          <Option value="PHD">PHD</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item name="hasPreReq" label="Has PreReq" rules={[{ required: true }]}>
-        <Radio.Group onChange={(e) => handleHasPrereqChange(e.target.value)} >
-          <Radio value={true}>Yes</Radio>
-          <Radio value={false}>No</Radio>
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item name="hasLab" label="Has Lab" rules={[{ required: true }]}>
-        <Radio.Group>
-          <Radio value={true}>Yes</Radio>
-          <Radio value={false}>No</Radio>
-        </Radio.Group>
-      </Form.Item>
-     
-    </Col>
-  </Row>
-  <Form.Item>
-    <Button type="primary" style={{ backgroundColor: '#4279A6' }} htmlType="submit">
-      Add Course
-    </Button>
-  </Form.Item>
-  
-</Form>
+            <Form.Item
+              name="dcode"
+              label="Department"
+              rules={[{ required: true }]}
+            >
+              <Select
+                key="dcode"
+                onChange={handleDepartmentChange}
+                style={{ width: "100%", height: "45px" }}
+              >
+                {data.map((department) => (
+                  <Option key={department.did} value={department.did}>
+                    {department.dname}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="program"
+              label="Program"
+              rules={[{ required: true }]}
+            >
+              <Select
+                onChange={handleProgramChange}
+                style={{ width: "100%", height: "45px" }}
+              >
+                <Option value="TVET">TVET</Option>
+                <Option value="Diploma">Masters</Option>
+                <Option value="Degree">Degree</Option>
+                <Option value="Masters">Masters</Option>
+                <Option value="PHD">PHD</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="hasPreReq"
+              label="Has PreReq"
+              rules={[{ required: true }]}
+            >
+              <Radio.Group
+                onChange={(e) => handleHasPrereqChange(e.target.value)}
+                style={{ width: "100%", height: "45px" }}
+              >
+                <Radio value={true}>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item
+              name="hasLab"
+              label="Has Lab"
+              rules={[{ required: true }]}
+            >
+              <Radio.Group style={{ width: "100%", height: "45px" }}>
+                <Radio value={true}>Yes</Radio>
+                <Radio value={false}>No</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item>
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#4279A6", height: "45px" }}
+            htmlType="submit"
+          >
+            Add Course
+          </Button>
+        </Form.Item>
+      </Form>
 
-<Modal
-        title= {editingKey ? "Edit Course Prerequisities":"Course Prerequisites"} 
-
+      <Modal
+        title={
+          editingKey ? "Edit Course Prerequisities" : "Course Prerequisites"
+        }
         visible={modalVisible}
         onOk={editingKey ? handleEdit : handleModalOk}
         onCancel={handleModalCancel}
@@ -497,61 +540,92 @@ const AddCourse = () => {
         />
         <div style={{ marginTop: "10%" }} />
         <Form form={secondForm} onFinish={onFinishType}>
-  {/* Second form items for CoursePrerequisites */}
-  <Form.Item
-    name="courseNo"
-    label="Course No"
-    rules={[{ required: true }]}
-  >
-    <Input />
-  </Form.Item>
-  
-  {/* Conditionally render courseNoPre field */}
-  {courseNo.length > 0 && (
- <Form.Item name="courseNoPre" label="Course No Pre" rules={[{ required: true }]}>
- <Select key="courseNoPre">
-   {Array.from(new Set(courseNo.map(course => course.courseNo))).map(courseNoValue => (
-     <Option key={courseNoValue} value={courseNoValue}>
-       {courseNo.find(course => course.courseNo === courseNoValue).courseName}
-     </Option>
-   ))}
- </Select>
-</Form.Item>
+          {/* Second form items for CoursePrerequisites */}
+          <Form.Item
+            name="courseNo"
+            label="Course No"
+            rules={[{ required: true }]}
+          >
+            <Input style={{ width: "100%", height: "45px" }} />
+          </Form.Item>
 
-  )}
+          {/* Conditionally render courseNoPre field */}
+          {courseNo.length > 0 && (
+            <Form.Item
+              name="courseNoPre"
+              label="Course No Pre"
+              rules={[{ required: true }]}
+            >
+              <Select
+                key="courseNoPre"
+                style={{ width: "100%", height: "45px" }}
+              >
+                {Array.from(
+                  new Set(courseNo.map((course) => course.courseNo))
+                ).map((courseNoValue) => (
+                  <Option key={courseNoValue} value={courseNoValue}>
+                    {
+                      courseNo.find(
+                        (course) => course.courseNo === courseNoValue
+                      ).courseName
+                    }
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
 
-  <Form.Item name="dcode" label="Department" rules={[{ required: true }]}>
-    <Select key="dcode">
-      {data.map(department => (
-        <Option key={department.did} value={department.did}>
-          {department.dname}
-        </Option>
-      ))}
-    </Select>
-  </Form.Item>
+          <Form.Item
+            name="dcode"
+            label="Department"
+            rules={[{ required: true }]}
+          >
+            <Select key="dcode" style={{ width: "100%", height: "45px" }}>
+              {data.map((department) => (
+                <Option key={department.did} value={department.did}>
+                  {department.dname}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-  <Form.Item
-    name="preRequisiteMandatory"
-    label="Prerequisite"
-    rules={[{ required: true }]}
-  >
-    <Select>
-      <Option value="Optional">Optional</Option>
-      <Option value="Mandatory">Mandatory</Option>
-    </Select>
-  </Form.Item>
+          <Form.Item
+            name="preRequisiteMandatory"
+            label="Prerequisite"
+            rules={[{ required: true }]}
+          >
+            <Select style={{ width: "100%", height: "45px" }}>
+              <Option value="Optional">Optional</Option>
+              <Option value="Mandatory">Mandatory</Option>
+            </Select>
+          </Form.Item>
 
-  <Form.Item name="checkbox" valuePropName="checked">
-    <Checkbox>Post values</Checkbox>
-  </Form.Item>
-</Form>
-
+          <Form.Item name="checkbox" valuePropName="checked">
+            <Checkbox style={{ height: "45px" }}>Post values</Checkbox>
+          </Form.Item>
+        </Form>
       </Modal>
 
-
-      <h2>Course Table</h2>
-      <Table dataSource={tableData} columns={columns} rowKey="key" bordered  />
-
+      <h2
+        style={{
+          color: "black",
+          padding: "10px",
+          fontSize: "21px",
+          borderRadius: "8px",
+          marginBottom: "20px",
+          backgroundColor:"#E9F4FC",
+          textAlign:"center"
+        }}
+      >
+        Course Table
+      </h2>
+      <Table
+        dataSource={tableData}
+        columns={columns}
+        rowKey="key"
+        bordered
+        style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)", borderRadius: "8px" }}
+      />
     </div>
   );
 };
