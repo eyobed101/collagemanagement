@@ -10,6 +10,7 @@ const GradeChangeSubmission = () => {
   const [semester, setSemester] = useState('');
   const [student, setStudent] = useState('');
   const [prevTotalMark, setPrevTotalMark] = useState('');
+  const [prevGrade, setPrevGrade] = useState('');
   const [reason, setReason] = useState('');
   const [newTotalMark, setNewTotalMark] = useState('');
   const [newGrade, setNewGrade] = useState('');
@@ -17,6 +18,7 @@ const GradeChangeSubmission = () => {
   const [filteredAssessmentData, setFilteredAssessmentData] = useState([]);
   const [studentData , setStudentData] = useState([])
   const [assesment , setAssement] = useState([])
+
 
 
 
@@ -65,8 +67,39 @@ const GradeChangeSubmission = () => {
         );
         
         setAssessmentData(filteredData);
-        console.log("test" ,filteredData);
-        setFilteredAssessmentData(filteredData); // Set filtered assessment data
+        console.log("test is" ,filteredData);
+        const totalAssessmentWeight = filteredData.reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.assessmentWeight;
+        }, 0);
+        console.log("Total Assessment Weight Result:", totalAssessmentWeight);
+        setPrevTotalMark(totalAssessmentWeight);
+
+                setFilteredAssessmentData(filteredData);
+                 // Set filtered assessment data
+                 let grade;
+                 if (totalAssessmentWeight >= 90) {
+                   grade = 'A+';
+                 } else if (totalAssessmentWeight >= 85) {
+                   grade = 'A';
+                 } else if (totalAssessmentWeight >= 80) {
+                   grade = 'A-';
+                 }  else if (totalAssessmentWeight >= 75) {
+                   grade = 'B+';
+                 }  else if (totalAssessmentWeight >= 70) {
+                   grade = 'B';
+                 }  else if (totalAssessmentWeight >= 65) {
+                   grade = 'B-';
+                 }  else if (totalAssessmentWeight >= 60) {
+                   grade = 'C+';
+                 } else if (totalAssessmentWeight >= 50) {
+                   grade = 'C';
+                 } else if (totalAssessmentWeight >= 45) {
+                   grade = 'D';
+                 }         
+                 else {
+                   grade = 'F';
+                 }
+                 setPrevGrade(grade);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -109,14 +142,12 @@ const GradeChangeSubmission = () => {
 
     for (let i = 0; i < assessmentData.length; i++) {
  
-        transposedData.push({ studID: assessmentData[i].studID, assessmentName: assessmentData[i].assessmentName, assessmentWeight: assessmentData[i].assessmentWeight ,courseNo: assessmentData[i].courseNo ,termID: assessmentData[i].termID , instID: assessmentData[i].instID , assessmentDate: assessmentDate  });
-      }
-   
+        transposedData.push({id: assessmentData[i].id, studID: assessmentData[i].studID, assessmentName: assessmentData[i].assessmentName, assessmentWeight: assessmentData[i].assessmentWeight ,courseNo: assessmentData[i].courseNo ,termID: assessmentData[i].termID , instID: assessmentData[i].instID , assessmentDate: assessmentDate  });
+      } 
 
-     console.log("transe" , transposedData)
-
-    for(let i=0 ; i<assessmentData.length ; i++ ){
-      await axiosInstance.put(`/api/StudentMarks/${assessmentData[i].id}`, transposedData)
+     console.log("transe" , transposedData)    
+    for(let i=0 ; i< transposedData.length ; i++ ){
+      await axiosInstance.put(`/api/StudentMarks/`, [transposedData[i]] )
       .then(response => {
         console.log('Assesment created successfully:', response.data);
         message.success("Student mark Created Successfully")        
@@ -137,8 +168,8 @@ const GradeChangeSubmission = () => {
     setPrevTotalMark('');
     setReason('');
     setAssessmentData([]);
-    setNewTotalMark('');
-    setNewGrade('');
+    // setNewTotalMark('');
+    // setNewGrade('');
   };
 
   const handleStudentChange = (value) => {
@@ -146,6 +177,7 @@ const GradeChangeSubmission = () => {
     // Filter assessment data based on selected student
     // const filteredData = assessmentDatas.filter((item) => item.student === value);
     setFilteredAssessmentData(assessmentDatas);
+    console.log("ass" , assessmentDatas)
     // console.log("test  ", filteredData)
   };
 
@@ -207,8 +239,39 @@ const GradeChangeSubmission = () => {
       const newData = assessmentData.map((item) =>
       item.key == record.key && item.assessmentName == record.assessmentName  ? { ...item, assessmentWeight: value } : item
     );
+
+    const total = newData.reduce((acc, curr) => acc + parseFloat(curr.assessmentWeight || 0), 0);
+
     setAssessmentData(newData);
     console.log("best" , newData);
+    console.log("total" , total)
+    setNewTotalMark(total);
+
+    let grade;
+    if (total >= 90) {
+      grade = 'A+';
+    } else if (total >= 85) {
+      grade = 'A';
+    } else if (total >= 80) {
+      grade = 'A-';
+    }  else if (total >= 75) {
+      grade = 'B+';
+    }  else if (total >= 70) {
+      grade = 'B';
+    }  else if (total >= 65) {
+      grade = 'B-';
+    }  else if (total >= 60) {
+      grade = 'C+';
+    } else if (total >= 50) {
+      grade = 'C';
+    } else if (total >= 45) {
+      grade = 'D';
+    }         
+    else {
+      grade = 'F';
+    }
+     setNewGrade(grade);  
+
     }  
   };
 
@@ -301,8 +364,8 @@ const GradeChangeSubmission = () => {
         <div style={{ marginTop:'20px',marginBottom: '16px' , flexDirection :'row' ,justifyContent:'flex-start' , display:'flex',  }}>
       <div style={{display:'flex' , flexDirection:'column' , marginRight:'27%'}}>
       <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Prev. Total Mark</label>  
-      <label style={{marginBottom:10 , color:'#333' , fontSize:14 , marginTop:10}}>0.00</label>  
-      <label style={{marginBottom:10 , color:'#333' , fontSize:14 , marginTop:10}}>Prev. Grade</label>  
+      <label style={{marginBottom:10 , color:'#333' , fontSize:14 , marginTop:10}}>{prevTotalMark}</label>  
+      <label style={{marginBottom:10 , color:'#333' , fontSize:14 , marginTop:10}}>Prev. Grade  {prevGrade}</label>  
         </div>
         <div style={{display:'flex' , flexDirection:'column' , marginRight:40}}>
       <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Reason</label>  
@@ -322,7 +385,7 @@ const GradeChangeSubmission = () => {
         <Col span={6}>
           <InputNumber
             value={newTotalMark}
-            onChange={(value) => setNewTotalMark(value)}
+            // onChange={(value) => setNewTotalMark(value)}
             placeholder="New Total Mark"
             style={{ width: '100%' }}
           />
@@ -330,7 +393,7 @@ const GradeChangeSubmission = () => {
         <Col span={6}>
           <Input
             value={newGrade}
-            onChange={(e) => setNewGrade(e.target.value)}
+            // onChange={(e) => setNewGrade(e.target.value)}
             placeholder="New Grade"
           />
         </Col>

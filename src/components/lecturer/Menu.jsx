@@ -44,9 +44,9 @@ const LucturerSiderGenerator = () => {
   const [isLucturer, setIsLecturer] = useState(false);
   const [isSubject, setIsSubject] = useState(false);
   const [isRegisterAssesment, setIsRegisterAssesment] = useState(false);
-  const [isMaintainAssesment, setIsMaintainAssesment] = useState(false);
+  const [isMaintainAssesment, setIsMaintainAssesment] = useState(true);
   const [isSubmitGrade , setIsSubmitGrade] = useState(false);
-  const [isGradeChange, setIsGradeChange] = useState(true);
+  const [isGradeChange, setIsGradeChange] = useState(false);
   const [isThesis, setThesis] = useState(false);
   
 
@@ -62,7 +62,6 @@ const LucturerSiderGenerator = () => {
     setIsRegisterAssesment(false)
     setIsMaintainAssesment(false)
     setThesis(true)
-
   }
 
 
@@ -153,12 +152,12 @@ const LucturerSiderGenerator = () => {
             },
             {
               icon: <GradeOutlined {...icon} />,
-              name: "Grade Submission",
+              name: "Grade Submission From Excel",
               onClick: handleGradeChange,
             },
             {
               icon: <MailOutlineTwoTone {...icon} />,
-              name: "Maintain Assignment",
+              name: "Maintain Assignment Form ",
               onClick: handleAssessment,
             },
             {
