@@ -292,34 +292,10 @@ const assessmentDate = `${year}-${month}-${day}`;
 
     } else {
       console.log("Filtered data is empty");
-    }
-
-  
-
-
-
-  
+    }  
   };
 
-  const convertToLetterGrade = (grade) => {
-    if (grade > 85) {
-      return 'A+';
-    } else if (grade > 80) {
-      return 'A-';
-    } else if (grade > 75) {
-      return 'B+';
-    } else if (grade > 70) {
-      return 'B';
-    } else if (grade > 65) {
-      return 'B-';
-    } else if (grade > 60) {
-      return 'C+';
-    } else if (grade > 50) {
-      return 'C';
-    } else {
-      return 'F';
-    }
-  };
+
 
   const handleAcadamic = async (value) => {
     setAcademicYear(value);
@@ -339,11 +315,7 @@ const assessmentDate = `${year}-${month}-${day}`;
   const MyTableComponent = ({ data }) => {
     // Separate columns and data
     const [columns, ...dataSource] = data;
-  
-    // Check if the "total" value exists in the column data
-    const hasTotal = columns.includes('total');
-  
-    // State to track whether columns have been processed
+    
     const [columnsProcessed, setColumnsProcessed] = useState(false);
   
     // Initialize antdColumns with the basic columns
@@ -453,21 +425,120 @@ const assessmentDate = `${year}-${month}-${day}`;
         No: ++index,
         StudId: studID,
       };
+      let total = 0; // Initialize total
+
       uniqueAssessmentNames.forEach(assessmentName => {
         const assessmentWeight = data.find(item => item.studID === studID && item.assessmentName === assessmentName)?.assessmentWeight || '';
         rowData[assessmentName] = assessmentWeight;
+        total += parseFloat(assessmentWeight || 0);
+
       });
+      rowData["Total"] = total; // Add total to rowData
       tableData.push(rowData);
     });
   
     // Generate columns for table
-    const columns = ['No', 'StudId', ...uniqueAssessmentNames].map((title, index) => ({
-      title,
-      dataIndex: title,
-      key: title,
-    }));
+
+    const columns = [
+      {
+        title: 'No',
+        dataIndex: 'No',
+        key: 'No',
+        editable: false,
+      },
+      {
+        title: 'StudId',
+        dataIndex: 'StudId',
+        key: 'StudId',
+        editable: false,
+      },
+      ...uniqueAssessmentNames.map((assessmentName) => ({
+        title: assessmentName,
+        dataIndex: assessmentName,
+        key: assessmentName,
+        editable: true,
+      })),
+      {
+        title: 'Total',
+        dataIndex: 'Total',
+        key: 'Total',
+        editable: false,
+      },
+      {
+        title: 'Grade',
+        dataIndex: 'Grade',
+        key: 'Grade',
+        render: (text, record) => {
+          // Determine grade based on total score
+          const total = record.Total;
+          let grade;
+          if (total >= 90) {
+            grade = 'A+';
+          } else if (total >= 85) {
+            grade = 'A';
+          } else if (total >= 80) {
+            grade = 'A-';
+          }  else if (total >= 75) {
+            grade = 'B+';
+          }  else if (total >= 70) {
+            grade = 'B';
+          }  else if (total >= 65) {
+            grade = 'B-';
+          }  else if (total >= 60) {
+            grade = 'C+';
+          } else if (total >= 50) {
+            grade = 'C';
+          } else if (total >= 45) {
+            grade = 'D';
+          }         
+          else {
+            grade = 'F';
+          }
+          return grade;
+        },
+      },
+      {
+        title: 'NG',
+        dataIndex: 'ng',
+        key: 'ng',
+        render: (text, record) => {
+          if (record['Total'] === null || record['Final'] === null) return 'NG';
+          return '';
+        }
+      },
+      {
+        title: 'IA',
+        dataIndex: 'ia',
+        key: 'ia',
+        render: (text, record) => {
+          if (record['Total'] === null || record['Total'] < 30) return 'IA';
+          return '';
+        }
+      },
+      {
+        title: 'F',
+        dataIndex: 'f',
+        key: 'f',
+        render: (text, record) => {
+          if (record['Total'] < 40) return 'F';
+          return '';
+        }
+      }
+     
+    ];
+    // const columns = ['No', 'StudId', ...uniqueAssessmentNames].map((title, index) => ({
+    //   title,
+    //   dataIndex: title,
+    //   key: title,
+    // }));
   
-    return <Table columns={columns} dataSource={tableData} />;
+    return <>
+     <div style={{ overflowX: 'auto' }}>
+     <Table columns={columns} dataSource={tableData}  scroll={{x : true}}/>
+     </div>
+    </>
+    
+    // <Table columns={columns} dataSource={tableData} />;
   };
 
 

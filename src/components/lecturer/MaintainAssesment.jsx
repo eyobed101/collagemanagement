@@ -575,6 +575,67 @@ const handleCreateSave = async (values) => {
         editable: false,
       },
       {
+        title: 'Grade',
+        dataIndex: 'Grade',
+        key: 'Grade',
+        render: (text, record) => {
+          // Determine grade based on total score
+          const total = record.Total;
+          let grade;
+          if (total >= 90) {
+            grade = 'A+';
+          } else if (total >= 85) {
+            grade = 'A';
+          } else if (total >= 80) {
+            grade = 'A-';
+          }  else if (total >= 75) {
+            grade = 'B+';
+          }  else if (total >= 70) {
+            grade = 'B';
+          }  else if (total >= 65) {
+            grade = 'B-';
+          }  else if (total >= 60) {
+            grade = 'C+';
+          } else if (total >= 50) {
+            grade = 'C';
+          } else if (total >= 45) {
+            grade = 'D';
+          }         
+          else {
+            grade = 'F';
+          }
+          return grade;
+        },
+      },
+      {
+        title: 'NG',
+        dataIndex: 'ng',
+        key: 'ng',
+        render: (text, record) => {
+          if (record['Total'] === null || record['Final'] === null) return 'NG';
+          return '';
+        }
+      },
+      {
+        title: 'IA',
+        dataIndex: 'ia',
+        key: 'ia',
+        render: (text, record) => {
+          if (record['Total'] === null || record['Total'] < 30) return 'IA';
+          return '';
+        }
+      },
+      {
+        title: 'F',
+        dataIndex: 'f',
+        key: 'f',
+        render: (text, record) => {
+          if (record['Total'] < 40) return 'F';
+          return '';
+        }
+      },
+     
+      {
         title: 'Action',
         key: 'action',
         render: (text, record) => (
@@ -582,9 +643,9 @@ const handleCreateSave = async (values) => {
           <Button type="link" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button type="link" onClick={() => handleDelete(record)}>
+          {/* <Button type="link" onClick={() => handleDelete(record)}>
             Delete
-          </Button>
+          </Button> */}
           </>
         ),
       },
@@ -593,7 +654,10 @@ const handleCreateSave = async (values) => {
     
   
     return <> 
-     <Table columns={columns} dataSource={tableData} />
+        <div style={{ overflowX: 'auto' }}>
+     <Table columns={columns} dataSource={tableData}  scroll={{x : true}}/>
+     </div>
+
     {selectedRowData && (
         <EditAssessmentModal
           visible={modalVisible}
