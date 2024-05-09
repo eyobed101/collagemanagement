@@ -109,14 +109,12 @@ const GradeChangeSubmission = () => {
 
     for (let i = 0; i < assessmentData.length; i++) {
  
-        transposedData.push({ studID: assessmentData[i].studID, assessmentName: assessmentData[i].assessmentName, assessmentWeight: assessmentData[i].assessmentWeight ,courseNo: assessmentData[i].courseNo ,termID: assessmentData[i].termID , instID: assessmentData[i].instID , assessmentDate: assessmentDate  });
-      }
-   
+        transposedData.push({id: assessmentData[i].id, studID: assessmentData[i].studID, assessmentName: assessmentData[i].assessmentName, assessmentWeight: assessmentData[i].assessmentWeight ,courseNo: assessmentData[i].courseNo ,termID: assessmentData[i].termID , instID: assessmentData[i].instID , assessmentDate: assessmentDate  });
+      } 
 
-     console.log("transe" , transposedData)
-
-    for(let i=0 ; i<assessmentData.length ; i++ ){
-      await axiosInstance.put(`/api/StudentMarks/${assessmentData[i].id}`, transposedData)
+     console.log("transe" , transposedData)    
+    for(let i=0 ; i< transposedData.length ; i++ ){
+      await axiosInstance.put(`/api/StudentMarks/`, [transposedData[i]] )
       .then(response => {
         console.log('Assesment created successfully:', response.data);
         message.success("Student mark Created Successfully")        
@@ -207,8 +205,12 @@ const GradeChangeSubmission = () => {
       const newData = assessmentData.map((item) =>
       item.key == record.key && item.assessmentName == record.assessmentName  ? { ...item, assessmentWeight: value } : item
     );
+
+    const total = newData.reduce((acc, curr) => acc + parseFloat(curr.assessmentWeight || 0), 0);
+
     setAssessmentData(newData);
     console.log("best" , newData);
+    console.log("total" , total)
     }  
   };
 
