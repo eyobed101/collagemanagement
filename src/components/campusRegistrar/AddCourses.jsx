@@ -12,6 +12,8 @@ import {
   Checkbox,
   Popconfirm,
   message,
+  notification,
+  Spin
 } from "antd";
 import axios from "axios";
 import { api } from "../constants";
@@ -109,9 +111,17 @@ const AddCourse = () => {
             }/${parseInt(values.dcode)}`,
             postData
           );
+          notification.success({
+            message: "Update Successful",
+            description: "Course updated successfully!",
+          });
           console.log("Put request successful:", response.data);
         } catch (error) {
           console.error("PUT request failed:", error);
+          notification.error({
+            message: "Update Failed",
+            description: `Error updating course : ${error.message || error}`,
+          });
           // Handle the rejection by showing an error message or taking appropriate action
         }
       })
@@ -143,6 +153,7 @@ const AddCourse = () => {
 
             // Close the modal
             setModalVisible(false);
+
           })
           .catch((error) => {
             console.error("POST request failed:", error.message);
@@ -162,7 +173,6 @@ const AddCourse = () => {
   };
 
   const onFinish = async (values) => {
-    console.log("finsig");
     try {
       // Make a POST request to the API endpoint
       const postData = {
@@ -180,13 +190,22 @@ const AddCourse = () => {
         contacthour: values.contacthour,
         thesis: values.thesis == true ? "Yes" : "No",
       };
-      console.log("Response iss", postData);
       const response = await axiosInstance.post(`/api/Courses`, postData);
-      console.log("POST request successful:", response.data);
-      message.success("The course is updated .");
+
+      notification.success({
+        message: "Successful",
+        description: "Course created successfully!",
+      });
+      form.resetFields();
+
     } catch (error) {
       console.error("POST request failed:", error);
-      // Reset form fields after submission
+      notification.error({
+        message: "Failed",
+        description: `Error creating course: ${error.message || error}`,
+      });
+      form.resetFields();
+
     }
   };
 
@@ -480,10 +499,8 @@ const AddCourse = () => {
                 style={{ width: "100%", height: "45px" }}
               >
                 <Option value="TVET">TVET</Option>
-                <Option value="Diploma">Masters</Option>
                 <Option value="Degree">Degree</Option>
                 <Option value="Masters">Masters</Option>
-                <Option value="PHD">PHD</Option>
               </Select>
             </Form.Item>
             <Form.Item

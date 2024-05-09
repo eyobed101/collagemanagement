@@ -7,6 +7,7 @@ import axios from "axios";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
+import {notification} from "antd";
 
 const AddDropManagement = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -175,6 +176,11 @@ const AddDropManagement = () => {
         }
       );
 
+      notification.success({
+        message: "Successful",
+        description: "Add and drop operation is successfull!",
+      });
+
       setSuccess(true);
       setError(null);
 
@@ -185,6 +191,10 @@ const AddDropManagement = () => {
       console.error("Error:", error.message);
       setSuccess(false);
       setError(error.message);
+      notification.error({
+        message: "Failed",
+        description: `Error add and drop operation: ${error.message || error}`,
+      });
     } finally {
       setLoading(false);
     }

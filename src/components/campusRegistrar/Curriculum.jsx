@@ -10,6 +10,7 @@ import {
   Popconfirm,
   DatePicker,
   message,
+  notification
 } from "antd";
 
 import axios from "axios";
@@ -33,6 +34,7 @@ const Curriculum = () => {
   const [curriculum, setCurriculum] = useState([]);
   const [courses, setCourses] = useState([]);
   const [data, setData] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
   const [studyCenters, setStudyCenters] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [approvedDate, setApprovedDate] = useState(new Date());
@@ -40,6 +42,9 @@ const Curriculum = () => {
   const [endDate, setEndDate] = useState(null);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [filtereApiu, setFilteredApiu] = useState([]);
+  const [selectedDCode, setSelectedDCode] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState([]);
+  const [selectedProgramType, setSelectedProgramType] = useState([]);
 
   // Function to filter courses based on selected department
 
@@ -51,6 +56,7 @@ const Curriculum = () => {
         .get(`/api/Departments`)
         .then((response) => {
           setData(response.data);
+          console.log("Departments", response.data);
         })
         .catch((error) => {
           console.error("Error fetching department data:", error);
@@ -109,6 +115,7 @@ const Curriculum = () => {
       try {
         const response = await axiosInstance.get(`/api/Curricula`);
         setCurriculum(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -118,6 +125,32 @@ const Curriculum = () => {
 
     fetchData();
   }, []);
+
+  const handleDCodeChange = (value) => {
+    setSelectedDCode(value);
+    // Reset other selections
+    setSelectedProgram([]);
+    setSelectedProgramType([]);
+  };
+
+  const filteredPrograms = selectedDCode
+    ? curriculum.filter((course) => course.dcode === selectedDCode)
+    : [];
+  const uniquePrograms = [
+    ...new Set(filteredPrograms.map((course) => course.program)),
+  ];
+
+  const handleProgramChange = (value) => {
+    setSelectedProgram(value);
+    setSelectedProgramType([]);
+  };
+
+  const filteredProgramTypes = selectedProgram
+    ? curriculum.filter((course) => course.program === selectedProgram)
+    : [];
+  const uniqueProgramTypes = [
+    ...new Set(filteredProgramTypes.map((course) => course.programType)),
+  ];
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -169,22 +202,43 @@ const Curriculum = () => {
       console.log("POST request successful:", response.data);
 
       showCurriculumModal(false);
-      message.success("The curriculum of the is updated .");
+      // message.success("The curriculum of the is updated .");
+      notification.success({
+        message: "Successful",
+        description: "The curriculum is created successfully!",
+      });
 
       // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
       if (error.response) {
-        // The request was made, but the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-        console.error("Response headers:", error.response.headers);
+        showCurriculumModal(false);
+
+        notification.error({
+          message: "Failed",
+          description: `Error creating curriculum: ${error.message || error}`,
+        });
+        // // The request was made, but the server responded with a status code
+        // // that falls out of the range of 2xx
+        // console.error("Response data:", error.response.data);
+        // console.error("Response status:", error.response.status);
+        // console.error("Response headers:", error.response.headers);
       } else if (error.request) {
+        showCurriculumModal(false);
+
+        notification.error({
+          message: "Failed",
+          description: `Error creating curriculum: ${error.message || error.request}`,
+        });
         // The request was made but no response was received
-        console.error("Request data:", error.request);
       } else {
+        showCurriculumModal(false);
+
         // Something happened in setting up the request that triggered an Error
         console.error("Error message:", error.message);
+        notification.error({
+          message: "Failed",
+          description: `Error creating curriculum: ${error.message || error}`,
+        });
       }
       console.error("Config:", error.config);
       showCurriculumModal(false);
@@ -254,14 +308,14 @@ const Curriculum = () => {
       },
     },
     {
-      title: "Approved Date",
-      dataIndex: "approvedDate",
-      key: "approvedDate",
-    },
-    {
       title: "Program ",
       dataIndex: "program",
       key: "program",
+    },
+    {
+      title: "Program Type ",
+      dataIndex: "programType",
+      key: "programType",
     },
     {
       title: "Effective Start Date",
@@ -273,11 +327,7 @@ const Curriculum = () => {
       dataIndex: "effectiveEdate",
       key: "effectiveEdate",
     },
-    {
-      title: "Campus Id",
-      dataIndex: "campusId",
-      key: "campusId",
-    },
+
     {
       title: "Course Type",
       dataIndex: "courseType",
@@ -367,9 +417,6 @@ const Curriculum = () => {
     <div className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
       {/* <SiderGenerator navigate={navigate}/> */}
       <div className="list-sub mb-10 ml-[2%]">
-        <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0] ">
-          Curriculum List
-        </p>
         <Button
           type="primary"
           style={{
@@ -377,12 +424,67 @@ const Curriculum = () => {
             marginBottom: "15px",
             padding: "12px 24px",
             height: "auto",
+            fontWeight: "bold",
           }}
           onClick={showCurriculumModal}
         >
           New Curriculum
         </Button>
 
+        <div style={{ marginTop: 20, marginBottom: 10 }}>
+        <div className="flex flex-wrap w-full">
+
+        <div className="mb-10 flex flex-col mr-5">
+
+        <select
+            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            value={selectedDepartment ? selectedDepartment.dname : ""}
+            onChange={(e) =>
+              setSelectedDepartment(
+                data.find((dept) => dept.dname === e.target.value)
+              )
+            }
+          >
+            <option value="">Select Department</option>
+            {data.map((dept, index) => (
+              <option key={index} value={dept.dname}>
+                {dept.dname}
+              </option>
+            ))}
+          </select>
+          </div>
+          <div className="mb-10 flex flex-col mr-5">
+
+
+          <select
+            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            placeholder="Select Program"
+            onChange={(value) => handleProgramChange(value)}
+          >
+            <option value="">Select Program</option>
+            <option value="TVET">TVET</option>
+            <option value="Degree">Degree</option>
+            <option value="Masters">Masters</option>
+          </select>
+          </div>
+
+          <div className="mb-10 flex flex-col">
+
+
+          <select
+            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
+            placeholder="Select Program Type"
+            onChange={(value) => setSelectedProgramType(value)}
+          >
+            <option value="">Select Program Type</option>
+            <option value="Regular">Regular</option>
+            <option value="Extension">Extension</option>
+            <option value="Distance">Weekend</option>
+          </select>
+          </div>
+        </div>
+            </div>
+        
         <Modal
           title={editingKey ? "Edit Curriculum" : "Create New Curriculum"}
           visible={isCurriculumModalVisible}

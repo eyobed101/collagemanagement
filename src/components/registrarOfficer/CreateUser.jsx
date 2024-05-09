@@ -4,6 +4,8 @@ import { Modal, Button, Form, Input, Tabs, Select } from "antd";
 import axiosInstance from "@/configs/axios";
 import styled from "styled-components";
 import moment from "moment";
+import {notification} from "antd";
+
 
 // import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -214,11 +216,28 @@ const CreateUser = ({ sectionId }) => {
     XLSX.writeFile(wb, exportFileName);
   };
   const handleSubmit = async () => {
-    for (const account of generatedAccounts) {
-      await axiosInstance.post('/api/Authenticate/student/register', account);
+    try {
+        for (const account of generatedAccounts) {
+            await axiosInstance.post('/api/Authenticate/student/register', account);
+        }
+        setIsCreateVisible(false);
+        
+        console.log('All accounts have been successfully registered.');
+        notification.success({ message: 'Registration Success', description: 'All accounts have been successfully registered.' });
+    } catch (error) {
+        console.error('Failed to register accounts:', error);
+
+        notification.error({ message: 'Registration Error', description: 'There was a problem registering accounts.' });
+
+        setIsCreateVisible(false); 
     }
-    setIsCreateVisible(false);
-  };
+};
+  // const handleSubmit = async () => {
+  //   for (const account of generatedAccounts) {
+  //     await axiosInstance.post('/api/Authenticate/student/register', account);
+  //   }
+  //   setIsCreateVisible(false);
+  // };
 
   // const filteredApplicants = applicants
   //   .filter((student) => {
@@ -365,12 +384,21 @@ const CreateUser = ({ sectionId }) => {
           },
         }
       );
+      notification.success({
+        message: "Successful",
+        description: "Student updating is successfull!",
+      });
       setIsModalVisible(false);
+
       setEditingStudent(null);
       fetchApplicant();
       // fetchStudents(); // Refetch students to show the updated data
     } catch (error) {
       console.error("Failed to update student", error);
+      notification.error({
+        message: "Failed",
+        description: `Error updating student ${error.message || error}`,
+      });
     }
   };
 

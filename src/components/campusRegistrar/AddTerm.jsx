@@ -9,6 +9,7 @@ import {
   Modal,
   Form,
   message,
+  notification
 } from "antd";
 import moment from "moment";
 import axios from "axios";
@@ -64,8 +65,8 @@ const AddTerm = () => {
           }
         });
 
-        console.log(test);
-        message.success(test);
+        // console.log(test);
+        // message.success(test);
 
         if (test) {
           const termResponse = await axiosInstance.get(
@@ -257,24 +258,31 @@ const AddTerm = () => {
       // Make a POST request to the API endpoint
       const newRecord = {
         termId: values.termId,
-        name: values.name,
-        acadYear: values.acadYear,
+
         startDate: moment(StartDate, "YYYY-MM-DD").toISOString(), // Format date as needed
         endDate: moment(EndDate, "YYYY-MM-DD").toISOString(), // Format date as needed
         program: values.program,
         programType: values.programType,
-        centerId: values.centerId, //
       };
       console.log("Response iss", newRecord);
       const response = await axiosInstance.put(`/api/Terms`, newRecord);
       console.log("Put request successful:", response.data);
 
       setData(response.data);
+      notification.success({
+        message: "Successful",
+        description: "Term Edit has been successfully applied!",
+      });
 
       setVisible(false);
 
-      // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
+      notification.error({
+        message: "Update Failed",
+        description: `Error updating Term : ${error.message || error}`,
+      });
+      setVisible(false);
+
       console.error("POST request failed:", error);
     }
   };
@@ -310,13 +318,20 @@ const AddTerm = () => {
       });
       console.log("POST request successful:", response.data);
 
-      setData(response.data);
+      // setData(response.data);
 
       setVisible(false);
+      notification.success({
+        message: "Creation Successful",
+        description: "New term is created successfully!",
+      });
 
-      // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
-      console.error("POST request failed:", error);
+      setVisible(false);
+      notification.error({
+        message: "Creation Failed",
+        description: `Error creating term: ${error.message || error}`,
+      });
     }
   };
 
@@ -413,37 +428,57 @@ const AddTerm = () => {
             label="Start Date"
             name="startDate"
             rules={[{ required: true, message: "Please select Start date!" }]}
-       
-            >
-            <DatePicker
-              getPopupContainer={(trigger) => trigger.parentElement}
-              style={{ width: "100%", padding:"12px" }}
-              onChange={onChangeStart}
-              disabledDate={(current) =>
-                current && current < moment().startOf("day")
-              }
+          >
+            {editingKey ? (
+              <Input
+                type="date"
+                format="YYYY-MM-DD"
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={onChangeStart}
 
-            />
+                style={{ width: "100%" }}
+              />
+            ) : (
+              <DatePicker
+                getPopupContainer={(trigger) => trigger.parentElement}
+                style={{ width: "100%", padding: "12px" }}
+                onChange={onChangeStart}
+                disabledDate={(current) =>
+                  current && current < moment().startOf("day")
+                }
+              />
+            )}
           </Form.Item>
           <Form.Item
             label="End Date"
             name="endDate"
             rules={[{ required: true, message: "Please select End date!" }]}
           >
-            <DatePicker
-              style={{ width: "100%", padding:"12px" }}
-              onChange={onChangeEnd}
-              disabledDate={(current) =>
-                current && current <= moment(StartDate).endOf("day")
-              }
-            />
+            {editingKey ? (
+              <Input
+                type="date"
+                format="YYYY-MM-DD"
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={onChangeEnd}
+
+                style={{ width: "100%" }}
+              />
+            ) : (
+              <DatePicker
+                style={{ width: "100%", padding: "12px" }}
+                onChange={onChangeEnd}
+                disabledDate={(current) =>
+                  current && current <= moment(StartDate).endOf("day")
+                }
+              />
+            )}
           </Form.Item>
           <Form.Item
             label="Program"
             name="program"
             rules={[{ required: true, message: "Please select Program!" }]}
           >
-            <Select style={{ width: "100%" ,  height:"45px"}}>
+            <Select style={{ width: "100%", height: "45px" }}>
               <Option value="Degree">Degree</Option>
               <Option value="Masters">Masters</Option>
               <Option value="Masters">TVET</Option>
@@ -454,7 +489,7 @@ const AddTerm = () => {
             name="programType"
             rules={[{ required: true, message: "Please select program type!" }]}
           >
-            <Select style={{ width: "100%" , height:"45px"}}>
+            <Select style={{ width: "100%", height: "45px" }}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Weekend</Option>
               <Option value="Distance">Distance</Option>
@@ -502,7 +537,6 @@ const AddTerm = () => {
       </Form.Item>
       </>
        )} */}
-        
         </Form>
       </Modal>
     </div>

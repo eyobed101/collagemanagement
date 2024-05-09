@@ -8,6 +8,7 @@ import {
   DatePicker,
   Select,
   Popconfirm,
+  notification
 } from "antd";
 import moment from "moment";
 import axios from "axios";
@@ -103,20 +104,25 @@ const AddSection = () => {
   }, []);
 
   const sectionNameGenerator = (dept) => {
+
+    const depart = department.filter((dep) => dep.dcode === dept ).map((deep) => {return deep.did})
+
+    
     const sections = dataSource
-      .filter((data) => data.dcode === dept)
+      .filter((data) => data.dcode === depart[0])
       .map((section) => {
         return section;
       });
 
+      console.log("Sections", sections);
+
+
     let firstDigit = 1;
-    let lastDigit = sections.length > 0 ? sections.length % 10 : 1;
+    let lastDigit = sections.length > 0 ? sections.length : 1;
     let middleName = dept;
 
-    const sectionName = `${firstDigit}${middleName}${lastDigit}`;
-    console.log("Section Name", sectionName);
 
-    return `${firstDigit}${middleName}${lastDigit}`;
+    return `${firstDigit}${middleName}${lastDigit+1}`;
   };
 
   const columns = [
@@ -144,12 +150,7 @@ const AddSection = () => {
       dataIndex: "acadYear",
       editable: true,
     },
-    {
-      title: "Date",
-      dataIndex: "dateCreated",
-      render: (date) => moment(date).format("YYYY-MM-DD"),
-      editable: true,
-    },
+    
     {
       title: "Program",
       dataIndex: "program",
@@ -160,11 +161,7 @@ const AddSection = () => {
       dataIndex: "programType",
       editable: true,
     },
-    {
-      title: "Center",
-      dataIndex: "campusId",
-      editable: true,
-    },
+  
     {
       title: "Action",
       dataIndex: "action",
@@ -248,16 +245,18 @@ const AddSection = () => {
           programType: values.programType,
           dcode: parseInt(values.dcode),
         };
-        console.log("Response iss", postData);
         const response = await axiosInstance.put(`/api/Section`, postData);
-        console.log("Put request successful:", response.data);
+        notification.success({
+          message: "Successful",
+          description: "Section updated successfully!",
+        });
 
-        // setDataSource(response.data)
-        // console.log("start " , moment(startDate).format('YYYY-MM-DD'))
-
-        // You can handle success, e.g., show a success message or redirect to another page
       } catch (error) {
         console.error("POST request failed:", error);
+        notification.error({
+          message: "Failed",
+          description: `Error updating section: ${error.message || error}`,
+        });
       }
     });
 
@@ -291,8 +290,10 @@ const AddSection = () => {
       };
       console.log("Response iss", postData);
       const response = await axiosInstance.post(`/api/Section`, postData);
-      console.log("POST request successful:", response.data);
-
+      notification.success({
+        message: "Successful",
+        description: "Section created successfully!",
+      });
       // setDataSource(response.data)
 
       setVisible(false);
@@ -301,6 +302,12 @@ const AddSection = () => {
       // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
       console.error("POST request failed:", error);
+      notification.error({
+        message: "Failed",
+        description: `Error creating section: ${error.message || error}`,
+      });
+      setVisible(false);
+      form.resetFields();
     }
 
     setVisible(false);
@@ -379,7 +386,7 @@ const AddSection = () => {
 
   return (
     <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
-      <div className="list-sub">
+      <div className="list-sub flex justify-between">
         <Button
           type="primary"
           onClick={showModal}
@@ -399,10 +406,11 @@ const AddSection = () => {
             placeholder="Search by Section ID"
             onSearch={handleSearch}
             style={{
-              width: "30%",
+              // width: "30%",
+
               marginBottom: 16,
               paddingTop: "15px",
-              height: "45px",
+              height: "50px",
             }}
           />
         </div>
@@ -487,6 +495,7 @@ const AddSection = () => {
               rules={[{ required: true, message: "Please select Program !" }]}
             >
               <Select style={{ width: "100%", height:"45px" }}>
+                <Option value="TVET">TVET</Option>
                 <Option value="Degree">Degree</Option>
                 <Option value="Masters">Masters</Option>
               </Select>

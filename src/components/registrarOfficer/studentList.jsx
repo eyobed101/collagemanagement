@@ -4,6 +4,8 @@ import { Modal, Button, Form, Input, Tabs, Select } from "antd";
 import axiosInstance from "@/configs/axios";
 import styled from "styled-components";
 import moment from "moment";
+import {notification} from "antd";
+
 
 const { Search } = Input;
 
@@ -346,12 +348,20 @@ const StudentList = ({ sectionId }) => {
           },
         }
       );
+      notification.success({
+        message: "Successful",
+        description: "Student updaing is successfull!",
+      });
       setIsModalVisible(false);
       setEditingStudent(null);
       fetchApplicant();
       // fetchStudents(); // Refetch students to show the updated data
     } catch (error) {
       console.error("Failed to update student", error);
+      notification.error({
+        message: "Failed",
+        description: `Error updating student: ${error.message || error}`,
+      });
     }
   };
 
