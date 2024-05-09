@@ -16,6 +16,7 @@ import {
   
   import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
   import { gradeTableData } from "@/data";
+import axiosInstance from "@/configs/axios";
   
   const generateAcademicYears = () => {
     const currentYear = new Date().getFullYear();
@@ -36,7 +37,15 @@ import {
   export function Grades() {
     const [academicYearFilter, setAcademicYearFilter] = useState("");
     const [semesterFilter, setSemesterFilter] = useState("");
-    const [filteredData, setFilteredData] = useState(gradeTableData);
+    const [filteredData, setFilteredData] = useState([]);
+    const [grades, setGrades] = useState([]);
+    const [getCourses, setGetCourses] = useState([]);
+    const [selectedYear, setSelectedYear] = useState("");
+    const [academicYears, setAcademicYears] = useState([]);
+    const [terms, setTerms] = useState([]);
+    const [selectedTerm, setSelectedTerm] = useState("");
+
+    const [courses, setCourses] = useState([]);
   
     const columns = useMemo(
       () => [
@@ -57,30 +66,86 @@ import {
           accessor: "creditHour",
         },
         {
-          Header: "ECTS",
-          accessor: "ects",
+          Header: "Mark",
+          accessor: "mark",
         },
         {
           Header: "Grade",
-          accessor: "grade",
+          accessor: "courseGrade",
         },
       ],
       []
     );
   
     useEffect(() => {
-      const newFilteredData = gradeTableData.filter((course) => {
+      const username = localStorage.getItem("username");
+  
+      const fetchGrades = async () => {
+        try {
+          const response = await axiosInstance.get(
+            `/api/Grades/${encodeURIComponent(username)}`,
+            { params: { StudentId: username } }
+          );
+          setGrades(response.data);
+          const newData = dataRegenerator(response.data);
+          console.log("NEW", newData);
+        } catch (error) {
+          console.error("Error fetching grades:", error);
+        }
+      };
+      const fetchGetCourses = async () => {
+        try {
+          const response = await axiosInstance.get(`/api/Courses`);
+          setGetCourses(response.data);
+          console.log("CC",response.data)
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      };
+      fetchGrades();
+      fetchGetCourses();
+  
+      
+    }, []);
+  
+    useEffect(() => {
+      const newFilteredData = grades.filter((course) => {
         return (
-          (!academicYearFilter || course.academicYear.toString() === academicYearFilter) &&
-          (!semesterFilter || course.semester === semesterFilter)
+          (!selectedYear || course.acadYear.toString() === selectedYear) &&
+          (!selectedTerm || course.term.toString() === selectedTerm)
         );
       });
   
       setFilteredData(newFilteredData);
-      console.log(academicYearFilter)
-      console.log(filteredData)
+    }, [grades, selectedYear, selectedTerm]);
+
+    function dataRegenerator(data) {
+      const extractAcademicYear = (termId) => {
+        const parts = termId.split("/");
+        return parts[2] + "/" + parts[3]; // Assuming termId is always in the correct format
+      };
   
-    }, [academicYearFilter, semesterFilter]);
+      const extractTerm = (termId) => {
+        const parts = termId.split("/");
+        return parts[1]; // Assuming the second part is the term
+      };
+  
+      const enhanceData = data.map((item) => ({
+        ...item,
+        acadYear: extractAcademicYear(item.termId),
+        term: extractTerm(item.termId),
+      }));
+  
+      const years = Array.from(new Set(enhanceData.map((item) => item.acadYear)));
+      const termss = Array.from(new Set(enhanceData.map((item) => item.term)));
+  
+      setAcademicYears(years);
+      setTerms(termss);
+  
+      return enhanceData;
+    }
+  
+  
   
     const {
       getTableProps,
@@ -119,7 +184,11 @@ import {
                 value={academicYearFilter}
               >
                 <option value="">All</option>
-                {generateAcademicYears()}
+                {academicYears.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
               </select>
   
               <label className="ml-4 mr-2">Semester:</label>
@@ -129,16 +198,15 @@ import {
                 value={semesterFilter}
               >
                 <option value="">All</option>
-                {["First", "Second"].map((semester) => (
-                  <option key={semester} value={semester}>
-                    {semester}
-                  </option>
-                ))}
+                {terms.map((term, index) => (
+                <option key={index} value={term}>
+                  {term}
+                </option>
+              ))}
               </select>
             </div>
             <table
               className="w-full min-w-[640px] table-auto px-2"
-              {...getTableProps()}
             >
               <thead>
                 {headerGroups.map((headerGroup) => (
@@ -154,21 +222,34 @@ import {
                   </tr>
                 ))}
               </thead>
-              <tbody {...getTableBodyProps()} className="px-4" >
-                {page.map((row, rowIndex)  => {
-                  prepareRow(row);
-                  return (
-                    <TableRow
-                      {...row.getRowProps()}
-                      isOdd={rowIndex % 2 !== 0}
-                      
-                    >
-                      {row.cells.map(cell => (
-                        <td className="p-4 border-r-2 border-l-2 rounded" {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                      ))}
-                    </TableRow>
-                  );
-                })}
+              <tbody className="px-4" >
+              {filteredData.map((grade, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 !== 0 ? "bg-gray-100" : ""}
+                >
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                    {index + 1}
+                  </td>{" "}
+                  {/* Assuming you want a simple numeric index */}
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                    {getCourses.filter((course) => course.courseNo === grade.courseNo).map((cors) => {return cors.courseName})}
+                  </td>
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                    {grade.courseNo}
+                  </td>
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                  {getCourses.filter((course) => course.courseNo === grade.courseNo).map((cors) => {return cors.creditHour})}
+                  </td>
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                  {grade.mark}
+
+                  </td>
+                  <td className="p-4 border-r-2 border-l-2 rounded">
+                    {grade.courseGrade}
+                  </td>
+                </tr>
+              ))}
               </tbody>
             </table>
             {/* Pagination */}

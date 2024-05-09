@@ -33,10 +33,14 @@ export function Profile() {
 
 
   useEffect(() => {
+  
     const fetchApplicant = async () => {
       try {
+
+        const username = localStorage.getItem("username")
+
         const response = await axiosInstance.get(
-          `/api/Applicants`
+          `/api/Applicants/${encodeURIComponent(username)}`
         );
         setStudents(response.data);
         console.log(response.data);
@@ -69,34 +73,19 @@ export function Profile() {
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
                   {/* Tilahun Haile Taddesse */}
-                  {students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.fname} ${std.mname} ${std.lname}`)}
+                  {`${students.fname} ${students.mname} ${students.lname}`}
                 </Typography>
                 <Typography
                   variant="small"
                   className="font-normal text-blue-gray-600"
                 >
-                {students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.programType} Student - ${std.studId}`)}
+                { `${students.programType} Student - ${students.studId}`}
 
                 </Typography>
               </div>
             </div>
             <div className="w-96">
-              <Tabs value="app">
-                <TabsHeader>
-                  <Tab value="app">
-                    <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    App
-                  </Tab>
-                  <Tab value="message">
-                    <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
-                    Message
-                  </Tab>
-                  <Tab value="settings">
-                    <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    Settings
-                  </Tab>
-                </TabsHeader>
-              </Tabs>
+              
             </div>
           </div>
           <div className="gird-cols-1 mb-12 grid gap-12 px-4">
@@ -116,51 +105,51 @@ export function Profile() {
                         <div class="grid md:grid-cols-2 text-sm">
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">First Name</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.fname)}
+                                <div class="px-4 py-2">{ students.fname}
 </div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Middle Name</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.mname)}</div>
+                                <div class="px-4 py-2">{ students.mname}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Last Name</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.lname)}</div>
+                                <div class="px-4 py-2">{ students.lname}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Student ID</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.studId)}</div>
+                                <div class="px-4 py-2">{ students.studId}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Gender</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.sex)}</div>
+                                <div class="px-4 py-2">{ students.sex}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Contact No.</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.tel)}</div>
+                                <div class="px-4 py-2">{ students.tel}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Current Address</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.zone} ${std.woreda} ${std.town}`)}
+                                <div class="px-4 py-2">{ `${students.zone} ${students.woreda} ${students.town}`}
 </div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Citizen</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.nationality)}</div>
+                                <div class="px-4 py-2">{ students.nationality}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Permanant Address</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> `${std.zone} ${std.woreda} ${std.town}`)}</div>
+                                <div class="px-4 py-2">{ `${students.zone} ${students.woreda} ${students.town}`}</div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Email.</div>
                                 <div class="px-4 py-2">
-                                    <a class="text-blue-800" href="mailto:jane@example.com">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.email)}</a>
+                                    <a class="text-blue-800" href="mailto:jane@example.com">{ students.email}</a>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2">
                                 <div class="px-4 py-2 font-semibold">Birthday</div>
-                                <div class="px-4 py-2">{students.filter((stud)=> stud.studId === "ADLT/0001/24").map((std)=> std.doB)}</div>
+                                <div class="px-4 py-2">{ students.doB}</div>
                             </div>
                         </div>
                     </div>

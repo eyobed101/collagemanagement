@@ -413,14 +413,16 @@ const AddTerm = () => {
             label="Start Date"
             name="startDate"
             rules={[{ required: true, message: "Please select Start date!" }]}
-          >
+       
+            >
             <DatePicker
               getPopupContainer={(trigger) => trigger.parentElement}
-              style={{ width: "100%" }}
+              style={{ width: "100%", padding:"12px" }}
               onChange={onChangeStart}
               disabledDate={(current) =>
                 current && current < moment().startOf("day")
               }
+
             />
           </Form.Item>
           <Form.Item
@@ -429,7 +431,7 @@ const AddTerm = () => {
             rules={[{ required: true, message: "Please select End date!" }]}
           >
             <DatePicker
-              style={{ width: "100%" }}
+              style={{ width: "100%", padding:"12px" }}
               onChange={onChangeEnd}
               disabledDate={(current) =>
                 current && current <= moment(StartDate).endOf("day")
@@ -441,7 +443,7 @@ const AddTerm = () => {
             name="program"
             rules={[{ required: true, message: "Please select Program!" }]}
           >
-            <Select style={{ width: "100%" }}>
+            <Select style={{ width: "100%" ,  height:"45px"}}>
               <Option value="Degree">Degree</Option>
               <Option value="Masters">Masters</Option>
               <Option value="Masters">TVET</Option>
@@ -452,7 +454,7 @@ const AddTerm = () => {
             name="programType"
             rules={[{ required: true, message: "Please select program type!" }]}
           >
-            <Select style={{ width: "100%" }}>
+            <Select style={{ width: "100%" , height:"45px"}}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Weekend</Option>
               <Option value="Distance">Distance</Option>

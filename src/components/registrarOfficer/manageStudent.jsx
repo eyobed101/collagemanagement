@@ -5,79 +5,77 @@ import axios from "axios";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
-
-
+import { Modal, Form, Select, Input, Button, notification } from "antd";
 
 const TableRow = styled.tr`
-    background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
-    padding: 10px;
-  `;
+  background-color: ${({ isOdd }) => (isOdd ? "#f0f0f0" : "white")};
+  padding: 10px;
+`;
 
-  const TableCell = styled.td`
-    padding: 8px;
-    border: 2px solid #e2e8f0;
-    border-collapse: collapse;
-  `;
+const TableCell = styled.td`
+  padding: 8px;
+  border: 2px solid #e2e8f0;
+  border-collapse: collapse;
+`;
 
-  const TableHeader = styled.th`
-    border: 2px solid #e2e8f0;
-    border-collapse: collapse;
-    padding: 12px;
-    text-align: left;
-    background-color: #f0f0f0;
-  `;
+const TableHeader = styled.th`
+  border: 2px solid #e2e8f0;
+  border-collapse: collapse;
+  padding: 12px;
+  text-align: left;
+  background-color: #f0f0f0;
+`;
 
-  const StyledTable = styled.table`
-    width: 100%;
-    min-width: 640px;
-    border-collapse: collapse;
-    margin-top: 12px;
-  `;
+const StyledTable = styled.table`
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  margin-top: 12px;
+`;
 
-  const ModalWrapper = styled.div`
-    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 4px;
-    z-index: 999;
-    width: 30%;
-    font-family: "Arial", sans-serif; /* Specify your desired font type */
-  `;
+const ModalWrapper = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 4px;
+  z-index: 999;
+  width: 30%;
+  font-family: "Arial", sans-serif; /* Specify your desired font type */
+`;
 
-  const ModalOverlay = styled.div`
-    display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 998;
-  `;
+const ModalOverlay = styled.div`
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+`;
 
-  const StyledButton = styled.button`
-    padding: 3px 16px;
-    border: 0.5px #4279a6 solid;
-    background-color: none;
+const StyledButton = styled.button`
+  padding: 3px 16px;
+  border: 0.5px #4279a6 solid;
+  background-color: none;
+  color: white;
+  // border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Arial", sans-serif; /* Specify your desired font type */
+  font-size: 16px; /* Specify your desired font size */
+  color: #4279a6;
+
+  &:hover {
+    background-color: #4278a6;
     color: white;
-    // border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: "Arial", sans-serif; /* Specify your desired font type */
-    font-size: 16px; /* Specify your desired font size */
-    color: #4279a6;
-
-    &:hover {
-      background-color: #4278a6;
-      color: white;
-    }
-  `;
-
+  }
+`;
 
 const StudentStatusManagement = () => {
   const [students, setStudents] = useState([]);
@@ -88,11 +86,9 @@ const StudentStatusManagement = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [studStatus, setStudStatus] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("Active");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
 
   const [filterDepartment, setFilterDepartment] = useState("");
   const [filterSection, setFilterSection] = useState("");
@@ -100,13 +96,13 @@ const StudentStatusManagement = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [changeReason, setChangeReason] = useState("Pass");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/Departments`
-        );
+        const response = await axiosInstance.get(`/api/Departments`);
         setDepartments(response.data);
         console.log("Departiments", response.data);
       } catch (error) {
@@ -124,9 +120,7 @@ const StudentStatusManagement = () => {
     };
     const fetchSectionStudentEnroll = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/SectionStudEnroll`
-        );
+        const response = await axiosInstance.get(`/api/SectionStudEnroll`);
         setSectionStudEnroll(response.data);
         console.log("sectionStudEnroll", response.data);
       } catch (error) {
@@ -136,9 +130,7 @@ const StudentStatusManagement = () => {
 
     const fetchApplicants = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/Applicants`
-        );
+        const response = await axiosInstance.get(`/api/Applicants`);
         setStudents(response.data);
         console.log("Students", response.data);
       } catch (error) {
@@ -147,9 +139,7 @@ const StudentStatusManagement = () => {
     };
     const fetchStudentStatus = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/api/StudentStatus`
-        );
+        const response = await axiosInstance.get(`/api/StudentStatus`);
         setStudStatus(response.data);
         console.log("status", response.data);
       } catch (error) {
@@ -164,6 +154,20 @@ const StudentStatusManagement = () => {
     fetchSectionStudentEnroll();
   }, []);
 
+  const showModal = (student) => {
+    setSelectedStudent(student);
+    form.setFieldsValue({
+      status: student.currentStatus,
+      reason: "", // Assuming no initial reason
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setSelectedStudent(null);
+  };
+
   const handleSectionChange = (event) => {
     const selectedData = event.target.options[
       event.target.selectedIndex
@@ -173,76 +177,19 @@ const StudentStatusManagement = () => {
       ...JSON.parse(selectedData),
     });
   };
-  
 
-  
-
-  const ModalForm = () => {
-    const statusOptions = [
-      "Active",
-      "Graduated",
-      "Drop out",
-      "Withdrawl",
-      "Re admision",
-      "Warning",
-      "Dismissal",
-    ];
-
-    return (
-      <div>
-        <label className="block text-lg font-semibold mb-2 text-[#434343]">
-          New Status
-        </label>
-        <select
-          className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md mb-4"
-          value={newStatus}
-          onChange={(e) => setNewStatus(e.target.value)}
-        >
-          {statusOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-        <label className="block text-lg font-semibold mb-2 text-[#434343]">
-          Cause of Change
-        </label>
-        <input
-          type="text"
-          className="px-8 py-3 w-full border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md mb-4"
-          value={changeReason}
-          onChange={(e) => setChangeReason(e.target.value)}
-        />
-      </div>
-    );
-  };
-  const handleOpenModal = (student) => {
-    setSelectedStudent(student);
-    setNewStatus(student.status);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedStudent(null);
-    setNewStatus("");
-    setIsModalOpen(false);
-  };
-
-  const handleUpdateStatus = (e) => {
-    e.preventDefault();
-
+  const handleUpdateStatus = async (values) => {
+    // Prevent the default form submission which is handled by antd Form
+    const { status: newStatus, reason: changeReason } = values;
+    console.log("laoaoa", selectedStudent.statusChangeDate);
     const encodedStudId = encodeURIComponent(selectedStudent.studId);
     const StudentStatusChange = selectedStudent.statusChangeDate;
 
     let currentDate = new Date();
-
     let year = currentDate.getFullYear();
-    let month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
-    let day = String(currentDate.getDate()).padStart(2, '0');
-
+    let month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    let day = String(currentDate.getDate()).padStart(2, "0");
     let formattedDate = `${year}-${month}-${day}`;
-
-    
 
     const updatedStatus = {
       StudId: selectedStudent.studId,
@@ -252,23 +199,37 @@ const StudentStatusManagement = () => {
       ChangeReason: changeReason,
       ReadmissionDate: null,
     };
-    console.log(updatedStatus, StudentStatusChange);
-    axiosInstance
-      .put(
-        `/api/StudentStatus/${encodedStudId}/${StudentStatusChange}`,
-        updatedStatus
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("Status updated successfully");
-        } else {
-          console.error("Failed to update status");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
 
+    console.log("Updating status to:", updatedStatus);
+
+    try {
+      const response = await axiosInstance.put(
+        `/api/StudentStatus/update`,
+        updatedStatus,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          params: {
+            StudId: selectedStudent.studId,
+            StatusChangeDate: selectedStudent.statusChangeDate,
+          },
+        }
+      );
+      if (response.status === 200) {
+        notification.success({
+          message: "Update Successful",
+          description: "Student status updated successfully!",
+        });
+      } else {
+        throw new Error("Failed to update status");
+      }
+    } catch (error) {
+      notification.error({
+        message: "Update Failed",
+        description: `Error updating student status: ${error.message || error}`,
+      });
+    }
     setIsModalOpen(false);
   };
 
@@ -294,13 +255,36 @@ const StudentStatusManagement = () => {
     validPageNumber * itemsPerPage
   );
 
+  function renderStudentDataCells(status) {
+    const studentDetails = students.find(
+      (stud) => stud.studId === status.studId
+    );
+    return (
+      <>
+        <TableCell>{status.studId}</TableCell>
+        <TableCell>
+          {studentDetails
+            ? `${studentDetails.fname} ${studentDetails.mname || ""} ${
+                studentDetails.lname
+              }`
+            : ""}
+        </TableCell>
+        <TableCell>{studentDetails ? studentDetails.sex : ""}</TableCell>
+        <TableCell>{studentDetails ? studentDetails.program : ""}</TableCell>
+        <TableCell>{status.prevStatus || " "}</TableCell>
+        <TableCell>{status.currentStatus || " "}</TableCell>
+        <TableCell>{status.changeReason || " "}</TableCell>
+        <TableCell>
+          <Button onClick={() => showModal(status)}>Edit</Button>
+        </TableCell>
+      </>
+    );
+  }
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
       <div className="flex flex-wrap justify-start mt-4">
         <div style={{ width: "25%", minWidth: "200px", marginRight: "20px" }}>
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Select Department
-          </label>
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             value={selectedDepartment ? selectedDepartment.dname : ""}
@@ -319,9 +303,6 @@ const StudentStatusManagement = () => {
           </select>
         </div>
         <div style={{ width: "25%", minWidth: "200px" }}>
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Section
-          </label>
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             onChange={handleSectionChange}
@@ -345,12 +326,6 @@ const StudentStatusManagement = () => {
             )}
           </select>
         </div>
-        {/* <button
-          className="px-4 py-2 bg-[#4279A6] text-white rounded"
-          onClick={() => setCurrentPage(1)}
-        >
-          Apply Filters
-        </button> */}
       </div>
       <div className="border-2 px-5 py-4 rounded-md shadow-md">
         <StyledTable>
@@ -372,50 +347,34 @@ const StudentStatusManagement = () => {
                 ? studStatus
                     .filter((status) =>
                       sectionStudEnroll.some(
-                        (stud) => stud.studId === status.studId && stud.sectionId === selectedSection.sectionId
+                        (stud) =>
+                          stud.studId === status.studId &&
+                          stud.sectionId === selectedSection.sectionId
                       )
                     )
                     .map((status, index) => (
                       <TableRow key={index} isOdd={index % 2 !== 0}>
-                        <TableCell>{status.studId}</TableCell>
-                        <TableCell>
-                          {students
-                            .filter((studt) => studt.studId === status.studId)
-                            .map(
-                              (studd) =>
-                                `${studd.fname} ${studd.mname} ${studd.lname}`
-                            )}
-                        </TableCell>
-                        <TableCell>
-                          {students
-                            .filter((studt) => studt.studId === status.studId)
-                            .map((studd) => studd.sex)}
-                        </TableCell>
-                        <TableCell>
-                          {students
-                            .filter((studt) => studt.studId === status.studId)
-                            .map((studd) => studd.program)}
-                        </TableCell>
-                        <TableCell>
-                          {" "}
-                          {status.prevStatus ? status.prevStatus : " "}
-                        </TableCell>
-
-                        <TableCell>
-                          {status.currentStatus ? status.currentStatus : " "}
-                        </TableCell>
-                        <TableCell>
-                          {status.changeReason ? status.changeReason : " "}
-                        </TableCell>
-                        <TableCell>
-                          <StyledButton onClick={() => handleOpenModal(status)}>
-                            Edit
-                          </StyledButton>
-                        </TableCell>
+                        {renderStudentDataCells(status)}
                       </TableRow>
                     ))
-                : " "
-              : " "}
+                : studStatus
+                    .filter((status) =>
+                      sectionStudEnroll.some(
+                        (stud) =>
+                          stud.studId === status.studId &&
+                          stud.departmentId === selectedDepartment.did
+                      )
+                    )
+                    .map((status, index) => (
+                      <TableRow key={index} isOdd={index % 2 !== 0}>
+                        {renderStudentDataCells(status)}
+                      </TableRow>
+                    ))
+              : studStatus.map((status, index) => (
+                  <TableRow key={index} isOdd={index % 2 !== 0}>
+                    {renderStudentDataCells(status)}
+                  </TableRow>
+                ))}
           </tbody>
         </StyledTable>
 
@@ -443,18 +402,52 @@ const StudentStatusManagement = () => {
           </div>
         </div>
 
-        {isModalOpen && (
-          <ModalOverlay isOpen={isModalOpen}>
-            <ModalWrapper isOpen={isModalOpen}>
-              <ModalForm />
-              <div>
-                <StyledButton onClick={(e) => handleUpdateStatus(e)}>
-                  Update Status
-                </StyledButton>
-              </div>
-            </ModalWrapper>
-          </ModalOverlay>
-        )}
+        <Modal
+          title="Update Student Status"
+          visible={isModalOpen}
+          onCancel={handleCancel}
+          footer={null}
+          destroyOnClose={true}
+        >
+          <Form form={form} onFinish={handleUpdateStatus} layout="vertical">
+            <Form.Item
+              name="status"
+              label="New Status"
+              rules={[
+                { required: true, message: "Please select a new status!" },
+              ]}
+            >
+              <Select placeholder="Select a status">
+                <Select.Option value="Active">Active</Select.Option>
+                <Select.Option value="Graduated">Graduated</Select.Option>
+                <Select.Option value="Drop out">Drop out</Select.Option>
+                <Select.Option value="Withdrawl">Withdrawl</Select.Option>
+                <Select.Option value="Re admision">Re admision</Select.Option>
+                <Select.Option value="Warning">Warning</Select.Option>
+                <Select.Option value="Dismissal">Dismissal</Select.Option>
+
+                {/* Add more status options as needed */}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="reason"
+              label="Cause of Change"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the reason for status change!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter the reason for change" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" style={{backgroundColor:"#4279A6"}}>
+                Update Status
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
       {success && (
         <div

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import Login from "../Auth/Login";
-import { SignIn, SignUp } from "@/pages/auth";
+import { SignIn, SignUp, ForgotPassword } from "@/pages/auth";
 
 // import Register from "../Auth/Register";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -37,6 +37,7 @@ export default function Routing() {
           <Route path="/*" element={<Layout />} />
         </Route>
         <Route path="/login" element={<SignIn />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/register" element={<SignUp />} />
       </Routes>
   );

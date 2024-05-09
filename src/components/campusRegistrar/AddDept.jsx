@@ -189,20 +189,21 @@ const AddDepartment = () => {
       initialValues={data.find((item) => item.did === editingKey)}
     >
       <Form.Item label="Department Code" name="dcode" required>
-        <Input defaultValue={data.dcode} placeholder={data.dcode} />
+        <Input defaultValue={data.dcode} placeholder={data.dcode} style={{ width: "100%", height:"45px" }}
+/>
       </Form.Item>
       <Form.Item label="Department Name" name="dname" required>
-        <Input />
+        <Input style={{ width: "100%", height:"45px" }} />
       </Form.Item>
       <Form.Item label="Department Type" name="depType" required>
-        <Select>
+        <Select style={{ width: "100%", height:"45px" }}>
           <Option value="Major">Major</Option>
           <Option value="Supportive">Supportive</Option>
           <Option value="Common">Common</Option>
         </Select>
       </Form.Item>
       <Form.Item label="Is Major" name="major" required>
-        <Select>
+        <Select style={{ width: "100%", height:"45px" }}>
           <Option value="Yes">Yes</Option>
           <Option value="No">No</Option>
         </Select>
@@ -210,7 +211,7 @@ const AddDepartment = () => {
       <Form.Item>
         <Button
           type="primary"
-          style={{ backgroundColor: "#4279A6" }}
+          style={{ backgroundColor: "#4279A6", marginRight:"5px" }}
           htmlType="submit"
         >
           Save
@@ -251,20 +252,24 @@ const AddDepartment = () => {
           { len: 4, message: "Department Code must be exactly 4 characters!" },
         ]}
       >
-        <Input maxLength={4} />
+        <Input maxLength={4} style={{ width: "100%", height:"45px" }}
+ />
       </Form.Item>
       <Form.Item label="Department Name" name="dname" required>
-        <Input />
+        <Input  style={{ width: "100%", height:"45px" }}
+/>
       </Form.Item>
       <Form.Item label="Department Type" name="depType" required>
-        <Select>
+        <Select  style={{ width: "100%", height:"45px" }}
+>
           <Option value="Major">Major</Option>
           <Option value="Supportive">Supportive</Option>
           <Option value="Common">Common</Option>
         </Select>
       </Form.Item>
       <Form.Item label="Is Major" name="major" required>
-        <Select>
+        <Select style={{ width: "100%", height:"45px" }}
+>
           <Option value="Yes">Yes</Option>
           <Option value="No">No</Option>
         </Select>
@@ -272,7 +277,7 @@ const AddDepartment = () => {
       <Form.Item>
         <Button
           type="primary"
-          style={{ backgroundColor: "#4279A6" }}
+          style={{ backgroundColor: "#4279A6", marginRight:"5px" }}
           htmlType="submit"
         >
           Create

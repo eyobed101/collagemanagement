@@ -18,6 +18,8 @@ import StudentCourseExemption from "./studentExemption";
 import StudentStatusManagement from "./manageStudent";
 import StudentCourses from "./CourseTaken"
 import MainMenu from "./menuTest";
+import StudentList from "./studentList";
+import CreateUser from "./CreateUser";
 
 import {
   Configurator,
@@ -60,6 +62,8 @@ const RegistrarOfficerSiderGenerator = () => {
   const [isExitExam, setIsExitExam] = useState(false);
   const [isRemedial, setIsRemedial] = useState(false);
   const [isCourseTaken, setIsCourseTaken] = useState(false);
+  const [isStudentList, setIsStudentList] = useState(false);
+  const [isCreateUser, setIsCreateUser] = useState(false);
 
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -129,6 +133,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(true)
+    setIsStudentList(false)
+    setIsCreateUser(false)
    
     setIsStudentStatus(false)
   }
@@ -145,6 +151,9 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsExitExam(false)
     setIsRemedial(false)
     setIsCourseTaken(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
+
 
 
   };
@@ -156,6 +165,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false)
     setIsCourseExemption(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
 
 
 
@@ -172,6 +183,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(true)
     setIsCourseExemption(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -186,6 +199,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false);
     setIsCourseExemption(false);
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -193,15 +208,17 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseTaken(false)
 
   };
-  const handleGradeEntry = () => {
+  const handleStudentList = () => {
     setIsAddStudent(false);
     setIsCourseRegistration(false);
     setIsAddDrop(false);
-    setIsGradeEntry(true);
+    setIsGradeEntry(false);
     setIsCourseLease(false);
     setIsCourseExemption(false)
     setIsStudentStatus(false)
 
+    setIsStudentList(true)
+    setIsCreateUser(false)
 
     setIsEntryExam(false)
     setIsExitExam(false)
@@ -221,6 +238,9 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(false)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
+
   }
 
   const handleExitExam =() =>{
@@ -235,6 +255,9 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(false)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
+
   }
   const handleCourseExemption = () => {
     setIsAddStudent(false);
@@ -248,7 +271,9 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(false)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsCreateUser(false)
 
+    setIsStudentList(false)
 
 
   };
@@ -260,6 +285,8 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsCourseLease(false);
     setIsCourseExemption(false)
     setIsStudentStatus(true)
+    setIsStudentList(false)
+    setIsCreateUser(false)
 
 
     setIsEntryExam(false)
@@ -280,6 +307,26 @@ const RegistrarOfficerSiderGenerator = () => {
     setIsRemedial(true)
     setIsCourseTaken(false)
     setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(false)
+
+
+  }
+  const handleCreateUser =() => {
+    setIsAddStudent(false);
+    setIsCourseRegistration(false);
+    setIsAddDrop(false);
+    setIsGradeEntry(false);
+    setIsCourseLease(false);
+    setIsCourseExemption(false)
+    setIsEntryExam(false)
+    setIsExitExam(false)
+    setIsRemedial(false)
+    setIsCourseTaken(false)
+    setIsStudentStatus(false)
+    setIsStudentList(false)
+    setIsCreateUser(true)
+
 
   }
 
@@ -362,24 +409,25 @@ const RegistrarOfficerSiderGenerator = () => {
 
         },
         {
+          icon: <StarOutlineSharp {...icon} />,
+          name: "Edit Applicant Data",
+          onClick: handleStudentList,
+
+          
+        },
+        {
+          icon: <UserCircleIcon {...icon} />,
+          name: "Create Student Account",
+          onClick: handleCreateUser,
+        },
+        {
           icon: <FaPaperclip {...icon} />,
           name: "Reports",
           // onClick: handleAddDrop,
 
           
         },
-        // {
-        //   icon: <StarOutlineSharp {...icon} />,
-        //   name: "Students Status",
-        //   onClick: handleStudentStatus,
-
-          
-        // },
-        // {
-        //   icon: <FaGraduationCap {...icon} />,
-        //   name: "Grade Entry",
-        //   onClick: handleGradeEntry,
-        // },
+        
         {
           icon: <MdLogout {...icon} />,
           name: "Log out",
@@ -425,6 +473,8 @@ const RegistrarOfficerSiderGenerator = () => {
           {isExitExam ? <ExitExam /> : null}
           {isRemedial ? <Remedial /> : null}
           {isCourseTaken ?<StudentCourses /> : null}
+          {isStudentList ?<StudentList /> : null}
+          {isCreateUser ?<CreateUser /> : null}
         </div>
         <div className="text-blue-gray-600">
           <Footer />
