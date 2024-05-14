@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Select, Table, Button, message } from "antd";
+import { Select, Table, Button, message, notification } from "antd";
 import axios from "axios";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
@@ -141,13 +141,21 @@ const CourseOffering = () => {
         }
       }
 
-      message.success("Courses assigned successfully!");
+      // message.success("Courses assigned successfully!");
+      notification.success({
+        message: "Successful",
+        description: "Courses assigned successfully!",
+      });
 
       // Clear the otherTableData after successful assignment
       setOtherTableData([]);
     } catch (error) {
       console.error("Error assigning courses:", error);
-      message.error("Error assigning courses. Please try again.");
+      // message.error("Error assigning courses. Please try again.");
+      notification.error({
+        message: "Failed",
+        description: `Error assigning courses: ${error.message || error}`,
+      });
     }
   };
 

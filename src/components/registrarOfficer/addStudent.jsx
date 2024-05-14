@@ -7,6 +7,7 @@ import "react-tabs/style/react-tabs.css";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
+import {notification} from "antd";
 
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
@@ -266,15 +267,24 @@ export function AddStudent() {
       setSuccess(true);
       setError(null);
       setFormData(initialFormData);
+      notification.success({
+        message: "Successful",
+        description: "The Student is created successfully!",
+      });
       // setData({});
       console.log(response.data);
     } catch (error) {
       setSuccess(false);
       setError(error.message);
+      notification.error({
+        message: "Failed",
+        description: `Error creating student: ${error.message || error}`,
+      });
       console.error(error);
     } finally {
       setSpining(false);
       setLoading1(false);
+
     }
   };
 

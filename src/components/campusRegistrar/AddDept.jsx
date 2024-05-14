@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Table, Button, Modal, Form, Input, Popconfirm, Select } from "antd";
+import { Table, Button, Modal, Form, Input, Popconfirm, Select , notification} from "antd";
 import axios from "axios";
 import moment from "moment";
 import { api } from "../constants";
@@ -138,9 +138,19 @@ const AddDepartment = () => {
         setData(updatedData);
         setEditingKey("");
         setIsEditModalVisible(false);
+        notification.success({
+          message: "Successful",
+          description: "Department updated successfully!",
+        });
       })
       .catch((error) => {
         console.error("Error creating department:", error);
+        setIsEditModalVisible(false);
+
+        notification.error({
+          message: "Failed",
+          description: `Error updating departiment: ${error.message || error}`,
+        });
       });
   };
 
@@ -158,15 +168,24 @@ const AddDepartment = () => {
     await axiosInstance
       .post(`/api/Departments`, newDepartment)
       .then((response) => {
-        console.log("Department created successfully:", response.data);
-        setData(newDepartment);
+        // console.log("Department created successfully:", response.data);
+        // setData(newDepartment);
         setSuccess(true);
         setError(null);
         setIsCreateModalVisible(false);
         setSpining(false);
+        notification.success({
+          message: "Successful",
+          description: "Deaprtiment created successfully!",
+        });
       })
       .catch((error) => {
         console.error("Error creating department:", error);
+        setIsCreateModalVisible(false);
+        notification.error({
+          message: "Failed",
+          description: `Error creating departiment: ${error.message || error}`,
+        });
         setSuccess(false);
         setError(error.response.data);
         setSpining(false);

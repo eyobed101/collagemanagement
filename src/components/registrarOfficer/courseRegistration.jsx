@@ -7,6 +7,8 @@ import { message } from "antd";
 
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
+import {notification} from "antd";
+
 
 // Default values shown
 
@@ -235,12 +237,21 @@ const StudentCourseRegistration = () => {
         setSuccess(true);
         setError(null);
 
+        notification.success({
+          message: "Successful",
+          description: "Course registration is successfully!",
+        });
+
         console.log("MY DD", response.data);
       });
     } catch (error) {
       console.error("Error:", error.message);
       setSuccess(false);
       setError(error.message);
+      notification.error({
+        message: "Failed",
+        description: `Error registering courses: ${error.message || error}`,
+      });
     } finally {
       setLoading(false);
     }
@@ -452,7 +463,7 @@ const StudentCourseRegistration = () => {
       <div>
         <div className="flex justify-between space-x-2 mx-2 mb-10">
           <button
-            className="px-4 py-3 bg-green-500 font-bold text-white rounded-md"
+            className="px-4 py-3 bg-[#409aeedd] font-bold text-white rounded-md"
             onClick={handleClearSelectedCourses}
           >
             Clear Selected Course{" "}
