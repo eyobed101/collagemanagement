@@ -88,7 +88,7 @@ export default function CampusDash() {
   const [teacherData, setTeacherData] = useState([]);
   const [studentAttendance, setstudentAttendance] = useState([]);
   const [attendStudents, setAttendStudents] = useState();
-  const school = useSelector((state) => state.user.profile.school);
+  // const school = useSelector((state) => state.user.profile.school);
   const [classes, setClasses] = useState([]);
 
   var isDaily = "white";
