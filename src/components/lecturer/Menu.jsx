@@ -141,40 +141,41 @@ const LucturerSiderGenerator = () => {
     {
       title: "Lecturer",
       pages: [
-        {
-          icon: <BookOpenIcon {...icon} />,
-          name: "Grade",
-          subMenu: [
-            {
-              icon: <AppRegistration {...icon} />,
-              name: "Register Assesment",
-              onClick: handleRegisterAssessment,
-            },
-            {
-              icon: <GradeOutlined {...icon} />,
-              name: "Grade Submission From Excel",
-              onClick: handleGradeChange,
-            },
-            {
-              icon: <MailOutlineTwoTone {...icon} />,
-              name: "Maintain Assignment Form ",
-              onClick: handleAssessment,
-            },
-            {
-              icon: <RequestPageSharp {...icon} />,
-              name: "Thesis Result Form",
-              onClick: handleThesis,
-            },
-            {
-              icon: <SubdirectoryArrowLeft {...icon} />,
-              name: "Submit Grade Change",
-              onClick: handleSubmitGrade,
-            },
-          
-          
-          ],
+        // {
+          {
+            icon: <AppRegistration {...icon} />,
+            name: "Register Assesment",
+            onClick: handleRegisterAssessment,
+          },
+          {
+            icon: <GradeOutlined {...icon} />,
+            name: "Grade Submission Excel",
+            onClick: handleGradeChange,
+          },
+          {
+            icon: <MailOutlineTwoTone {...icon} />,
+            name: "Maintain Assignment",
+            onClick: handleAssessment,
+          },
+          {
+            icon: <RequestPageSharp {...icon} />,
+            name: "Thesis Result Form",
+            onClick: handleThesis,
+          },
+          {
+            icon: <SubdirectoryArrowLeft {...icon} />,
+            name: "Submit Grade Change",
+            onClick: handleSubmitGrade,
+          },
+        
+        
+          // icon: <BookOpenIcon {...icon} />,
+          // name: "Grade",
+          // subMenu: [
+            
+          // ],
 
-        },
+        // },
         // {
         //   icon: <UserCircleIcon {...icon} />,
         //   name: "Grade Entry",

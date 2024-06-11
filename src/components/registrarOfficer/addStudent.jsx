@@ -408,6 +408,7 @@ export function AddStudent() {
                             fontWeight: 500,
                             backgroundColor:
                               index === currentTab ? "#4279A6" : "transparent",
+                         
                           }}
                         >
                           {tabLabel}

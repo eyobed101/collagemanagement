@@ -216,6 +216,7 @@ const AddCourse = () => {
       try {
         const response = await axiosInstance.get(`/api/Courses`);
         setTableData(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

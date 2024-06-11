@@ -18,6 +18,9 @@ const GradeChangeSubmission = () => {
   const [filteredAssessmentData, setFilteredAssessmentData] = useState([]);
   const [studentData , setStudentData] = useState([])
   const [assesment , setAssement] = useState([])
+  const [filteredStudent , setFilteredStudent] = useState(studentData)
+  const [GradeData , setGradeData] =  useState([]);
+
 
 
 
@@ -34,6 +37,21 @@ const GradeChangeSubmission = () => {
     };
 
     fetchAssessment();
+  }, []);
+
+  useEffect(() => {
+    const fetchCoursePending = async () => {
+      try {
+        const response = await axiosInstance.get('/api/Grades');
+        // setStudentData(response.data);
+        setGradeData(response.data)
+        console.log("Grade data", response.data);
+      } catch (error) {
+        console.error('Error fetching student data:', error);
+      }
+    };
+
+    fetchCoursePending();
   }, []);
 
   useEffect(() => {
@@ -157,9 +175,102 @@ const GradeChangeSubmission = () => {
         message.error("Error creating student mark")
   
       });
+    }     
+    const grade = {
+      "studId" : assessmentData[0].studID,
+      "courseNo" : assessmentData[0].courseNo,
+      "prevGrade" : prevGrade,
+      "currentGrade" : newGrade,
+      "updateReason" : reason,
+      "gradeReason" :  reason,
+      "dateUpdated" : assessmentDate,
+      "updateSubmitBy" : assessmentData[0].instID,
+      "updatedBy" :   assessmentData[0].instID,
+      "exempted": null,
+      "termId" : assessmentData[0].termID
     }
 
+    console.log ("grade change  ", grade)
+  
+    await axiosInstance.post(`/api/GradeChanges`, [grade])
+    .then(response => {
+      console.log('Grade Changed successfully:', response.data);
+      message.success("Grade Changed Successfully")
+      
+    })
+    .catch(error => {
+      console.error('Error creating Grade Change', error);
+      message.error("Error creating Grade Change")
 
+    });
+       
+
+    const extractedData = {
+      "termId": assessmentData[0].termID,
+      "courseNo" : assessmentData[0].courseNo,
+      "studId" : assessmentData[0].studID,
+      "courseGrade" : newGrade,
+      "submitBy" : assessmentData[0].instID,
+      "dateSubmitted" : assessmentDate,
+      "updated" :"Yes",
+      "updateReason" : reason,
+      "updateBy" :assessmentData[0].instID,
+      "exempted" : "No",
+      "reason" :reason,
+      "mark" : newTotalMark,
+      thesisResult : null,
+      thesisTitle:null
+    };
+
+    console.log ("grade total  ", extractedData)
+    let GradeDatas ;
+    GradeDatas = GradeData.map(item => {
+      if (item.StudId === extractedData.studId) {
+        return {
+          ...item,
+          TermId: extractedData.termId,
+          CourseNo: extractedData.courseNo,
+          CourseGrade: extractedData.courseGrade,
+          SubmitBy: extractedData.submitBy,
+          DateSubmitted: extractedData.dateSubmitted,
+          Updated: extractedData.updated,
+          UpdateReason: extractedData.updateReason,
+          Exempted: extractedData.exempted,
+          Reason: extractedData.reason,
+          Mark: extractedData.mark,
+          ThesisResult: extractedData.thesisResult,
+          ThesisTitle: extractedData.thesisTitle
+        };
+      }
+      return item;
+    });
+    
+    console.log("Updated GradeData", GradeDatas);
+
+    for(let i=0 ; i< GradeDatas.length ; i++ ){
+      await axiosInstance.put(`/api/Grades`, [GradeDatas[i]] )
+      .then(response => {
+        console.log('Grade Updated successfully:', response.data);
+        message.success(" Grade Updated Successfully")
+        
+      })
+      .catch(error => {
+        console.error('Error creating Grade:', error);
+        // message.error("Error creating Grade")
+        });
+    }
+
+    // await axiosInstance.put(`/api/Grades`, extractedData)
+    // .then(response => {
+    //   console.log('Grade Updated successfully:', response.data);
+    //   message.success(" Grade Updated Successfully")
+      
+    // })
+    // .catch(error => {
+    //   console.error('Error creating Grade:', error);
+    //   message.error("Error creating Grade")
+
+    // });
     // Clear form fields after saving
     setAcademicYear('');
     setCourse('');
@@ -285,8 +396,28 @@ const GradeChangeSubmission = () => {
        setSemester(value);
   }
 
+  const filterData = () => {
+    if (!course || !semester) {
+      setFilteredStudent([]);
+      return;
+    }
+
+    const filtered = studentData.filter(
+      (student) => student.CourseNo == course  && student.TermId == semester
+    );
+    setFilteredStudent(filtered);
+  }
+
   const uniqueTerm = new Set(assesment.map((course) => course.termID));
   const uniquecourse = new Set(assesment.map((course) => course.courseNo));
+
+
+  useEffect(() => {
+    filterData();
+  }, [course, semester]);
+
+
+  
 
 
 
@@ -353,7 +484,7 @@ const GradeChangeSubmission = () => {
         placeholder="Select Student Name"
          style={{ marginRight: '8px', width:350 , height:40 }}>
           {/* Add academic year options */}
-          {studentData.map((department) => (
+          {filteredStudent.map((department) => (
                 <Option key={department.StudId} value={department.StudId}>
                   {department.StudId}
                 </Option>
