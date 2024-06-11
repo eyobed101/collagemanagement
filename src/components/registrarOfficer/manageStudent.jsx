@@ -16,14 +16,18 @@ const TableCell = styled.td`
   padding: 8px;
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
+  text-align:center;
 `;
 
 const TableHeader = styled.th`
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
-  padding: 12px;
+  padding: 15px;
   text-align: left;
-  background-color: #f0f0f0;
+  background-color: #4279A6;
+  text-align:center;
+  color:white;
+
 `;
 
 const StyledTable = styled.table`
@@ -282,7 +286,7 @@ const StudentStatusManagement = () => {
   }
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
+    <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md min-h-[100vh]">
       <div className="flex flex-wrap justify-start mt-4">
         <div style={{ width: "25%", minWidth: "200px", marginRight: "20px" }}>
           <select

@@ -1,9 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Table, Button, Modal, Form, Input, Popconfirm, Select , notification} from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Popconfirm,
+  Select,
+  notification,
+} from "antd";
 import axios from "axios";
 import moment from "moment";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css"; 
+
 
 const { Option } = Select;
 
@@ -78,9 +89,14 @@ const AddDepartment = () => {
             <Button onClick={() => edit(record)}>Edit</Button>
             <Popconfirm
               title="Sure to delete?"
-              onConfirm={() => handleDelete(record.key)}
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ style: { backgroundColor: "#4279A6", marginRight:"4px" } }}
+              onConfirm={() => handleDelete(record)}
             >
-              <Button type="danger">Delete</Button>
+              <Button type="danger" style={{ marginRight: 8, color: "red" }}>
+                Delete
+              </Button>
             </Popconfirm>
           </span>
         );
@@ -192,9 +208,24 @@ const AddDepartment = () => {
       });
   };
 
-  const handleDelete = (key) => {
-    const newData = data.filter((item) => item.key !== key);
-    setData(newData);
+  const handleDelete = async (key) => {
+    try {
+      const response = await axiosInstance.delete(`/api/Departments`, {
+        params: { department: key.did },
+      });
+      notification.success({
+        message: "Delete Successful",
+        description: "The department is deleted successfully!",
+      });
+
+      const newData = data.filter((item) => item.did !== key.did);
+      setData(newData);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: `Error deleting department: ${error.message || error}`,
+      });
+    }
   };
 
   const isEditing = (record) => record.key === editingKey;
@@ -208,21 +239,24 @@ const AddDepartment = () => {
       initialValues={data.find((item) => item.did === editingKey)}
     >
       <Form.Item label="Department Code" name="dcode" required>
-        <Input defaultValue={data.dcode} placeholder={data.dcode} style={{ width: "100%", height:"45px" }}
-/>
+        <Input
+          defaultValue={data.dcode}
+          placeholder={data.dcode}
+          style={{ width: "100%", height: "45px" }}
+        />
       </Form.Item>
       <Form.Item label="Department Name" name="dname" required>
-        <Input style={{ width: "100%", height:"45px" }} />
+        <Input style={{ width: "100%", height: "45px" }} />
       </Form.Item>
       <Form.Item label="Department Type" name="depType" required>
-        <Select style={{ width: "100%", height:"45px" }}>
+        <Select style={{ width: "100%", height: "45px" }}>
           <Option value="Major">Major</Option>
           <Option value="Supportive">Supportive</Option>
           <Option value="Common">Common</Option>
         </Select>
       </Form.Item>
       <Form.Item label="Is Major" name="major" required>
-        <Select style={{ width: "100%", height:"45px" }}>
+        <Select style={{ width: "100%", height: "45px" }}>
           <Option value="Yes">Yes</Option>
           <Option value="No">No</Option>
         </Select>
@@ -230,7 +264,7 @@ const AddDepartment = () => {
       <Form.Item>
         <Button
           type="primary"
-          style={{ backgroundColor: "#4279A6", marginRight:"5px" }}
+          style={{ backgroundColor: "#4279A6", marginRight: "5px" }}
           htmlType="submit"
         >
           Save
@@ -271,24 +305,20 @@ const AddDepartment = () => {
           { len: 4, message: "Department Code must be exactly 4 characters!" },
         ]}
       >
-        <Input maxLength={4} style={{ width: "100%", height:"45px" }}
- />
+        <Input maxLength={4} style={{ width: "100%", height: "45px" }} />
       </Form.Item>
       <Form.Item label="Department Name" name="dname" required>
-        <Input  style={{ width: "100%", height:"45px" }}
-/>
+        <Input style={{ width: "100%", height: "45px" }} />
       </Form.Item>
       <Form.Item label="Department Type" name="depType" required>
-        <Select  style={{ width: "100%", height:"45px" }}
->
+        <Select style={{ width: "100%", height: "45px" }}>
           <Option value="Major">Major</Option>
           <Option value="Supportive">Supportive</Option>
           <Option value="Common">Common</Option>
         </Select>
       </Form.Item>
       <Form.Item label="Is Major" name="major" required>
-        <Select style={{ width: "100%", height:"45px" }}
->
+        <Select style={{ width: "100%", height: "45px" }}>
           <Option value="Yes">Yes</Option>
           <Option value="No">No</Option>
         </Select>
@@ -296,7 +326,7 @@ const AddDepartment = () => {
       <Form.Item>
         <Button
           type="primary"
-          style={{ backgroundColor: "#4279A6", marginRight:"5px" }}
+          style={{ backgroundColor: "#4279A6", marginRight: "5px" }}
           htmlType="submit"
         >
           Create
@@ -347,7 +377,7 @@ const AddDepartment = () => {
   );
 
   return (
-    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
+    <div className="mb-8 mt-6 min-h-[100vh] flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
       <Button
         onClick={showCreateModal}
         type="primary"
@@ -362,12 +392,16 @@ const AddDepartment = () => {
       >
         Create New Department
       </Button>
+      <hr className="mb-4 border-2 border-[#C2C2C2]"/>
       <Table
         dataSource={data}
         columns={columns}
         rowKey="key"
         bordered
-        pagination={false}
+        className="custom-table"
+
+        pagination={{ pageSize: 10 }}
+
       />
       {editModal}
       {createModal}

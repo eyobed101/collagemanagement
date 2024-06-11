@@ -1,0 +1,59 @@
+.course-list-container {
+    margin: 24px;
+    padding: 24px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .header h2 {
+    color: #000;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .filters select {
+    padding: 8px 16px;
+    border: 2px solid #4d6a90;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    color: #4d6a90;
+  }
+  
+  .custom-table .ant-table-thead > tr > th {
+    background-color: #4279A6;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Merriweather', serif;
+    font-size: 16px;
+  }
+  
+  .custom-table .ant-table-tbody > tr > td {
+    text-align: center;
+  }
+  
+  .custom-table .ant-table-tbody > tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  .custom-table .ant-table-tbody > tr:hover {
+    background-color: #e6f7ff;
+  }
+  
+  .custom-table .ant-table-tbody > tr > td button {
+    margin: 0 4px;
+  }
+  

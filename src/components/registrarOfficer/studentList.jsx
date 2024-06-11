@@ -18,14 +18,20 @@ const TableCell = styled.td`
   padding: 8px;
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
+  text-align:center;
+
 `;
 
 const TableHeader = styled.th`
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
-  padding: 12px;
+  padding: 15px;
   text-align: left;
-  background-color: #f0f0f0;
+  background-color: #4279A6;
+  text-align:center;
+  color:white;
+
+
 `;
 
 const StyledTable = styled.table`
@@ -367,11 +373,11 @@ const StudentList = ({ sectionId }) => {
 
   return (
     <div>
-      <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+      <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md min-h-[100vh]">
         <div className="flex justify-between w-full">
           <div className="mb-2">
             <select
-              className="px-8 py-3 w-full bg-blue-gray-50 border-[#676767] text-black block shadow-md sm:text-sm rounded-md"
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               onChange={(e) =>
                 setSelectedDepartment(
                   departments.find((dept) => dept.dcode === e.target.value)
@@ -387,7 +393,7 @@ const StudentList = ({ sectionId }) => {
               ))}
             </select>
           </div>
-          <div className="mb-4">
+          <div className="w-[20%]">
             <Search
               placeholder="Search by student name"
               onSearch={onSearch}

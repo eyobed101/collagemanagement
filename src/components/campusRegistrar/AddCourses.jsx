@@ -34,6 +34,8 @@ const AddCourse = () => {
   const [modalDataState, setModalDataState] = useState([]);
   const [courseNo, setCourseNo] = useState([]);
   const [program, setProgram] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -623,26 +625,7 @@ const AddCourse = () => {
         </Form>
       </Modal>
 
-      <h2
-        style={{
-          color: "black",
-          padding: "10px",
-          fontSize: "21px",
-          borderRadius: "8px",
-          marginBottom: "20px",
-          backgroundColor:"#E9F4FC",
-          textAlign:"center"
-        }}
-      >
-        Course Table
-      </h2>
-      <Table
-        dataSource={tableData}
-        columns={columns}
-        rowKey="key"
-        bordered
-        style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)", borderRadius: "8px" }}
-      />
+      
     </div>
   );
 };

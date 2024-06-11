@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Layout, Menu } from "antd";
 
 import CenterRegistrar from "./Center_Registerar";
+import CreateUser from './CreateUser';
 import GradingSystem from "./GradeList";
 import GraduatesList from "./GraduateList";
 import PaymentStatus from "./PaymentStatus";
@@ -32,7 +33,7 @@ import { setSidenavType } from "@/context";
 import { LogoutOutlined } from "@mui/icons-material";
 import Sidebar from "@/widgets/layout/sidebar";
 import { MdLogout } from "react-icons/md";
-import { FaGraduationCap, FaSchool } from "react-icons/fa";
+import { FaGraduationCap, FaMoneyBill, FaSchool } from "react-icons/fa";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -45,6 +46,8 @@ const SiderGenerator = () => {
   const [isGradeList, setIsGradeList] = useState(false);
   const [isView, setIsView] = useState(false);
   const [isGradulateList, setIsGraduateList] = useState(false);
+  const [isUser,setIsUser] = useState(false);
+
 
   const drawerWidth = 240;
   const navigate = useNavigate();
@@ -58,6 +61,7 @@ const SiderGenerator = () => {
     setIsView(false);
     setIsGradeList(false);
     setIsCenterRegister(true);
+    setIsUser(false);
   };
   const handlePay = () => {
     setIsPay(true);
@@ -65,6 +69,8 @@ const SiderGenerator = () => {
     setIsView(false);
     setIsGradeList(false);
     setIsCenterRegister(false);
+    setIsUser(false);
+
   };
   const handleView = () => {
     setIsPay(false);
@@ -72,6 +78,8 @@ const SiderGenerator = () => {
     setIsView(true);
     setIsGradeList(false);
     setIsCenterRegister(false);
+    setIsUser(false);
+
   };
   const handleGradeList = () => {
     setIsPay(false);
@@ -79,6 +87,8 @@ const SiderGenerator = () => {
     setIsView(false);
     setIsGradeList(true);
     setIsCenterRegister(false);
+    setIsUser(false);
+
   };
 
   const handleGraduateList = () => {
@@ -87,6 +97,17 @@ const SiderGenerator = () => {
     setIsView(false);
     setIsGradeList(false);
     setIsCenterRegister(false);
+    setIsUser(false);
+
+  };
+  const handleUser = () => {
+    setIsPay(false);
+    setIsGraduateList(false);
+    setIsView(false);
+    setIsGradeList(false);
+    setIsCenterRegister(false);
+    setIsUser(true);
+
   };
 
   const handlelogout = () => {
@@ -105,7 +126,12 @@ const SiderGenerator = () => {
           onClick: handleCentralRegistrar,
         },
         {
-          icon: <HomeIcon {...icon} />,
+          icon: <UserCircleIcon {...icon} />,
+          name: "Create User Accounts",
+          onClick: handleUser,
+        },
+        {
+          icon: <FaMoneyBill {...icon} />,
           name: "Payment Status",
           onClick: handlePay,
         },
@@ -159,6 +185,8 @@ const SiderGenerator = () => {
           {isGradeList ? <GradingSystem /> : null}
           {isGradulateList ? <GraduatesList /> : null}
           {isView ? <ViewCenterStudent /> : null}
+          {isUser?  <CreateUser /> : null}             
+
         </div>
         <div className="text-blue-gray-600">
           <Footer />

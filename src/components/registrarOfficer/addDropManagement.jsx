@@ -371,7 +371,7 @@ const AddDropManagement = () => {
   return (
     <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md absolute">
       <div class="grid grid-cols-4 mt-10">
-        <div class="col-span-4 sm:col-span-2 border-2 shadow-md p-4 rounded-md mx-2">
+        <div class="col-span-4 sm:col-span-2 bg-opacity-25 bg-gray-200 backdrop-filter backdrop-blur-lg p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
             <div className="mb-10 flex flex-col w-full">
               <label
@@ -697,7 +697,7 @@ const AddDropManagement = () => {
                     {course.courseNo} -{" "}
                     {courses
                       .filter((cor) => cor.courseNo === course.courseNo)
-                      .map((cour) => cour.courseName)}
+                      .map((cour) => cour.courseName)[0]}
                   </li>
                 ))}
             </div>
@@ -707,20 +707,20 @@ const AddDropManagement = () => {
       <div className="flex justify-between m-5">
         <div className="flex space-x-5">
           <button
-            className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+            className="px-8 py-4 bg-[#4279A6] text-white font-semibold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
             onClick={() => handleAddDropFunction()}
           >
             ADD/DROP
           </button>
           <button
-            className="px-4 py-2 bg-[#395f7f] text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+            className="px-8 py-4 bg-[#4279A6] text-white font-semibold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
             onClick={() => handleClearAdded()}
           >
             Clear Added
           </button>
         </div>
         <button
-          className="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
+          className="px-4 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-400 transition-colors duration-300 ease-in-out"
           onClick={() => handleTransaction()}
         >
           Save Transaction

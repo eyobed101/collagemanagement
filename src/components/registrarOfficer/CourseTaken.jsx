@@ -125,14 +125,17 @@ const StudentCourses = () => {
     padding: 8px;
     border: 2px solid #e2e8f0;
     border-collapse: collapse;
+    text-align:center;
   `;
 
   const TableHeader = styled.th`
     border: 2px solid #e2e8f0;
     border-collapse: collapse;
-    padding: 12px;
+    padding: 15px;
     text-align: left;
-    background-color: #f0f0f0;
+    background-color: #4279A6;
+    text-align:center;
+    color:white;
   `;
 
   const StyledTable = styled.table`
@@ -293,12 +296,10 @@ const StudentCourses = () => {
   );
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
+    <div className="mt-12 mb-8 flex flex-col gap-6 bg-white p-5 rounded-md min-h-[100vh]">
       <div className="flex flex-wrap justify-start mt-4">
         <div style={{ width: "25%", minWidth: "200px", marginRight: "20px" }}>
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Select Department
-          </label>
+     
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             value={selectedDepartment ? selectedDepartment.dname : ""}
@@ -317,9 +318,7 @@ const StudentCourses = () => {
           </select>
         </div>
         <div style={{ width: "25%", minWidth: "200px", marginRight: "20px" }}>
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Section
-          </label>
+        
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             onChange={handleSectionChange}
@@ -344,9 +343,7 @@ const StudentCourses = () => {
           </select>
         </div>
         <div style={{ width: "25%", minWidth: "200px" }}>
-          <label className="block text-lg font-semibold mb-2 text-[#434343]">
-            Students
-          </label>
+     
           <select
             className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
             onChange={handleStudentChange}
@@ -397,7 +394,7 @@ const StudentCourses = () => {
             {selectedSection
               ? selectedStudent
                 ? courseTaken
-                    .filter((grad) => grad.StudID === selectedStudent.studId)
+                    .filter((grad) => grad.StudId === selectedStudent.studId)
                     .map((grade, index) => (
                       <TableRow key={index} isOdd={index % 2 !== 0}>
                         <TableCell>{grade.CourseNo}</TableCell>

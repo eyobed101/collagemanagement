@@ -9,12 +9,13 @@ import {
   Modal,
   Form,
   message,
-  notification
+  notification,
 } from "antd";
 import moment from "moment";
 import axios from "axios";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css"; 
 
 const AddTerm = () => {
   const [data, setData] = useState([]);
@@ -237,7 +238,9 @@ const AddTerm = () => {
               okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
               onConfirm={() => handleDelete(record)}
             >
-              <Button type="danger">Delete</Button>
+              <Button type="danger" style={{ marginRight: 8, color: "red" }}>
+                Delete
+              </Button>
             </Popconfirm>
           </span>
         );
@@ -275,7 +278,6 @@ const AddTerm = () => {
       });
 
       setVisible(false);
-
     } catch (error) {
       notification.error({
         message: "Update Failed",
@@ -325,7 +327,6 @@ const AddTerm = () => {
         message: "Creation Successful",
         description: "New term is created successfully!",
       });
-
     } catch (error) {
       setVisible(false);
       notification.error({
@@ -381,12 +382,25 @@ const AddTerm = () => {
   };
 
   const handleDelete = async (record) => {
-    console.log("delete", record);
-    const response = await axiosInstance.put(`/api/Terms`, record);
-    console.log("Delete request successful:", response.data);
+    try {
+      console.log("delete", record);
+      const response = await axiosInstance.delete(`/api/Terms`, {
+        params: { semester: encodeURIComponent(record.termId) },
+      });
+      console.log("Delete request successful:", response.data);
+      notification.success({
+        message: "Delete Successful",
+        description: "The term is deleted successfully!",
+      });
 
-    const newData = data.filter((item) => item.key !== record.key);
-    setDataSource(newData);
+      const newData = data.filter((item) => item.key !== record.key);
+      setDataSource(newData);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: `Error deleting term: ${error.message || error}`,
+      });
+    }
   };
 
   const showModal = () => {
@@ -394,7 +408,7 @@ const AddTerm = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
+    <div className="mb-8 mt-6 min-h-[100vh] flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
       <Button
         onClick={showModal}
         type="primary"
@@ -407,13 +421,15 @@ const AddTerm = () => {
           maxWidth: "20%",
         }}
       >
-        Add New Term
+        Add new term
       </Button>
+      <hr className="mb-4 border-2 border-[#C2C2C2]"/>
       <Table
         dataSource={data}
         columns={columns}
         bordered
         rowKey={(record) => record.termId}
+        className="custom-table"
         pagination={{ pageSize: 10 }}
       />
       <Modal
@@ -435,7 +451,6 @@ const AddTerm = () => {
                 format="YYYY-MM-DD"
                 getPopupContainer={(trigger) => trigger.parentElement}
                 onChange={onChangeStart}
-
                 style={{ width: "100%" }}
               />
             ) : (
@@ -460,7 +475,6 @@ const AddTerm = () => {
                 format="YYYY-MM-DD"
                 getPopupContainer={(trigger) => trigger.parentElement}
                 onChange={onChangeEnd}
-
                 style={{ width: "100%" }}
               />
             ) : (

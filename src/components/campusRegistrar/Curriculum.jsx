@@ -10,13 +10,14 @@ import {
   Popconfirm,
   DatePicker,
   message,
-  notification
+  notification,
 } from "antd";
 
 import axios from "axios";
 import moment from "moment";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css";
 
 const { Option } = Select;
 
@@ -45,6 +46,9 @@ const Curriculum = () => {
   const [selectedDCode, setSelectedDCode] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState([]);
   const [selectedProgramType, setSelectedProgramType] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
 
   // Function to filter courses based on selected department
 
@@ -56,6 +60,7 @@ const Curriculum = () => {
         .get(`/api/Departments`)
         .then((response) => {
           setData(response.data);
+          setDepartments(response.data);
           console.log("Departments", response.data);
         })
         .catch((error) => {
@@ -89,6 +94,8 @@ const Curriculum = () => {
     fetchCourses();
   }, []);
 
+ 
+
   const showCurriculumModal = () => {
     setIsCurriculumModalVisible(true);
   };
@@ -115,6 +122,8 @@ const Curriculum = () => {
       try {
         const response = await axiosInstance.get(`/api/Curricula`);
         setCurriculum(response.data);
+        setTableData(response.data);
+
         console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -125,6 +134,24 @@ const Curriculum = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (selectedDepartment) {
+      const filteredCourses = curriculum.filter((course) => course.dcode === selectedDepartment.did);
+      setTableData(filteredCourses);
+    } else {
+      setTableData(curriculum);
+    }
+  }, [selectedDepartment]);
+
+  useEffect(() => {
+    if (selectedProgram && selectedDepartment) {
+      const filteredCourses = curriculum.filter(
+        (course) => course.dcode === selectedDepartment.did && course.program === selectedProgram
+      );
+      setTableData(filteredCourses);
+    }
+  }, [selectedProgram]);
 
   const handleDCodeChange = (value) => {
     setSelectedDCode(value);
@@ -227,7 +254,9 @@ const Curriculum = () => {
 
         notification.error({
           message: "Failed",
-          description: `Error creating curriculum: ${error.message || error.request}`,
+          description: `Error creating curriculum: ${
+            error.message || error.request
+          }`,
         });
         // The request was made but no response was received
       } else {
@@ -248,21 +277,25 @@ const Curriculum = () => {
   };
 
   const handleDelete = async (record) => {
-    console.log("handle   ", record);
-    const postData = {
-      courseNo: record.courseNo,
-      dcode: parseInt(record.dcode),
-      program: record.program,
-      programType: record.programType,
-      approvedDate: moment(record.approvedDate).format("YYYY-MM-DD"),
-      effectiveSdate: moment(record.effectiveSdate).format("YYYY-MM-DD"),
-      effectiveEdate: moment(record.effectiveEdate).format("YYYY-MM-DD"),
-      campusId: record.campusId,
-      courseType: record.courseType,
-    };
+    try {
+      console.log("delete", record);
+      const response = await axiosInstance.delete(`/api/Curricula`, {
+        params: { curriculum: record.termId },
+      });
+      console.log("Delete request successful:", response.data);
+      notification.success({
+        message: "Delete Successful",
+        description: "The curriculum is deleted successfully!",
+      });
 
-    const response = await axiosInstance.delete(`/api/Curricula`, postData);
-    console.log("Delete request successful:", response.data);
+      // const newData = data.filter((item) => item.key !== record.key);
+      // setDataSource(newData);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: `Error deleting curriculum: ${error.message || error}`,
+      });
+    }
   };
 
   const edit = (record) => {
@@ -312,11 +345,7 @@ const Curriculum = () => {
       dataIndex: "program",
       key: "program",
     },
-    {
-      title: "Program Type ",
-      dataIndex: "programType",
-      key: "programType",
-    },
+
     {
       title: "Effective Start Date",
       dataIndex: "effectiveSdate",
@@ -414,77 +443,65 @@ const Curriculum = () => {
   };
 
   return (
-    <div className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
+    <div className="flex flex-col gap-12 bg-white p-5 mt-5 rounded-md shadow-md">
       {/* <SiderGenerator navigate={navigate}/> */}
-      <div className="list-sub mb-10 ml-[2%]">
-        <Button
-          type="primary"
-          style={{
-            background: "#4279A6",
-            marginBottom: "15px",
-            padding: "12px 24px",
-            height: "auto",
-            fontWeight: "bold",
-          }}
-          onClick={showCurriculumModal}
-        >
-          New Curriculum
-        </Button>
-
-        <div style={{ marginTop: 20, marginBottom: 10 }}>
-        <div className="flex flex-wrap w-full">
-
-        <div className="mb-10 flex flex-col mr-5">
-
-        <select
-            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
-            value={selectedDepartment ? selectedDepartment.dname : ""}
-            onChange={(e) =>
-              setSelectedDepartment(
-                data.find((dept) => dept.dname === e.target.value)
-              )
-            }
+      <div className="flex flex-col list-sub mb-10 ml-[2%]">
+        <div className="flex justify-between">
+          <Button
+            type="primary"
+            style={{
+              background: "#4279A6",
+              marginBottom: "15px",
+              padding: "12px 24px",
+              height: "20%",
+              fontWeight: "bold",
+            }}
+            onClick={showCurriculumModal}
           >
-            <option value="">Select Department</option>
-            {data.map((dept, index) => (
-              <option key={index} value={dept.dname}>
-                {dept.dname}
-              </option>
-            ))}
-          </select>
-          </div>
-          <div className="mb-10 flex flex-col mr-5">
+            New curriculum
+          </Button>
 
-
-          <select
-            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
-            placeholder="Select Program"
-            onChange={(value) => handleProgramChange(value)}
-          >
-            <option value="">Select Program</option>
-            <option value="TVET">TVET</option>
-            <option value="Degree">Degree</option>
-            <option value="Masters">Masters</option>
-          </select>
-          </div>
-
-          <div className="mb-10 flex flex-col">
-
-
-          <select
-            className="px-8 py-3 w-full font-semibold bg-blue-gray-50 border-[2px] border-[#C2C2C2] text-black block shadow-sm sm:text-sm rounded-md"
-            placeholder="Select Program Type"
-            onChange={(value) => setSelectedProgramType(value)}
-          >
-            <option value="">Select Program Type</option>
-            <option value="Regular">Regular</option>
-            <option value="Extension">Extension</option>
-            <option value="Distance">Weekend</option>
-          </select>
+          <div className="flex flex-wrap px-5 space-x-3">
+            <div className="mb-2 space-y-4">
+              <select
+                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                onChange={(e) =>
+                  setSelectedDepartment(
+                    departments.find((dept) => dept.dcode === e.target.value)
+                  )
+                }
+                value={selectedDepartment ? selectedDepartment.dcode : ""}
+              >
+                <option value="">Select Department</option>
+                {departments.map((dept) => (
+                  <option key={dept.dcode} value={dept.dcode}>
+                    {dept.dname}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-2 space-y-4">
+              <select
+                className="px-8 py-3 w-full bg-blue-gray-50  border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                onChange={(e) => setSelectedProgram(e.target.value)}
+              >
+                <option value="">Select Program</option>
+                {selectedDepartment ? (
+                  <>
+                    <option value="Degree">Degree</option>
+                    <option value="TVET">TVET</option>
+                    <option value="Masters">Masters</option>
+                  </>
+                ) : (
+                  <option disabled>Select Department first</option>
+                )}
+              </select>
+            </div>
           </div>
         </div>
-            </div>
-        
+
+        <hr className="mb-4 mt-10 border-2 border-[#C2C2C2]" />
+
         <Modal
           title={editingKey ? "Edit Curriculum" : "Create New Curriculum"}
           visible={isCurriculumModalVisible}
@@ -612,11 +629,12 @@ const Curriculum = () => {
           </Form>
         </Modal>
         <Table
-          dataSource={curriculum}
+          dataSource={tableData}
           columns={columns}
           bordered
           loading={loading}
           rowKey={(record) => record.termId}
+          className="custom-table"
           pagination={{ pageSize: 10 }}
         />
         {/* <Table columns={courseColumns} dataSource={courses} style={{ marginTop: 20 }} pagination={{ position: ['bottomCenter'] }} /> */}

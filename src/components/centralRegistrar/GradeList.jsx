@@ -125,16 +125,16 @@ const GradingSystem = () => {
   ];
 
   return (
-    <div>
-      <h2>Grading System (Admin)</h2>
+    <div className='flex flex-col gap-12 bg-white p-5 rounded-md'>
       <div>
-        <label>Add Academic Year:      </label>
+        <label className='m-2'>Add Academic Year:</label>
         <Space>
           <Select
             style={{ width: 120 }}
             placeholder="Select Year"
             onChange={handleYearChange}
             value={selectedYear}
+            className='h-[45px]'
           >
             {Acadamic.map((year) => (
               <Option key={year.id} value={year.year}>
@@ -144,11 +144,8 @@ const GradingSystem = () => {
           </Select>
         </Space>
       </div>
+     
       <div>
-        <h3>Selected Academic Year: {selectedYear}</h3>
-      </div>
-      <div>
-        <h3>Grade Ranges:</h3>
         <Table 
         // onRow={(record, rowIndex) => {
         //     return {
@@ -160,9 +157,8 @@ const GradingSystem = () => {
          pagination={{ position: ['bottomCenter'] }} />
       </div>
       <div>
-        <h3>Add Grade Range:</h3>
         <div>
-        <Button type="primary" style={{ backgroundColor: "#4279A6" }}  onClick={() => showModal()}>
+        <Button type="primary" style={{ backgroundColor: "#4279A6", height:"45px" }}  onClick={() => showModal()}>
           Add Grade System
         </Button>
         <Modal
@@ -172,7 +168,7 @@ const GradingSystem = () => {
           okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
           onCancel={handleCancel}
           footer={[
-            <Button key="back" onClick={handleCancel}>
+            <Button key="back" onClick={handleCancel} className='p-5'>
               Exit
             </Button>,
             <Button key="submit" onClick={handleOk}>

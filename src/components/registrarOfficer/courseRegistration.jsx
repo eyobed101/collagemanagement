@@ -463,7 +463,7 @@ const StudentCourseRegistration = () => {
       <div>
         <div className="flex justify-between space-x-2 mx-2 mb-10">
           <button
-            className="px-4 py-3 bg-[#409aeedd] font-bold text-white rounded-md"
+            className="px-4 py-3 bg-[#4279A6] font-bold text-white rounded-md"
             onClick={handleClearSelectedCourses}
           >
             Clear Selected Course{" "}

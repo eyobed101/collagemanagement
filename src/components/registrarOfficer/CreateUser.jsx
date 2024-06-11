@@ -21,21 +21,33 @@ const TableCell = styled.td`
   padding: 8px;
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
+  text-align:center;
 `;
 
 const TableHeader = styled.th`
   border: 2px solid #e2e8f0;
   border-collapse: collapse;
-  padding: 12px;
+  padding: 15px;
   text-align: left;
-  background-color: #f0f0f0;
+  background-color: #4279A6;
+  color: white;
+  text-align:center;
+
+  &:first-child {
+    border-top-left-radius: 5px;
+  }
+
+  &:last-child {
+    border-top-right-radius: 5px;
+  }
 `;
 
 const StyledTable = styled.table`
   width: 100%;
+  border-radius:15px;
   min-width: 640px;
-  border-collapse: collapse;
   margin-top: 12px;
+
 `;
 
 const ModalWrapper = styled.div`
@@ -232,24 +244,7 @@ const CreateUser = ({ sectionId }) => {
         setIsCreateVisible(false); 
     }
 };
-  // const handleSubmit = async () => {
-  //   for (const account of generatedAccounts) {
-  //     await axiosInstance.post('/api/Authenticate/student/register', account);
-  //   }
-  //   setIsCreateVisible(false);
-  // };
-
-  // const filteredApplicants = applicants
-  //   .filter((student) => {
-  //     if (!selectedDepartment) return true; // No department selected, show all applicants
-  //     return student.dname === selectedDepartment.did;
-  //   })
-  //   .filter((student) => {
-  //     const fullName = `${student.fname} ${student.mname || ""} ${
-  //       student.lname
-  //     }`.toLowerCase();
-  //     return fullName.includes(searchText);
-  //   });
+  
 
   const filteredApplicants = applicants
     .filter((student) => {
@@ -402,19 +397,15 @@ const CreateUser = ({ sectionId }) => {
     }
   };
 
-  const createAccount = async () => {
-    console.log("first")
-    // setIsModalVisible(true);  // Assuming you have a modal that takes in inputs for batch processing
-    // You could also loop here and post each student to your registration endpoint
-  };
 
   return (
     <div>
-      <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
+      <div className="mt-12 mb-8 flex flex-col gap-12 bg-white p-5 rounded-md min-h-[100vh]">
         <div className="flex justify-between w-full">
+          <div className="flex space-x-2">
           <div className="mb-2 space-y-4">
             <select
-              className="px-8 py-3 w-full bg-blue-gray-50 border-[#676767] text-black block shadow-md sm:text-sm rounded-md"
+              className="px-8 py-3 w-full bg-blue-gray-50 border-x-2 border-y-2 font-semibold border-[#C2C2C2] text-black block shadow-md sm:text-sm rounded-md"
               onChange={(e) =>
                 setSelectedDepartment(
                   departments.find((dept) => dept.dcode === e.target.value)
@@ -430,25 +421,54 @@ const CreateUser = ({ sectionId }) => {
               ))}
             </select>
 
-            <button
-              className="px-8 py-3 w-full bg-blue-500 text-white  hover:bg-blue-600  block shadow-md sm:text-sm rounded-md"
-              onClick={showCreateModal}
-              disabled={!selectedDepartment || (selectedDepartment && Object.keys(selectedDepartment).length === 0)}
+
+          </div>
+          <div className="mb-2 space-y-4">
+            <select
+              className="px-8 py-3 w-full bg-blue-gray-50 border-x-2 border-y-2 border-[#C2C2C2] font-semibold text-black block shadow-md sm:text-sm rounded-md"
+              onChange={(e) =>
+                setSelectedSection(
+                  sections.find((sec) => sec.sectionId === e.target.value)
+                )
+              }
+              value={selectedSection ? selectedSection.sectionId : ""}
             >
-            {selectedDepartment && Object.keys(selectedDepartment).length !== 0 ? `Generate Accounts for ${selectedDepartment.dname}` : "Select Department to Generate"}
-            </button>
+              
+              <option value={[]}>Select Section</option>
+              {selectedDepartment ?  sections.filter((sec) => sec.dcode === selectedDepartment.did).map((dept) => (
+                <option key={dept.sectionId} value={dept.sectionId}>
+                  {dept.sectionName}
+                </option>
+              )) : ""}
+            </select>
+
           </div>
           
+         
+          </div>
+         
+          
 
-          <div className="mb-4">
+          <div className="w-[25%]">
             <Search
               placeholder="Search by student name"
               onSearch={onSearch}
-              className="w-full bg-blue-gray-50 sm:text-sm rounded-md"
+              className="w-full border-2 border-[#C2C2C2] sm:text-sm rounded-md"
 
             />
           </div>
         </div>
+        <div className="w-[30%]">
+        <button
+              className="flex  px-8 py-4 font-semibold bg-[#4279A6] text-white  hover:bg-blue-600  shadow-md sm:text-sm rounded-md"
+              onClick={showCreateModal}
+              disabled={!selectedSection || (selectedSection && Object.keys(selectedSection).length === 0)}
+            >
+            {selectedSection && Object.keys(selectedSection).length !== 0 ? `Generate Accounts for ${selectedSection.sectionName}` : "Select Section to Generate"}
+            </button>
+            </div>
+            <hr className="border-2 border-[#C2C2C2]"/>
+
         <div className="border-2 px-5 py-4 rounded-md shadow-md">
           <StyledTable>
             <thead className="border-2 px-5 py-4 rounded-md shadow-md">
@@ -514,7 +534,7 @@ const CreateUser = ({ sectionId }) => {
                     padding: "5px 10px",
                     border: "1px solid #ccc",
                     borderRadius: "5px",
-                    backgroundColor: currentPage === page ? "#007bff" : "",
+                    backgroundColor: currentPage === page ? "#4279A6" : "",
                     color: currentPage === page ? "white" : "",
                     cursor: "pointer",
                   }}

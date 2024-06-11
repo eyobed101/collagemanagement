@@ -14,6 +14,8 @@ import moment from "moment";
 import axios from "axios";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css"; 
+
 
 const { Option } = Select;
 const AddSection = () => {
@@ -184,8 +186,7 @@ const AddSection = () => {
         ) : (
           <span>
             <Button
-              type="link"
-              size="small"
+    
               onClick={() => edit(record)}
               style={{ marginRight: 8, color: "#4279A6" }}
             >
@@ -365,27 +366,30 @@ const AddSection = () => {
   };
 
   const handleDelete = async (record) => {
-    console.log("delete", record);
-    const postData = {
-      sectionId: record.sectionId,
-      campusId: record.campusId,
-      sectionName: record.sectionName,
-      dateCreated: moment(record.dateCreated).format("YYYY-MM-DD"),
-      acadYear: record.acadYear,
-      program: record.program,
-      dcode: parseInt(record.dcode),
-      programType: record.programType,
-    };
-    console.log("delete", postData);
-    const response = await axiosInstance.delete(`/api/Section`, postData);
-    console.log("Delete request successful:", response.data);
+    try {
+      console.log("delete", record);
+      const response = await axiosInstance.delete(`/api/Section`, {params:{section:encodeURIComponent(record.sectionId)}});
+      console.log("Delete request successful:", response.data);
+      notification.success({
+        message: "Delete Successful",
+        description: "The section is deleted successfully!",
+      });
+  
+      const newData = dataSource.filter((item) => item.key !== record.key);
+      setDataSource(newData);
+    }catch(error) {
+      notification.error({
+        message: "Error",
+        description: `Error deleting section: ${error.message || error}`,
+      });
+    }
+   
 
-    const newData = dataSource.filter((item) => item.key !== record.key);
-    setDataSource(newData);
+    
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
+    <div className="mb-8 mt-6 min-h-[100vh] flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
       <div className="list-sub flex justify-between">
         <Button
           type="primary"
@@ -401,6 +405,7 @@ const AddSection = () => {
         >
           Create New Section
         </Button>
+        
         <div className="list-filter">
           <Input.Search
             placeholder="Search by Section ID"
@@ -415,13 +420,15 @@ const AddSection = () => {
           />
         </div>
       </div>
+      <hr className="mb-4 border-2 border-[#C2C2C2]"/>
       <Table
-        style={{ marginTop: 20, color: "#4279A6" }}
         dataSource={dataSource}
         columns={columns}
         bordered
         loading={loading}
         rowKey={(record) => record.sectionId}
+        className="custom-table"
+
         pagination={{ pageSize: 10 }}
       />
       <Modal

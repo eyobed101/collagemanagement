@@ -7,7 +7,7 @@ import "react-tabs/style/react-tabs.css";
 import { apiurl } from "../constants";
 import { tailspin } from "ldrs";
 import axiosInstance from "@/configs/axios";
-import {notification} from "antd";
+import { notification } from "antd";
 
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
@@ -33,6 +33,7 @@ export function AddStudent() {
 
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [identificationCopy, setIdentificationCopy] = useState(null);
+
   const initialFormData = {
     studId: "",
     fname: "",
@@ -63,7 +64,7 @@ export function AddStudent() {
     email: "",
     persontoBeContacted: "",
     appDate: "2024-02-28",
-    approved: "",
+    approved: "YES",
     approvedDate: "2024-02-28",
     age: 0,
     ageInyear: 0,
@@ -71,6 +72,8 @@ export function AddStudent() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const [files, setFiles] = useState([]);
+
   // let [data, setData] = useState({});
   const [departments, setDepartments] = useState([]);
   const [dep, setDep] = useState(0);
@@ -192,8 +195,18 @@ export function AddStudent() {
     }
   };
 
+  const handleFileUpload = (e, docId) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Add the uploaded file to the files array
+    setFiles(prevFiles => [...prevFiles, { docId, file }]);
+  };
+
   // Handler for form submission
   const handleSubmit = async (e) => {
+    const formDATA = new FormData();
+
     e.preventDefault();
     setSpining(true);
     setLoading1(true);
@@ -203,7 +216,7 @@ export function AddStudent() {
     console.log("DOCCCCCCC", docIdsQueryString)
     let getStudentID = generateStudentId();
 
-    const data = {
+    let data = {
       StudId: getStudentID,
       Fname: formData.fname,
       Mname: formData.mname,
@@ -240,9 +253,19 @@ export function AddStudent() {
       Batch: formData.batch,
     };
 
+    files.forEach(file => {
+      formDATA.append('files', file);
+    });
+
     const { SectionId, TermId, ...restFormData } = data;
 
     console.log("data", data);
+    formDATA.append('applicants', JSON.stringify(restFormData));
+
+
+    // Object.entries(restFormData).forEach(([key, value]) => {
+    //   formDATA.append(key, value);
+    // });
 
     const apiUrl = `/api/Applicants`;
 
@@ -253,14 +276,14 @@ export function AddStudent() {
         return acc;
       }, {});
 
-      const response = await axiosInstance.post(apiUrl, restFormData, {
+      const response = await axiosInstance.post(apiUrl, formDATA, {
         params: {
           ...docIdsParams,
           SectionID: SectionId,
           TermId: TermId,
         },
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'multipart/form-data'
         },
       });
 
@@ -307,7 +330,7 @@ export function AddStudent() {
     );
   };
 
-  
+
   const handlePassportPhotoChange = (event) => {
     setPassportPhoto(event.target.files[0]);
   };
@@ -768,31 +791,48 @@ export function AddStudent() {
                           />
                         </div>
                         <div className="col-span-6 p-4 shadow-md rounded-md">
-      <label className="block text-lg font-medium text-gray-700 mb-5">
-        Submitted Documents
-      </label>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {documents.map((doc) => (
-          <div key={doc.docId} className="flex items-start">
-            <input
-              type="checkbox"
-              id={`doc_${doc.docId}`}
-              name={`doc_${doc.docId}`}
-              value={doc.docId}
-              onChange={handleCheckboxChange}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor={`doc_${doc.docId}`}
-              className="ml-2 block text-sm text-gray-700"
-            >
-              {doc.documentName}
-            </label>
-          </div>
-        ))}
-      </div>
-      
-    </div>
+                          <label className="block text-lg font-medium text-gray-700 mb-5">
+                            Submitted Documents
+                          </label>
+                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {documents.map((doc) => (
+                              <div key={doc.docId} className="flex items-start">
+                                <input
+                                  type="checkbox"
+                                  id={`doc_${doc.docId}`}
+                                  name={`doc_${doc.docId}`}
+                                  value={doc.docId}
+                                  onChange={handleCheckboxChange}
+                                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                />
+                                <label
+                                  htmlFor={`doc_${doc.docId}`}
+                                  className="ml-2 block text-sm text-gray-700"
+                                >
+                                  {doc.documentName}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+
+                        </div>
+                        <div className="mt-5 flex flex-wrap space-y-4 w-full ml-2">
+                          {selectedDocId.map((docId) => (
+                            <div key={docId} className="flex items-center">
+                              <label htmlFor={`file_${docId}`} className="block text-sm text-gray-700">{`Upload file for document ${documents
+                                .filter((doc) => doc.docId.toString() === docId.toString())
+                                .map((doc) => doc.documentName)[0]}: `}</label>
+                              <input
+                                type="file"
+                                id={`file_${docId}`}
+                                name={`file_${docId}`}
+                                className="ml-2 border-gray-300 rounded-md p-1"
+                                onChange={(e) => handleFileUpload(e, docId)}
+
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </TabPanel>
                     <TabPanel>

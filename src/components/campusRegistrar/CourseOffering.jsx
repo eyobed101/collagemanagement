@@ -122,7 +122,7 @@ const CourseOffering = () => {
           );
 
           console.log("Post request successful:", response.data);
-          message.success("post  course assignment.");
+          // message.success("post  course assignment.");
 
         } catch (error) {
           console.error("Error assigning courses:", error);
@@ -134,9 +134,10 @@ const CourseOffering = () => {
             const errorMessage = Object.values(error.response.data.errors).join(
               "; "
             );
-            message.error(`Error assigning courses: ${errorMessage}`);
+            // message.error(`Error assigning courses: ${errorMessage}`);
           } else {
-            message.error("Error assigning courses. Please try again.");
+            console.log("");
+            // message.error("Error assigning courses. Please try again.");
           }
         }
       }
@@ -244,12 +245,15 @@ const CourseOffering = () => {
           padding: "10px",
           fontSize: "21px",
           borderRadius: "8px",
-          backgroundColor:"#E9F4FC",
-          textAlign:"center"
+          fontWeight:"bold",
+          opacity:"25",
+          backdropFilter:true,
         }}
       >
         Courses
       </h2>
+      <hr className="mb-4 border-2 border-[#C2C2C2]"/>
+
       <div className="bg-white p-5 rounded-md shadow-md">
 
         <Table
@@ -277,12 +281,15 @@ const CourseOffering = () => {
           padding: "10px",
           fontSize: "21px",
           borderRadius: "8px",
-          backgroundColor:"#E9F4FC",
-          textAlign:"center"
+          fontWeight:"bold",
+          opacity:"25",
+          backdropFilter:true,
         }}
       >
        Offered Courses
       </h2>
+      <hr className="mb-4 border-2 border-[#C2C2C2]"/>
+
       <div className="bg-white p-5 rounded-md shadow-md">
         <Table
           dataSource={otherTableData}

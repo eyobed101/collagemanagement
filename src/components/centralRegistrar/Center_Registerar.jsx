@@ -14,10 +14,10 @@ import {
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import SiderGenerator from "./Menu";
+import { api } from "../constants";
+// import SiderGenerator from './Menu';
 
 import Grid from "@mui/material/Grid";
-import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
 
 // Mock data
@@ -47,7 +47,6 @@ const CenterRegistrar = () => {
   const navigate = useNavigate();
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
-  const [teachvalue, setTeachvalue] = useState([]);
   const [student, setStudent] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -139,110 +138,107 @@ const CenterRegistrar = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col bg-white p-5 rounded-md">
+    <div className="mb-8 flex flex-col gap-12 bg-white mt-6 p-5 rounded-md">
       {/* <SiderGenerator navigate={navigate}/> */}
-      <p className="!font-jakarta text-left text-[#000000] text-[20px] font-bold align-middle  mb-8 ml-5">
-        Center Registrar Management System{" "}
-      </p>
-      
-      <div class="flex gap-30 p-10">
-        <Space direction="horizontal" size={16}>
+      {/* <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
+      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Campus Registrar Management System</h1>
+    </div> */}
+      <div className="flex">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 lg:gap-10 p-4 md:p-10">
           {noUsers.map((item) => (
-            <Card
+            <div
               key={item.id}
-              size="medium"
-              title={item.name}
-              headStyle={{ fontSize: 16, fontWeight: "bold", color: "black" }}
-              //   extra={<a href="#">More</a>}
-              style={{
-                width: "100%",
-              }}
-            >
-              <p className="font-bold text-base text-gray-500">
-                {" "}
-                {item.number} people
-              </p>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <p className="text-xl font-light">increased by </p>
-                <p className="text-xl font-light text-green-500">
-                  {" "}
-                  {item.number / 200}%
-                </p>
-              </div>
-            </Card>
+              className="flex justify-center">
+              <Card
+                size="small"
+                title={item.name}
+                headStyle={{ fontSize: 16, fontWeight: "bold", color: "black" }}
+                className="w-full sm:w-[400px] lg:w-[300px] flex flex-col justify-between bg-opacity-25 bg-gray-200 backdrop-filter backdrop-blur-lg rounded-lg shadow-md px-4 pt-4"
+              >
+                <div className="my-2">
+                  <p className="font-bold text-lg text-gray-700">
+                    {item.number} people
+                  </p>
+                  <div className="flex items-center">
+                    <p className="text-base text-gray-600">Increased by</p>
+                    <p className="ml-1 text-lg text-green-500">
+                      {(item.number / 200).toFixed(2)}%
+                    </p>
+                  </div>
+                </div>
+                <button className="px-4 py-2 float-right bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                  View More
+                </button>
+              </Card>
+            </div>
           ))}
-        </Space>
+        </div>
       </div>
+      
       <div className="list-sub mb-10 ml-[2%]">
-        <div className="list-sub mb-10 ml-[0%] mt-[2%]">
-          <div className="list-filter">
+        <div className="list-filter">
+          <Select
+            bordered={false}
+            className="!rounded-[6px] border-[#dbe4f5] border-[2px] h-[45px] font-bold"
+            placeholder="Select Program"
+            style={{ width: 250 }}
+            onChange={handleCampusChange}
+          >
+            {campuses?.map((item, i) => (
+              <Option key={item.id} value={item.name} lable={item.name}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+          {selectedCampus && (
             <Select
               bordered={false}
-              className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-              placeholder="--Select Program ---"
-              style={{ width: 220 }}
-              onChange={handleCampusChange}
+              className="!rounded-[6px] border-[#EAECF0] border-[2px] h-[45px] ml-5 font-bold"
+              style={{ width: 120 }}
+              placeholder="Select Acadamic Year---"
+              onChange={handleYearChange}
             >
-              {campuses?.map((item, i) => (
-                <Option key={item.id} value={item.name} lable={item.name}>
-                  {item.name}
+              {Acadamic?.map((item, i) => (
+                <Option key={item.key} value={item.year} lable={item.year}>
+                  {item.year}
                 </Option>
               ))}
             </Select>
-            {selectedCampus && (
-              <Select
-                bordered={false}
-                className="!rounded-[6px] border-[#EAECF0] border-[2px]"
-                style={{ width: 220 }}
-                placeholder="--Select Program Type---"
-                onChange={handleYearChange}
-              >
-                {Acadamic?.map((item, i) => (
-                  <Option key={item.key} value={item.year} lable={item.year}>
-                    {item.year}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </div>
+          )}
         </div>
-        <div className="list-sub mb-10 ml-[1%]">
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 1, md: 1 }}
-          >
-            <Grid item xs={12} sm={12} md={12}>
-              <Card bordered={false} className="w-[100%] min-h-[419px]">
+      </div>
+      <div className="list-sub mb-10 ml-[2%]">
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
+          <Grid item xs={12} sm={12} md={12}>
+            <Card bordered={false} className="w-[100%] min-h-[419px]">
+              <div>
                 <div>
-                  <div>
-                    {/* Display student records based on selected campus and year */}
-                    {/* {selectedCampus && selectedYear && ( */}
-                    <div className="">
-                      <h2 className="text-xl  font-[600] font-jakarta ">
-                        Student Records for {selectedYear}{" "}
-                      </h2>
-                      <Table
-                        onRow={(record, rowIndex) => {
-                          return {
-                            onClick: (event) => handleView(record), // click row
-                          };
-                        }}
-                        style={{ marginTop: 20 }}
-                        columns={columns}
-                        dataSource={getFilteredStudentRecords(
-                          selectedCampus,
-                          selectedYear
-                        )}
-                        pagination={{ position: ["bottomCenter"] }}
-                      />
-                    </div>
+                  {/* Display student records based on selected campus and year */}
+                  {/* {selectedCampus && selectedYear && ( */}
+                  <div className="">
+                    <h2 className="text-xl  font-[600] font-jakarta ">
+                      Student Records for {selectedYear}{" "}
+                    </h2>
+                    <Table
+                      onRow={(record, rowIndex) => {
+                        return {
+                          onClick: (event) => handleView(record), // click row
+                        };
+                      }}
+                      style={{ marginTop: 20 }}
+                      dataSource={student}
+                      columns={columns}
+                      bordered
+                      loading={loading}
+                      rowKey={(record) => record.studId}
+                      pagination={{ pageSize: 10 }}
+                    />
                   </div>
                 </div>
-              </Card>
-            </Grid>
+              </div>
+            </Card>
           </Grid>
-        </div>
+        </Grid>
       </div>
     </div>
   );

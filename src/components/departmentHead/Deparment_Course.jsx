@@ -10,12 +10,14 @@ import {
   Space,
   DatePicker,
   Popconfirm,
+  notification
 } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css"
 
 const { Option } = Select;
 
@@ -247,8 +249,8 @@ const DepartmentCourse = () => {
         // const sectionResponse = await axios.get(`${api}/api/Section`); // Replace with your course API endpoint
         // setSectionData(sectionResponse.data);
 
-        // const Response = await axios.get(`${api}/api/Employees`); // Replace with your course API endpoint
-        // setStudentsData(Response.data);
+        const Response = await axiosInstance.get(`/api/Employees`); // Replace with your course API endpoint
+         setStudentsData(Response.data);
 
         // const Responses = await axios.get(`${api}/api/Terms`); // Replace with your course API endpoint
         // setTermData(Responses.data);
@@ -306,15 +308,25 @@ const DepartmentCourse = () => {
         `/api/InstCourseAssgts`,
         postData
       );
+
+      notification.success({
+        message: "Successful",
+        description: "Course assignment is successfull!",
+      });
       console.log("POST request successful:", response.data);
       //  setDataSource(response.data)
 
       setIsModalVisible1(false);
       form.resetFields();
 
-      // You can handle success, e.g., show a success message or redirect to another page
     } catch (error) {
       console.error("POST request failed:", error);
+      notification.error({
+        message: "Failed",
+        description: `Error assigning course: ${error.message || error}`,
+      });
+      setIsModalVisible1(false);
+
     }
     setIsModalVisible1(false);
   };
@@ -540,14 +552,22 @@ const DepartmentCourse = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md">
+    <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md min-h-[100vh]">
       <Button
         type="primary"
         onClick={showModal}
-        style={{ fontWeight:"bold", backgroundColor: '#4279A6', padding: '12px 24px', height: 'auto', maxWidth:'20%'}}
-      >
-        Lecture Course Assignment
+        style={{
+          marginBottom: 16,
+          fontWeight: "bold",
+          backgroundColor: "#4279A6",
+          padding: "12px 24px",
+          height: "auto",
+          maxWidth: "20%",
+        }}      >
+        Assign Course
       </Button>
+      <hr className="mt-4 border-2 border-[#C2C2C2]"/>
+
       <div className="list-filter">
         {/* <Select
           bordered={false}
@@ -597,14 +617,10 @@ const DepartmentCourse = () => {
       </div>
 
       <Table
-        // onRow={(record) => {
-        //   return {
-        //     onClick: () => showModal(record),
-        //   };
-        // }}
+        className="custom-table"
+        pagination={{ pageSize: 10 }}
         columns={columns}
         dataSource={lecturesData}
-        pagination={{ position: ["bottomCenter"] }}
       />
       {/* <Modal
         title="Course Breakdown"

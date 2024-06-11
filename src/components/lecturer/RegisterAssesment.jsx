@@ -100,8 +100,8 @@ const AssessmentRegistration = () => {
             placeholder="Academic Year"
             style={{ width: '100%' , height: 40 }}
           >
-           {section.map(department => (
-            <Option key={department.sectionId} value={department.sectionId}>
+           {section.map((department, index) => (
+            <Option key={index} value={department.sectionId}>
               {department.sectionId}
             </Option>
           ))}
@@ -116,8 +116,8 @@ const AssessmentRegistration = () => {
             placeholder="Semester"
             style={{ width: '100%', height: 40 }}
           >
-         {section.map(department => (
-            <Option key={department.termId} value={department.termId}>
+         {section.map((department, index) => (
+            <Option key={index} value={department.termId}>
               {department.termId}
             </Option>
           ))}
@@ -131,8 +131,8 @@ const AssessmentRegistration = () => {
             placeholder="Course"
             style={{ width: '100%', height: 40 }}
           >
-             {section.map(department => (
-            <Option key={department.courseNo} value={department.courseNo}>
+             {section.map((department, index) => (
+            <Option key={index} value={department.courseNo}>
               {department.courseNo}
             </Option>
           ))}        

@@ -140,18 +140,16 @@ const GraduatesList = ({}) => {
     }
   };
   return (
-    <div className="bg-[#F9FAFB] min-h-[100vh]  ">
+    <div className="min-h-[100vh] gap-12 bg-white p-5 rounded-md">
       {/* <SiderGenerator navigate ={navigate}/> */}
       <div className="list-header mb-2 ml-100">
-        <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">
-          Graduate List
-        </h1>
+        
       </div>
       <div className="list-sub mb-10 ml-[2%]">
         <div className="list-filter">
           <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="!rounded-[6px] border-[#EAECF0] border-[2px] h-[45px] mr-2"
             placeholder="--Select Campus ---"
             style={{ width: 120 }}
             onChange={handleCampusChange}
@@ -165,7 +163,7 @@ const GraduatesList = ({}) => {
           {selectedCampus && (
             <Select
               bordered={false}
-              className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+              className="!rounded-[6px] border-[#EAECF0] border-[2px] h-[45px]"
               style={{ width: 120 }}
               placeholder="--Select Acadamic Year---"
               onChange={handleYearChange}
