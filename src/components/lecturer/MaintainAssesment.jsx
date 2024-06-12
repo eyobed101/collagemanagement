@@ -1000,8 +1000,12 @@ const MaintainAssessment = () => {
     // const filtered = studentData.filter(
     //   (student) => student.CourseNo == course  && student.TermId == semester
     // );
+
+    
+
     const filtered = studentData.map((student) => {
       // Filter matching assessments for the student based on courseNo and termID
+      console.log(assessment)
       const assessmentsForStudent = assessment.filter(
         (assessment) =>
           assessment.courseNo === student.CourseNo &&
@@ -1010,11 +1014,13 @@ const MaintainAssessment = () => {
           student.TermId == semester
       );
 
+
       // Calculate total and transform the record
       let total = 0;
       assessmentsForStudent.forEach((assessment) => {
         const score = parseFloat(student[assessment.assessmentTitle]) || 0;
         total += score;
+
       });
 
       return {
@@ -1028,8 +1034,11 @@ const MaintainAssessment = () => {
     const filteredMarks = studentMarks.filter(
       (student) => student.courseNo == course && student.termID == semester
     );
-    setFilteredStudent(filtered);
-    console.log("horse", filtered);
+    const filterdfinal = filtered.filter(
+      (student) => student.CourseNo == course
+    )
+    setFilteredStudent(filterdfinal);
+    console.log("horse", filterdfinal , course);
     setAssessment(filtereds);
 
     console.log("studentMarks", filteredMarks);
