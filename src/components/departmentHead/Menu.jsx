@@ -101,16 +101,16 @@ const DepartSiderGenerator = () => {
           name: "Create User",
           onClick: handleCreateUser,
         },
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Departimen Admin",
-          onClick: handleDepartmentAdmin,
-        },
-        {
-          icon: <HomeIcon {...icon} />,
-          name: "Departiment Head",
-          onClick: handleDepartmentHead,
-        },
+        // {
+        //   icon: <HomeIcon {...icon} />,
+        //   name: "Departimen Admin",
+        //   onClick: handleDepartmentAdmin,
+        // },
+        // {
+        //   icon: <HomeIcon {...icon} />,
+        //   name: "Departiment Head",
+        //   onClick: handleDepartmentHead,
+        // },
         {
           icon: <MdLogout {...icon} />,
           name: "Log out",

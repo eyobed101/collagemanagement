@@ -1,176 +1,201 @@
-import React, { useState } from 'react';
-import { Select, Button, Input , Row ,Col } from 'antd';
+import React, { useState } from "react";
+import { Button, Input, Row, Col } from "antd";
 
-const { Option } = Select;
+// const { option } = select;
 
 const ThesisResult = () => {
-    // State variables for selected values
-    const [academicYear, setAcademicYear] = useState('');
-    const [chairDepartment, setChairDepartment] = useState('');
-    const [extExaminerDepartment, setExtExaminerDepartment] = useState('');
-    const [semester, setSemester] = useState('');
-    const [chairPerson, setChairPerson] = useState('');
-    const [extExaminer, setExtExaminer] = useState('');
-    const [studentName, setStudentName] = useState('');
-    const [examinerDepartment, setExaminerDepartment] = useState('');
-    const [examinerFromOutside, setExaminerFromOutside] = useState('');
-    const [thesisResult, setThesisResult] = useState('');
-    const [examinerName, setExaminerName] = useState('');
+  // State variables for selected values
+  const [academicYear, setAcademicYear] = useState("");
+  const [chairDepartment, setChairDepartment] = useState("");
+  const [extExaminerDepartment, setExtExaminerDepartment] = useState("");
+  const [semester, setSemester] = useState("");
+  const [chairPerson, setChairPerson] = useState("");
+  const [extExaminer, setExtExaminer] = useState("");
+  const [studentName, setStudentName] = useState("");
+  const [examinerDepartment, setExaminerDepartment] = useState("");
+  const [examinerFromOutside, setExaminerFromOutside] = useState("");
+  const [thesisResult, setThesisResult] = useState("");
+  const [examinerName, setExaminerName] = useState("");
 
-    // Function to handle form submission
-    const handleSubmit = () => {
-        // Handle form submission logic here
-        console.log('Form submitted!');
-    };
+  // Function to handle form submission
+  const handleSubmit = () => {
+    // Handle form submission logic here
+    console.log("Form submitted!");
+  };
 
-    return (
-        <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md">
-        {/* <SiderGenerator /> */}
-    <div className="list-header mb-2 ml-100">
-      <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%] mt-[2%]">Thesis Result Submission Form</h1>
+  return (
+    <div className="mt-8 flex flex-col gap-12 bg-white rounded-md">
+      {/* <SiderGenerator /> */}
+
+      <div className="mt-8 flex flex-col gap-12 bg-white p-5 rounded-md min-h-screen shadow-md">
+        <div className="list-header mb-2 ml-100">
+          <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]  mb-[2%] mt-[2%]">
+            Thesis Result Submission Form
+          </h1>
+        </div>
+
+        <div className="list-sub mb-10 ml-[2%] p-5 shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div>
+            <select
+              value={academicYear}
+              onChange={setAcademicYear}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Academic Year"
+            >
+                <option value="" fontWeight="bold">
+                Select Acadamic Year
+              </option>
+              <option value="2022/23">2022/23</option>
+              <option value="2023/24">2023/24</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={chairDepartment}
+              onChange={setChairDepartment}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Chair Department"
+            >
+                <option value="" fontWeight="bold">
+                Select Department
+              </option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Science">Information Science</option>
+            </select>
+          </div>
+         
+          <div>
+            <select
+              value={semester}
+              onChange={setSemester}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Semester"
+            >
+                <option value="" fontWeight="bold">
+                Select Semister
+              </option>
+              <option value="Semester 1">Semester 1</option>
+              <option value="Semester 2">Semester 2</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={chairPerson}
+              onChange={setChairPerson}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Chair Person"
+            >
+                <option value="" fontWeight="bold">
+                Select Student
+              </option>
+              <option value="Kebede Mola">Kebede Mola</option>
+              <option value="Ayele Afewerke">Ayele Afewerke</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={extExaminer}
+              onChange={setExtExaminer}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="External Examiner"
+            >
+                <option value="" fontWeight="bold">
+                Select Student
+              </option>
+              <option value="Thomas Mola">Thomas Mola</option>
+              <option value="Tarikua Afewerke">Tarikua Afewerke</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={studentName}
+              onChange={setStudentName}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Student Name"
+            >
+                <option value="" fontWeight="bold">
+                Select ID
+              </option>
+              <option value="UGR/1876/11 | Solomon Abdi">
+                UGR/1876/11 | Solomon Abdi
+              </option>
+              <option value="UGR/1886/12 | Kasahun Aminu">
+                UGR/1886/12 | Kasahun Aminu
+              </option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={examinerDepartment}
+              onChange={setExaminerDepartment}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Examiner Department"
+            >
+                <option value="" fontWeight="bold">
+                Select Collage
+              </option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electrical Science">Electrical Science</option>
+            </select>
+          </div>
+          <div>
+            <input
+              value={examinerFromOutside}
+              onChange={(e) => setExaminerFromOutside(e.target.value)}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Examiner from outside"
+            />
+          </div>
+          <div>
+            <select
+              value={thesisResult}
+              onChange={setThesisResult}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Thesis Result"
+            >
+                <option value="" fontWeight="bold">
+                Select Grade
+              </option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={examinerName}
+              onChange={setExaminerName}
+              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              placeholder="Examiner Name"
+            >
+                <option value="" fontWeight="bold">
+                Select Applicant
+              </option>
+              <option value="Melat Mola">Melat Mola</option>
+              <option value="Diriba Afewerke">Diriba Afewerke</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex justify-end gap-4 mt-5">
+          <Button
+            type="primary"
+            onClick={handleSubmit}
+            className="px-6 py-2 bg-white text-black border flex justify-center items-center font-semibold p-20 border-gray-300 rounded-md shadow-md"
+          >
+            Submit
+          </Button>
+          <Button
+            type="secondary"
+            //   onClick={handleCancel}
+            className="px-6 py-2 bg-white text-black border flex justify-center items-center font-semibold p-20 border-gray-300 rounded-md shadow-md"
+          >
+            Cancel
+          </Button>
+        </div>
+      </div>
     </div>
-    <div className="list-sub mb-10 ml-[2%] ">
-     {/* {handleGrade()} */}
-      <div className="list-filter"/>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-                  {/* <Row gutter={24} style={{marginTop:'5%'}}> */}
-                  {/* <Col span={7}> */}
-                  <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                  <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Acadamic Year</label>  
-                <Select
-                value={academicYear} onChange={setAcademicYear} style={{ width: 300,height:40 }} placeholder="Academic Year">
-                    {/* Options for Academic Year */}
-                    <Option value="2022/23">2022/23</Option>
-                    <Option value="2023/24">2023/24</Option>  
-                </Select>
-                </div>
-                {/* </Col> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Chair Department</label>  
-                <Select value={chairDepartment} onChange={setChairDepartment} style={{ width: 300,height:40 }} placeholder="Chair Department">
-                    {/* Options for Chair Department */}
-                    <Option value="Computer Science">Computer Science</Option>
-                    <Option value="Information Science">Information Science</Option> 
-                </Select>
-                </div>
-                <div style={{ marginBottom: 16, marginRight:30,display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                {/* <Col span={8}> */}
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Ext Examiner Department</label>
-                <Select value={extExaminerDepartment} onChange={setExtExaminerDepartment} style={{ width: 300 ,height:40 }} placeholder="External Examiner Department">
-                    {/* Options for External Examiner Department */}
-                    <Option value="Computer Science">Computer Science</Option>
-                    <Option value="Information Science">Information Science</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-            </div>
-            <div style={{marginTop:30 }}/>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-            {/* <Row gutter={24} style={{marginTop:'5%'}}> */}
-                  {/* <Col span={6}> */}
-                  <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Semister</label>
-                <Select value={semester} onChange={setSemester} style={{ width: 300 ,height: 40 }} placeholder="Semester">
-                    {/* Options for Semester */}
-                    <Option value="Semister 1">Semister 1</Option>
-                    <Option value="Semister 2">Semister 2</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                {/* <Col span={8}> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label  style={{marginBottom:10 , color:'#333' , fontSize:14}}>Chair Person</label>
-                <Select value={chairPerson} onChange={setChairPerson} style={{ width: 300, height:40 }} placeholder="Chair Person">
-                    {/* Options for Chair Person */}
-                    <Option value="Kebede Mola">Kebede Mola</Option>
-                    <Option value="Ayele Afewerke   ">Ayele Afewerke</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                {/* <Col span={8}> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' ,  marginRight:30}}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>External Examiner </label>
-                <Select 
-               value={extExaminer} onChange={setExtExaminer} style={{ width: 300 , height:40 }} placeholder="External Examiner">
-                    {/* Options for External Examiner */}
-                    <Option value="Thomas Mola">Thomas Mola</Option>
-                    <Option value="Tarikua Afewerke   ">Tarikua Afewerke</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                </div>
-            {/* </Row> */}
-            <div style={{marginTop:30 }}/>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-            {/* <Row gutter={24} style={{marginTop:'5%'}}> */}
-            {/* <Col span={7}> */}
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Student Name</label>
-                <Select value={studentName} onChange={setStudentName} style={{ width: 300, height:40 }} placeholder="Student Name">
-                    {/* Options for Student Name */}
-                    <Option value="UGR/1876/11 | Solomon Abdi">UGR/1876/11 | Solomon Abdi</Option>
-                    <Option value="UGR/1886/12 | Kasahun Aminu ">UGR/1886/12 | Kasahun Aminu</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                {/* <Col span={8}> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Examiner Department</label>
-                <Select value={examinerDepartment} onChange={setExaminerDepartment} style={{ width: 300, height:40 }} placeholder="Examiner Department">
-                    {/* Options for Examiner Department */}
-                    <Option value="Computer Science">Computer Science</Option>
-                    <Option value="Electrical Science">Electrical Science</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                {/* <Col span={8}> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column', marginRight:30 }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Examiner Department</label>
-         <Input value={examinerFromOutside} onChange={(e) => setExaminerFromOutside(e.target.value)} style={{ width: 300 , height:40 }} placeholder="Examiner from outside" />
-              {/* </Col> */}
-              </div>
-              </div>
-            {/* </Row> */}
-            <div style={{marginTop:30 }}/>
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
-            {/* <Row gutter={24} style={{marginTop:'5%'}}> */}
-            {/* <Col span={8}> */}
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Thesis Result</label>
-                <Select value={thesisResult} onChange={setThesisResult} style={{ width: 300 , height:40 }} placeholder="Thesis Result">
-                    {/* Options for Thesis Result */}
-                    <Option value="A">A</Option>
-                    <Option value="B">B</Option> 
-                    <Option value="C">C</Option>
-                    <Option value="D">D</Option> 
-
-                </Select>
-                </div>
-                {/* </Col> */}
-                {/* <Col span={8}> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'column' }}>
-                <label style={{marginBottom:10 , color:'#333' , fontSize:14}}>Examiner Name</label>
-                <Select value={examinerName} onChange={setExaminerName} style={{ width: 300 , height:40 }} placeholder="Examiner Name">
-                    {/* Options for Examiner Name */}
-                    <Option value="Melat Mola">Melat Mola</Option>
-                    <Option value="Diriba Afewerke   ">Diriba Afewerke</Option> 
-                </Select>
-                </div>
-                {/* </Col> */}
-                <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' ,flexDirection: 'row' , marginRight:"13%" }}>
-                <Button type="primary" onClick={handleSubmit}
-                style={{ marginBottom: 16 , margingRight:20, marginTop :20, backgroundColor:'#4279A6' , justifySelf:'flex-end', display:'flex' }}
-                >Submit</Button>
-                 <Button type="primary" onClick={handleSubmit}
-                style={{ marginBottom: 16 , margingLeft:20, marginTop :20, backgroundColor:'#FFF' ,color:'#333'  ,justifySelf:'flex-end', display:'flex' }}
-                >Cancel</Button>
-                </div>
-            {/* </Row> */}
-            </div>
-        
-        </div>
-        </div>
-    );
+  );
 };
 
 export default ThesisResult;
