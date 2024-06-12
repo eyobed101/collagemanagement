@@ -43,8 +43,8 @@ const LucturerSiderGenerator = () => {
   const [openKeys, setOpenKeys] = useState([]);
   const [isLucturer, setIsLecturer] = useState(false);
   const [isSubject, setIsSubject] = useState(false);
-  const [isRegisterAssesment, setIsRegisterAssesment] = useState(false);
-  const [isMaintainAssesment, setIsMaintainAssesment] = useState(true);
+  const [isRegisterAssesment, setIsRegisterAssesment] = useState(true);
+  const [isMaintainAssesment, setIsMaintainAssesment] = useState(false);
   const [isSubmitGrade , setIsSubmitGrade] = useState(false);
   const [isGradeChange, setIsGradeChange] = useState(false);
   const [isThesis, setThesis] = useState(false);

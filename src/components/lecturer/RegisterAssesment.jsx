@@ -96,9 +96,9 @@ const AssessmentRegistration = () => {
                 value={academicYear}
                 onChange={(value) => setAcademicYear(value)}
                 placeholder="Academic Year"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
-                <Option value="" fontWeight="bold">
+                <Option value="">
                   Select Section
                 </Option>
                 {section.map((department, index) => (
@@ -114,7 +114,7 @@ const AssessmentRegistration = () => {
                 value={semester}
                 onChange={(value) => setSemester(value)}
                 placeholder="Semester"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 <Option value="" fontWeight="bold">
                   Select Term
@@ -132,7 +132,7 @@ const AssessmentRegistration = () => {
                 value={course}
                 onChange={handleCourse}
                 placeholder="Course"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 <Option value="" fontWeight="bold">
                   Select Course
@@ -152,7 +152,7 @@ const AssessmentRegistration = () => {
                 value={assessmentType}
                 onChange={(value) => setAssessmentType(value)}
                 placeholder="Assessment Type"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 <Option value="" fontWeight="bold">
                   Select Assessment type
@@ -170,7 +170,7 @@ const AssessmentRegistration = () => {
                 value={assessmentTitle}
                 onChange={(e) => setAssessmentTitle(e.target.value)}
                 placeholder="Assessment Title"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               />
             </Col>
             <Col span={6}>
@@ -179,7 +179,7 @@ const AssessmentRegistration = () => {
                 onChange={(e) => setWeight(e.target.value)}
                 placeholder="Weight"
                 type="number"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               />
             </Col>
           </Row>

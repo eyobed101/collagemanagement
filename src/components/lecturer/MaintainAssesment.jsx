@@ -968,7 +968,7 @@ const MaintainAssessment = () => {
             columns={columns}
             dataSource={tableData}
             className="custom-table"
-            pagination={{ pageSize: 10 }}
+            // pagination={{ pageSize: 10 }}
             scroll={{ x: true }}
           />
         </div>
@@ -1070,8 +1070,8 @@ const MaintainAssessment = () => {
               value={course}
               onChange={handleCourse}
               placeholder="Select Course"
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
-            >
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              >
               {/* Add academic year options */}
               <Option value="">
                 Select Course
@@ -1097,8 +1097,8 @@ const MaintainAssessment = () => {
               value={semester}
               onChange={handleSemester}
               placeholder="Select Course"
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
-            >
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              >
               <Option value="">
                 Select Term
               </Option>
@@ -1144,7 +1144,7 @@ const MaintainAssessment = () => {
             columns={columns}
             bordered
             className="custom-table"
-            pagination={{ pageSize: 10 }}
+            // pagination={{ pageSize: 10 }}
             rowClassName="editable-row"
           />
         )}

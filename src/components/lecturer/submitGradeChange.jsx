@@ -454,7 +454,7 @@ const GradeChangeSubmission = () => {
                 value={course}
                 onChange={handleCourse}
                 placeholder="Select Course"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 {/* Add academic year options */}
                 <Option value="" fontWeight="bold">
@@ -482,7 +482,7 @@ const GradeChangeSubmission = () => {
                 value={semester}
                 onChange={handleSemister}
                 placeholder="Term ID"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 <Option value="" fontWeight="bold">
                   Select Term
@@ -504,7 +504,7 @@ const GradeChangeSubmission = () => {
                 value={student}
                 onChange={handleStudentChange}
                 placeholder="Select Student Name"
-                className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+                className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               >
                 {/* Add academic year options */}
                 <Option value="" fontWeight="bold">

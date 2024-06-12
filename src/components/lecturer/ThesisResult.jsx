@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button, Input, Row, Col } from "antd";
+import {Select, Button, Input, Row, Col } from "antd";
 
-// const { option } = select;
+const { Option } = Select;
 
 const ThesisResult = () => {
   // State variables for selected values
@@ -36,145 +36,145 @@ const ThesisResult = () => {
 
         <div className="list-sub mb-10 ml-[2%] p-5 shadow-md grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           <div>
-            <select
+            <Select
               value={academicYear}
               onChange={setAcademicYear}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Academic Year"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Acadamic Year
-              </option>
-              <option value="2022/23">2022/23</option>
-              <option value="2023/24">2023/24</option>
-            </select>
+              </Option>
+              <Option value="2022/23">2022/23</Option>
+              <Option value="2023/24">2023/24</Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={chairDepartment}
               onChange={setChairDepartment}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Chair Department"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Department
-              </option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="Information Science">Information Science</option>
-            </select>
+              </Option>
+              <Option value="Computer Science">Computer Science</Option>
+              <Option value="Information Science">Information Science</Option>
+            </Select>
           </div>
          
           <div>
-            <select
+            <Select
               value={semester}
               onChange={setSemester}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Semester"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Semister
-              </option>
-              <option value="Semester 1">Semester 1</option>
-              <option value="Semester 2">Semester 2</option>
-            </select>
+              </Option>
+              <Option value="Semester 1">Semester 1</Option>
+              <Option value="Semester 2">Semester 2</Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={chairPerson}
               onChange={setChairPerson}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Chair Person"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Student
-              </option>
-              <option value="Kebede Mola">Kebede Mola</option>
-              <option value="Ayele Afewerke">Ayele Afewerke</option>
-            </select>
+              </Option>
+              <Option value="Kebede Mola">Kebede Mola</Option>
+              <Option value="Ayele Afewerke">Ayele Afewerke</Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={extExaminer}
               onChange={setExtExaminer}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="External Examiner"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Student
-              </option>
-              <option value="Thomas Mola">Thomas Mola</option>
-              <option value="Tarikua Afewerke">Tarikua Afewerke</option>
-            </select>
+              </Option>
+              <Option value="Thomas Mola">Thomas Mola</Option>
+              <Option value="Tarikua Afewerke">Tarikua Afewerke</Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={studentName}
               onChange={setStudentName}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Student Name"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select ID
-              </option>
-              <option value="UGR/1876/11 | Solomon Abdi">
+              </Option>
+              <Option value="UGR/1876/11 | Solomon Abdi">
                 UGR/1876/11 | Solomon Abdi
-              </option>
-              <option value="UGR/1886/12 | Kasahun Aminu">
+              </Option>
+              <Option value="UGR/1886/12 | Kasahun Aminu">
                 UGR/1886/12 | Kasahun Aminu
-              </option>
-            </select>
+              </Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={examinerDepartment}
               onChange={setExaminerDepartment}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Examiner Department"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Collage
-              </option>
-              <option value="Computer Science">Computer Science</option>
-              <option value="Electrical Science">Electrical Science</option>
-            </select>
+              </Option>
+              <Option value="Computer Science">Computer Science</Option>
+              <Option value="Electrical Science">Electrical Science</Option>
+            </Select>
           </div>
           <div>
             <input
               value={examinerFromOutside}
               onChange={(e) => setExaminerFromOutside(e.target.value)}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Examiner from outside"
             />
           </div>
           <div>
-            <select
+            <Select
               value={thesisResult}
               onChange={setThesisResult}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Thesis Result"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Grade
-              </option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
+              </Option>
+              <Option value="A">A</Option>
+              <Option value="B">B</Option>
+              <Option value="C">C</Option>
+              <Option value="D">D</Option>
+            </Select>
           </div>
           <div>
-            <select
+            <Select
               value={examinerName}
               onChange={setExaminerName}
-              className="px-8 py-3 w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
+              className="h-[50px] w-full bg-blue-gray-50 border-2 font-semibold border-[#C1C1C1] text-black block shadow-md sm:text-sm rounded-md"
               placeholder="Examiner Name"
             >
-                <option value="" fontWeight="bold">
+                <Option value="" fontWeight="bold">
                 Select Applicant
-              </option>
-              <option value="Melat Mola">Melat Mola</option>
-              <option value="Diriba Afewerke">Diriba Afewerke</option>
-            </select>
+              </Option>
+              <Option value="Melat Mola">Melat Mola</Option>
+              <Option value="Diriba Afewerke">Diriba Afewerke</Option>
+            </Select>
           </div>
         </div>
         <div className="flex justify-end gap-4 mt-5">
