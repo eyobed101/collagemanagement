@@ -204,6 +204,7 @@ const MaintainAssessment = () => {
     };
 
     postStudentMarks();
+    post()
 
     setTimeout(() => {
       if (markupdated) {
@@ -945,20 +946,20 @@ const MaintainAssessment = () => {
         },
       },
 
-      {
-        title: "Action",
-        key: "action",
-        render: (text, record) => (
-          <>
-            <Button type="link" onClick={() => handleEdit(record)}>
-              Edit
-            </Button>
-            {/* <Button type="link" onClick={() => handleDelete(record)}>
-            Delete
-          </Button> */}
-          </>
-        ),
-      },
+      // {
+      //   title: "Action",
+      //   key: "action",
+      //   render: (text, record) => (
+      //     <>
+      //       <Button type="link" onClick={() => handleEdit(record)}>
+      //         Edit
+      //       </Button>
+      //       {/* <Button type="link" onClick={() => handleDelete(record)}>
+      //       Delete
+      //     </Button> */}
+      //     </>
+      //   ),
+      // },
     ];
 
     return (
