@@ -99,7 +99,7 @@ function RootAdmin() {
         <Configurator />
       
         <div>
-          <div style={{ padding: "20px" }}>
+          <div>
             {isCampus ? (
               <CampusForm onSubmit={handleCampusSubmit} />
             ) : (

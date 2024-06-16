@@ -38,13 +38,16 @@ const TuitionStatistics = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
+    <div className="flex flex-col gap-12 bg-white p-5 rounded-md shadow-md min-h-screen">
       {/* <SiderGenerator navigate={navigate}/> */}
       <div className="list-sub mb-10 ml-[1%]">
-        <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0]">
+      <p className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
           Tuition Statistics
         </p>
-        <Table columns={columns} dataSource={data} />
+        <hr className="mb-4 border-2 border-[#C2C2C2]" />
+
+        <Table columns={columns} dataSource={data} className="custom-table"
+          pagination={{ pageSize: 10 }}/>
       </div>
     </div>
   );

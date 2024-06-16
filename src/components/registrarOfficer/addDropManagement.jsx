@@ -369,17 +369,12 @@ const AddDropManagement = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md absolute">
+    <div className="mb-8 mt-4 flex flex-col gap-12 bg-white p-5 rounded-md">
       <div class="grid grid-cols-4 mt-10">
         <div class="col-span-4 sm:col-span-2 bg-opacity-25 bg-gray-200 backdrop-filter backdrop-blur-lg p-4 rounded-md mx-2">
           <div className="flex flex-wrap w-full">
             <div className="mb-10 flex flex-col w-full">
-              <label
-                for="departmentOption"
-                className="block text-lg font-semibold text-[#434343] mb-2"
-              >
-                Student's Departiment{" "}
-              </label>
+             
               <select
                 id="departmentOption"
                 class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
@@ -400,12 +395,7 @@ const AddDropManagement = () => {
             </div>
 
             <div className=" mb-10 flex flex-col w-full">
-              <label
-                for="departmentOption"
-                className="block text-lg font-semibold mb-2 text-[#434343]"
-              >
-                Student's Section{" "}
-              </label>
+             
               <select
                 class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
                 // value={selectedSection}
@@ -435,36 +425,26 @@ const AddDropManagement = () => {
 
             <div className="flex w-full justify-between">
               <div className="mr-5 mb-10 flex flex-col w-[100%] sm:w-[50%]">
-                <label
-                  htmlFor="departmentOption"
-                  className="block text-lg font-semibold mb-2 text-[#434343]"
-                >
-                  Program{" "}
-                </label>
+                
                 <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
                   {selectedDepartment && selectedSection
                     ? selectedSection.program || "Program Not Found"
-                    : "Select Department and Section"}
+                    : "Program"}
                 </div>
               </div>
 
               <div className="mb-10 flex flex-col w-[100%] sm:w-[50%]">
-                <label
-                  htmlFor="departmentOption"
-                  className="block text-lg font-semibold mb-2 text-[#434343]"
-                >
-                  Term/Academic Year{" "}
-                </label>
+                
                 <div class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md">
                   {selectedDepartment && selectedSection
                     ? selectedSection.acadYear || "Term Not Found"
-                    : "Select Department and Section"}
+                    : "Acadamic Year"}
                 </div>
               </div>
             </div>
             <div className="flex flex-col w-full">
               <div className="grid grid-cols-2 mb-10 border-2 px-2 rounded-md shadow-md border-[#a2a2a2]">
-                <label className="block text-lg font-semibold  text-[#434343]">
+                <label className="text-md items-center flex font-semibold  text-[#434343]">
                   Number of Students
                 </label>
 
@@ -478,7 +458,7 @@ const AddDropManagement = () => {
                 </label>
               </div>
               <div className="grid grid-cols-2 mb-10 border px-2 rounded-md border-[#a2a2a2]">
-                <label className="block text-lg font-semibold text-[#434343] mr-4">
+              <label className="text-md items-center flex font-semibold  text-[#434343]">
                   Today's Date{" "}
                 </label>
 
@@ -492,9 +472,7 @@ const AddDropManagement = () => {
         </div>
 
         <div className="col-span-4 sm:col-span-2 min-w-[300px] border-2 shadow-md p-4 rounded-md">
-          <h2 className="text-lg font-semibold mb-2 text-[#434343]">
-            Students under selected Section
-          </h2>
+          
           <div className="border-2 border-[#C2C2C2] p-4 overflow-y-auto h-max-[70%] shadow-sm rounded-md">
             {selectedDepartment
               ? selectedSection
@@ -525,7 +503,7 @@ const AddDropManagement = () => {
         </div>
       </div>
 
-      <hr class="border-t-2 border-gray-300 shadow-md my-4" />
+      <hr className="mb-4  border-2 border-[#C2C2C2]" />
 
       {selectedStudent ? (
         <div>
@@ -551,12 +529,7 @@ const AddDropManagement = () => {
 
       <div class="grid grid-cols-2 gap-2">
         <div class="col-span-2 sm:col-span-1">
-          <label
-            for="departmentOff"
-            className="block text-lg font-semibold text-[#434343] mb-2"
-          >
-            Offering Departiment{" "}
-          </label>
+          
           <select
             id="departmentOff"
             class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
@@ -567,7 +540,7 @@ const AddDropManagement = () => {
               )
             }
           >
-            <option value="">Select Department</option>
+            <option value="">Select Offering Department</option>
             {offDepartments.map((dept, index) => (
               <option key={index} value={dept.dname}>
                 {dept.dname}
@@ -577,18 +550,13 @@ const AddDropManagement = () => {
         </div>
 
         <div class="col-span-2 sm:col-span-1">
-          <label
-            for="sectionOff"
-            className="block text-lg font-semibold text-[#434343] mb-2"
-          >
-            Offering Section{" "}
-          </label>
+          
           <select
             id="sectionOff"
             class="m-1 p-3 w-full font-semibold bg-blue-gray-50 border-2 shadow-md border-[#676767] focus:ring-indigo-300 focus:border-indigo-300 block sm:text-sm rounded-md"
             onChange={handleOffSectionChange}
           >
-            <option value="">Select Section</option>
+            <option value="">Select Offering Section</option>
 
             {selectedOffDepartment ? (
               offSections

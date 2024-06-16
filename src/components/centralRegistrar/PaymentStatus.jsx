@@ -90,7 +90,7 @@ const ClearanceList = ({ studentsData }) => {
         <div className="list-filter">
           <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px]"
+            className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
             placeholder="--Select Department ---"
             style={{ width: 240 }}
             onChange={handleCampusChange}
@@ -121,8 +121,8 @@ const ClearanceList = ({ studentsData }) => {
       <Table
         columns={columns}
         dataSource={getFilteredStudentRecords(selectedCampus, selectedYear)}
-        pagination={{ position: ["bottomCenter"] }}
-      />
+        className="custom-table"
+        pagination={{ pageSize: 10 }}      />
 
       <Modal
         title="Clearance Confirmation"

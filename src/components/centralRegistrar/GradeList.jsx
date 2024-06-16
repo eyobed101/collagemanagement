@@ -126,16 +126,17 @@ const GradingSystem = () => {
 
   return (
     <div className='flex flex-col gap-12 bg-white p-5 rounded-md'>
-      <div>
-        <label className='m-2'>Add Academic Year:</label>
+      <div className='flex space-x-3'>
+       <p className="text-[#4d6a90] text-[15px] font-bold align-middle border-b-[#EAECF0]">Add Academic Year:</p>
+
         <Space>
           <Select
             style={{ width: 120 }}
             placeholder="Select Year"
             onChange={handleYearChange}
             value={selectedYear}
-            className='h-[45px]'
-          >
+            className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
+            >
             {Acadamic.map((year) => (
               <Option key={year.id} value={year.year}>
                 {year.year}
@@ -146,6 +147,8 @@ const GradingSystem = () => {
       </div>
      
       <div>
+      <hr className="mb-4  border-2 border-[#C2C2C2]" />
+
         <Table 
         // onRow={(record, rowIndex) => {
         //     return {
@@ -154,7 +157,8 @@ const GradingSystem = () => {
         //   }}
         columns={columns} 
         dataSource={Grade}
-         pagination={{ position: ['bottomCenter'] }} />
+        className="custom-table"
+        pagination={{ pageSize: 10 }}/>
       </div>
       <div>
         <div>

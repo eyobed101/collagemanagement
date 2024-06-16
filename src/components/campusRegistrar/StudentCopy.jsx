@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Table } from "antd";
+import "./common.css"
 
 const StudentCopyVerification = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -168,18 +169,20 @@ const StudentCopyVerification = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
+    <div className="mb-8 mt-4 flex flex-col gap-12 bg-white p-5 rounded-md shadow-md min-h-screen">
       {/* <SiderGenerator navigate={navigate}/> */}
       <div className="list-sub mb-10 ml-[2%]">
-        <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0]">
-          Graduates Approval
+        <p className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
+          Student Copy
         </p>
+        <hr className="mb-4 border-2 border-[#C2C2C2]" />
+
         <div className="bg-white p-5 rounded-md shadow-md">
           <Table
             columns={columns}
             dataSource={graduatesData}
-            style={{ marginTop: 20 }}
-            pagination={{ position: ["bottomCenter"] }}
+            className="custom-table"
+            pagination={{ pageSize: 10 }}
           />
         </div>
 

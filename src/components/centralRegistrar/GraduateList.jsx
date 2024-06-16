@@ -146,10 +146,10 @@ const GraduatesList = ({}) => {
         
       </div>
       <div className="list-sub mb-10 ml-[2%]">
-        <div className="list-filter">
+        <div className="flex space-x-2 list-filter">
           <Select
             bordered={false}
-            className="!rounded-[6px] border-[#EAECF0] border-[2px] h-[45px] mr-2"
+            className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
             placeholder="--Select Campus ---"
             style={{ width: 120 }}
             onChange={handleCampusChange}
@@ -163,7 +163,7 @@ const GraduatesList = ({}) => {
           {selectedCampus && (
             <Select
               bordered={false}
-              className="!rounded-[6px] border-[#EAECF0] border-[2px] h-[45px]"
+              className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
               style={{ width: 120 }}
               placeholder="--Select Acadamic Year---"
               onChange={handleYearChange}
@@ -186,8 +186,8 @@ const GraduatesList = ({}) => {
           }}
           columns={columns}
           dataSource={getFilteredStudentRecords(selectedCampus, selectedYear)}
-          pagination={{ position: ["bottomCenter"] }}
-        />
+          className="custom-table"
+          pagination={{ pageSize: 10 }}        />
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import { api } from "../constants";
 
 import Grid from "@mui/material/Grid";
 import axiosInstance from "@/configs/axios";
+import "./common.css"
 
 // Mock data
 const { Option } = Select;
@@ -42,7 +43,7 @@ const Acadamic = [
   // Add more campuses as needed
 ];
 
-const CenterRegistrar = () => {
+const CampusRegistrar = () => {
   //   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCampus, setSelectedCampus] = useState(null);
@@ -68,7 +69,7 @@ const CenterRegistrar = () => {
   const columns = [
     {
       title: (
-        <p className="font-jakarta font-[600] text-[16px] text-[#344054]">
+        <p className="">
           Name
         </p>
       ),
@@ -138,7 +139,7 @@ const CenterRegistrar = () => {
   };
 
   return (
-    <div className="mb-8 flex flex-col gap-12 bg-white mt-6 p-5 rounded-md">
+    <div className="mb-8 flex flex-col gap-12 mt-6 bg-white p-5 rounded-md">
       {/* <SiderGenerator navigate={navigate}/> */}
       {/* <div className="list-header mb-2 ml-100 w-[100%] overflow-x-hidden">
       <h1 className="text-2xl  font-[600] font-jakarta ml-[2%]">Campus Registrar Management System</h1>
@@ -166,7 +167,7 @@ const CenterRegistrar = () => {
                     </p>
                   </div>
                 </div>
-                <button className="px-4 py-2 float-right bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                <button className="px-4 py-2 float-right bg-[#4279A6] text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
                   View More
                 </button>
               </Card>
@@ -207,7 +208,7 @@ const CenterRegistrar = () => {
           )}
         </div>
       </div>
-      <div className="list-sub mb-10 ml-[2%]">
+      <div className="list-sub mb-10 shadow-md">
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
           <Grid item xs={12} sm={12} md={12}>
             <Card bordered={false} className="w-[100%] min-h-[419px]">
@@ -216,9 +217,10 @@ const CenterRegistrar = () => {
                   {/* Display student records based on selected campus and year */}
                   {/* {selectedCampus && selectedYear && ( */}
                   <div className="">
-                    <h2 className="text-xl  font-[600] font-jakarta ">
+                    <h2 className="text-xl  font-[600] font-jakarta mb-4 ">
                       Student Records for {selectedYear}{" "}
                     </h2>
+                    <hr className="mb-4 border-2 border-[#C2C2C2]"/>
                     <Table
                       onRow={(record, rowIndex) => {
                         return {
@@ -231,7 +233,9 @@ const CenterRegistrar = () => {
                       bordered
                       loading={loading}
                       rowKey={(record) => record.studId}
+                      className="custom-table"
                       pagination={{ pageSize: 10 }}
+
                     />
                   </div>
                 </div>
@@ -244,4 +248,4 @@ const CenterRegistrar = () => {
   );
 };
 
-export default CenterRegistrar;
+export default CampusRegistrar;

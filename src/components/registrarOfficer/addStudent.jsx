@@ -197,16 +197,14 @@ export function AddStudent() {
 
   const handleFileUpload = (e, docId) => {
     const file = e.target.files[0];
+    console.log("file", file)
     if (!file) return;
 
-    // Add the uploaded file to the files array
     setFiles(prevFiles => [...prevFiles, { docId, file }]);
   };
 
   // Handler for form submission
   const handleSubmit = async (e) => {
-    const formDATA = new FormData();
-
     e.preventDefault();
     setSpining(true);
     setLoading1(true);
@@ -216,7 +214,7 @@ export function AddStudent() {
     console.log("DOCCCCCCC", docIdsQueryString)
     let getStudentID = generateStudentId();
 
-    let data = {
+    const data = {
       StudId: getStudentID,
       Fname: formData.fname,
       Mname: formData.mname,
@@ -253,19 +251,9 @@ export function AddStudent() {
       Batch: formData.batch,
     };
 
-    files.forEach(file => {
-      formDATA.append('files', file);
-    });
-
     const { SectionId, TermId, ...restFormData } = data;
 
     console.log("data", data);
-    formDATA.append('applicants', JSON.stringify(restFormData));
-
-
-    // Object.entries(restFormData).forEach(([key, value]) => {
-    //   formDATA.append(key, value);
-    // });
 
     const apiUrl = `/api/Applicants`;
 
@@ -276,20 +264,23 @@ export function AddStudent() {
         return acc;
       }, {});
 
-      const response = await axiosInstance.post(apiUrl, formDATA, {
+      const response = await axiosInstance.post(apiUrl, restFormData, {
         params: {
           ...docIdsParams,
           SectionID: SectionId,
           TermId: TermId,
         },
         headers: {
-          'Content-Type': 'multipart/form-data'
+          "Content-Type": "application/json",
         },
       });
+
+      const upload = await uploadFiles();
 
       setSuccess(true);
       setError(null);
       setFormData(initialFormData);
+      setFiles([])
       notification.success({
         message: "Successful",
         description: "The Student is created successfully!",
@@ -299,17 +290,257 @@ export function AddStudent() {
     } catch (error) {
       setSuccess(false);
       setError(error.message);
+      console.error(error);
       notification.error({
         message: "Failed",
         description: `Error creating student: ${error.message || error}`,
       });
-      console.error(error);
     } finally {
       setSpining(false);
       setLoading1(false);
-
     }
   };
+
+  const uploadFiles = async () => {
+    if (files.length === 0) {
+      console.log("Please select files to upload.");
+      return;
+    }
+
+    const formData = new FormData();
+
+    files.forEach(({ docId, file }) => {
+      formData.append('files', file);
+      formData.append('docIds', docId); // If you want to send docId with each file
+    });
+
+    try {
+      const response = await axiosInstance.post('/api/Applicants/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.status === 200) {
+        console.log("Files uploaded successfully!");
+      } else {
+        console.log("Failed to upload files.");
+      }
+    } catch (error) {
+      console.error("There was an error uploading the files!", error);
+    }
+  };
+  
+
+  // New One For Testing 
+  // const handleSubmit = async (e) => {
+  //   const formDATA = new FormData();
+
+  //   e.preventDefault();
+  //   setSpining(true);
+  //   setLoading1(true);
+
+  //   const docIdsQueryString = selectedDocId.map(id => `DocId=${id}`).join('&');
+
+  //   console.log("DOCCCCCCC", docIdsQueryString)
+  //   let getStudentID = generateStudentId();
+
+  //   let data = {
+  //     StudId: getStudentID,
+  //     Fname: formData.fname,
+  //     Mname: formData.mname,
+  //     Lname: formData.lname,
+  //     Dname: formData.dname,
+  //     Sex: formData.sex,
+  //     SectionId: formData.sectionId,
+  //     TermId: formData.termId,
+  //     DoB: formData.doB,
+  //     PlaceOfBirth: formData.placeOfBirth,
+  //     Nationality: formData.nationality,
+  //     MaritalStatus: formData.maritalStatus,
+  //     PrevEducation: formData.prevEducation,
+  //     PrevInstitution: formData.prevInstitution,
+  //     PrevMajorDepartment: formData.prevMajorDepartment,
+  //     PrevEducCgpa: formData.prevEducCgpa,
+  //     Serviceyear: formData.serviceyear,
+  //     Program: formData.program,
+  //     ProgramType: formData.programType,
+  //     CenterId: formData.centerId,
+  //     Zone: formData.zone,
+  //     Woreda: formData.woreda,
+  //     Kebele: formData.kebele,
+  //     Town: formData.town,
+  //     Tel: formData.tel,
+  //     Pobox: formData.pobox,
+  //     Email: formData.email,
+  //     PersontoBeContacted: formData.persontoBeContacted,
+  //     AppDate: formData.appDate,
+  //     Approved: formData.approved,
+  //     ApprovedDate: formData.approvedDate,
+  //     Age: formData.age,
+  //     AgeInyear: formData.ageInyear,
+  //     Batch: formData.batch,
+  //   };
+
+  //   files.forEach(file => {
+  //     formDATA.append('files', file);
+  //   });
+
+  //   const { SectionId, TermId, ...restFormData } = data;
+
+  //   console.log("data", data);
+  //   formDATA.append('applicants', JSON.stringify(restFormData));
+
+
+  //   // Object.entries(restFormData).forEach(([key, value]) => {
+  //   //   formDATA.append(key, value);
+  //   // });
+
+  //   const apiUrl = `/api/Applicants`;
+
+  //   try {
+  //     const docIdsParams = selectedDocId.reduce((acc, id) => {
+  //       acc[`DocId`] = acc[`DocId`] || [];
+  //       acc[`DocId`].push(id);
+  //       return acc;
+  //     }, {});
+
+  //     const response = await axiosInstance.post(apiUrl, formDATA, {
+  //       params: {
+  //         ...docIdsParams,
+  //         SectionID: SectionId,
+  //         TermId: TermId,
+  //       },
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data'
+  //       },
+  //     });
+
+  //     setSuccess(true);
+  //     setError(null);
+  //     setFormData(initialFormData);
+  //     notification.success({
+  //       message: "Successful",
+  //       description: "The Student is created successfully!",
+  //     });
+  //     // setData({});
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     setSuccess(false);
+  //     setError(error.message);
+  //     notification.error({
+  //       message: "Failed",
+  //       description: `Error creating student: ${error.message || error}`,
+  //     });
+  //     console.error(error);
+  //   } finally {
+  //     setSpining(false);
+  //     setLoading1(false);
+
+  //   }
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setSpining(true);
+
+  //   setLoading1(true);
+  
+  //   const formDATA = new FormData();
+  
+  //   // Generate student ID
+  //   let getStudentID = generateStudentId();
+  
+  //   // Create the applicant data object
+  //   let data = {
+  //     StudId: getStudentID,
+  //     Fname: formData.fname,
+  //     Mname: formData.mname,
+  //     Lname: formData.lname,
+  //     Dname: formData.dname,
+  //     Sex: formData.sex,
+  //     SectionId: formData.sectionId,
+  //     TermId: formData.termId,
+  //     DoB: formData.doB,
+  //     PlaceOfBirth: formData.placeOfBirth,
+  //     Nationality: formData.nationality,
+  //     MaritalStatus: formData.maritalStatus,
+  //     PrevEducation: formData.prevEducation,
+  //     PrevInstitution: formData.prevInstitution,
+  //     PrevMajorDepartment: formData.prevMajorDepartment,
+  //     PrevEducCgpa: formData.prevEducCgpa,
+  //     Serviceyear: formData.serviceyear,
+  //     Program: formData.program,
+  //     ProgramType: formData.programType,
+  //     CenterId: formData.centerId,
+  //     Zone: formData.zone,
+  //     Woreda: formData.woreda,
+  //     Kebele: formData.kebele,
+  //     Town: formData.town,
+  //     Tel: formData.tel,
+  //     Pobox: formData.pobox,
+  //     Email: formData.email,
+  //     PersontoBeContacted: formData.persontoBeContacted,
+  //     AppDate: formData.appDate,
+  //     Approved: formData.approved,
+  //     ApprovedDate: formData.approvedDate,
+  //     Age: formData.age,
+  //     AgeInyear: formData.ageInyear,
+  //     Batch: formData.batch,
+  //   };
+  
+  //   // Add files to formDATA
+  //   files.forEach(file => {
+  //     formDATA.append('files', file);
+  //   });
+  
+  //   // Extract SectionId and TermId from data
+  //   const { SectionId, TermId, ...restFormData } = data;
+  
+  //   // Serialize the applicant data object to a JSON string
+  //   formDATA.append('applicant', new Blob([JSON.stringify(restFormData)], { type: 'application/json' }));
+  
+  //   // Prepare the API URL and parameters
+  //   const apiUrl = `/api/Applicants`;
+  
+  //   try {
+  //     const response = await axiosInstance.post(apiUrl, formDATA, {
+  //       params: {
+  //         SectionID: SectionId,
+  //         TermId: TermId,
+  //         DocId: selectedDocId, // Pass array directly, Axios will handle the serialization
+  //       },
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data'
+  //       },
+  //     });
+  
+  //     setSuccess(true);
+  //     setError(null);
+  //     setFormData(initialFormData);
+  //     notification.success({
+  //       message: "Successful",
+  //       description: "The Student is created successfully!",
+  //     });
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     setSuccess(false);
+  //     setError(error.message);
+  //     notification.error({
+  //       message: "Failed",
+  //       description: `Error creating student: ${error.message || error}`,
+  //     });
+  //     console.error(error);
+  //   } finally {
+  //     setSpining(false);
+  //     setLoading1(false);
+  //   }
+  // };
+  
+
+ 
+
+
 
   const [checkedItems, setCheckedItems] = useState({
     grade_8_ministry: false,

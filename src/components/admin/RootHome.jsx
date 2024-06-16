@@ -1,12 +1,21 @@
-import React, { useState , useEffect} from "react";
-import { Space, Table, Tag, Card, Select ,Modal , Input ,Button , Popconfirm} from "antd";
+import React, { useState, useEffect } from "react";
+import {
+  Space,
+  Table,
+  Tag,
+  Card,
+  Select,
+  Modal,
+  Input,
+  Button,
+  Popconfirm,
+} from "antd";
 import Grid from "@mui/material/Grid";
-import axios from 'axios';
-
+import axios from "axios";
 
 // import ChartStudent from "../../graph/studentGraph/Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DatePicker ,Form } from "antd";
+import { DatePicker, Form } from "antd";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 // import Icon from "react-eva-icons";
@@ -35,41 +44,35 @@ const RootHome = () => {
   const [studyCenters, setStudyCenters] = useState([]);
   const [employee, setEmployee] = useState([]);
   const [form] = Form.useForm();
-  const [editingKey, setEditingKey] = useState('');
-
-
+  const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record) => record.key === editingKey;
-
-
-
-
 
   useEffect(() => {
     // Fetch or set your user data here
     // For demonstration purposes, I'm using static data
     const data = [
-           {
-          key: "1",
-          name: "John Brown",
-          email: "john@admas.com",
-          role: "Campus head",
-          center: "campus1"
-        },
-        {
-          key: "2",
-          name: "kebede ayele",
-          email: "kebede@admas.com",
-          role: "Campus head",
-          center: "campus3"
-        },
-        {
-          key: "3",
-          name: "Tomas nahom",
-          email: "tomas@admas.com",
-          role: "Center registrar head",
-          center: "campus2"
-        },
+      {
+        key: "1",
+        name: "John Brown",
+        email: "john@admas.com",
+        role: "Campus head",
+        center: "campus1",
+      },
+      {
+        key: "2",
+        name: "kebede ayele",
+        email: "kebede@admas.com",
+        role: "Campus head",
+        center: "campus3",
+      },
+      {
+        key: "3",
+        name: "Tomas nahom",
+        email: "tomas@admas.com",
+        role: "Center registrar head",
+        center: "campus2",
+      },
     ];
 
     setData(data);
@@ -78,10 +81,10 @@ const RootHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/api/StudyCenters');
+        const response = await axiosInstance.get("/api/StudyCenters");
         setStudyCenters(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -93,10 +96,10 @@ const RootHome = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/api/Employees');
+        const response = await axiosInstance.get("/api/Employees");
         setEmployee(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -104,9 +107,6 @@ const RootHome = () => {
 
     fetchData();
   }, []);
-
-
-
 
   const columns = [
     {
@@ -137,9 +137,9 @@ const RootHome = () => {
       dataIndex: "centerId",
       key: "centerId",
     },
-  {
-      title: 'Action',
-      key: 'action',
+    {
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <>
           <Button type="link" onClick={() => handleEditUser(record)}>
@@ -152,26 +152,35 @@ const RootHome = () => {
       ),
     },
   ];
- 
 
-   
- 
-  
   const columns1 = [
-    { title: 'Center ID', dataIndex: 'CenterId', key: 'CenterId' },
-    { title: 'Center Name', dataIndex: 'CenterName', key: 'CenterName' },
-    { title: 'Regional Center Name', dataIndex: 'RegionalCenterName', key: 'RegionalCenterName' },
-    { title: 'Region', dataIndex: 'Region', key: 'Region' },
-    { title: 'Current Center This', dataIndex: 'CurrentCenterThis', key: 'CurrentCenterThis' },
-    { title: 'Center Type', dataIndex: 'CenterType', key: 'CenterType' },
+    { title: "Center ID", dataIndex: "CenterId", key: "CenterId" },
+    { title: "Center Name", dataIndex: "CenterName", key: "CenterName" },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Regional Center Name",
+      dataIndex: "RegionalCenterName",
+      key: "RegionalCenterName",
+    },
+    { title: "Region", dataIndex: "Region", key: "Region" },
+    {
+      title: "Current Center This",
+      dataIndex: "CurrentCenterThis",
+      key: "CurrentCenterThis",
+    },
+    { title: "Center Type", dataIndex: "CenterType", key: "CenterType" },
+    {
+      title: "Action",
+      key: "action",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Button type="primary" size="small"  onClick={() => save(record.key)} style={{ marginRight: 8 , color: '#4279A6' }}>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => save(record.key)}
+              style={{ marginRight: 8, color: "#4279A6" }}
+            >
               Save
             </Button>
             <Button size="small" onClick={cancelEditing}>
@@ -180,14 +189,27 @@ const RootHome = () => {
           </span>
         ) : (
           <span>
-            <Button type="link" size="small" onClick={() => edit(record)}  style={{ marginRight: 8 , color: '#4279A6' }}>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => edit(record)}
+              style={{ marginRight: 8, color: "#4279A6" }}
+            >
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" 
-             okText="Yes" cancelText="No"
-             okButtonProps={{ style: { backgroundColor: '#4279A6' } }}
-            onConfirm={() => handleDelete(record)}>
-              <Button type="link" danger size="small"  style={{ marginRight: 8 , color: 'red' }}>
+            <Popconfirm
+              title="Sure to delete?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
+              onConfirm={() => handleDelete(record)}
+            >
+              <Button
+                type="link"
+                danger
+                size="small"
+                style={{ marginRight: 8, color: "red" }}
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -196,17 +218,14 @@ const RootHome = () => {
       },
     },
   ];
-  
-
 
   const handleCancel = () => {
-    setIsModalVisible1(false)
-    setEditingKey('');
+    setIsModalVisible1(false);
+    setEditingKey("");
   };
-  
 
-  const handleEdit =  () => {
-    form.validateFields().then(async(values) => {
+  const handleEdit = () => {
+    form.validateFields().then(async (values) => {
       const updatedDataSource = studyCenters.map((record) => {
         if (record.CenterId === values.CenternId) {
           return { ...record, ...values };
@@ -214,49 +233,46 @@ const RootHome = () => {
         return record;
       });
 
+      try {
+        console.log("Form Edit :", updatedDataSource);
+        console.log("values Edit :", values);
+        // Make a POST request to the API endpoint
+        const postData = {
+          centerId: values.CenterId,
+          centerName: values.CenterName,
+          regionalCenterName: values.RegionalCenterName,
+          region: values.Region,
+          currentCenterThis: values.CurrentCenterThis,
+          centerType: values.CenterType,
+        };
+        console.log("Response iss", postData);
+        const response = await axiosInstance.put(
+          "https://localhost:7032/api/StudyCenters",
+          postData
+        );
+        console.log("Put request successful:", response.data);
 
-    try {
-      console.log('Form Edit :', updatedDataSource);
-      console.log('values Edit :', values);
-      // Make a POST request to the API endpoint
-      const postData = {
-        "centerId": values.CenterId,
-        "centerName": values.CenterName,
-        "regionalCenterName":values.RegionalCenterName,          
-        "region": values.Region,
-        "currentCenterThis": values.CurrentCenterThis,
-        "centerType": values.CenterType    
-       };
-      console.log("Response iss" , postData)
-      const response = await axiosInstance.put('https://localhost:7032/api/StudyCenters', postData);
-      console.log('Put request successful:', response.data);
+        setStudyCenters(updatedDataSource);
+        // console.log("start " , moment(startDate).format('YYYY-MM-DD'))
+        setIsModalVisible1(false);
 
-      setStudyCenters(updatedDataSource)
-      // console.log("start " , moment(startDate).format('YYYY-MM-DD'))
-      setIsModalVisible1(false)
-      
-
-      // You can handle success, e.g., show a success message or redirect to another page
-    } catch (error) {
-      console.error('POST request failed:', error);
-    }
-  });
-
+        // You can handle success, e.g., show a success message or redirect to another page
+      } catch (error) {
+        console.error("POST request failed:", error);
+      }
+    });
   };
 
-
-  
   const edit = (record) => {
-
-    console.log("weyne ",record)
+    console.log("weyne ", record);
     form.setFieldsValue(record);
     setEditingKey(record.CenterId);
-    // handleOk();  
-    setIsModalVisible1(true) // Open the modal for editing
+    // handleOk();
+    setIsModalVisible1(true); // Open the modal for editing
   };
 
   const save = (key) => {
-    form.validateFields().then(async(values) => {
+    form.validateFields().then(async (values) => {
       const newData = [...studyCenters];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -265,38 +281,41 @@ const RootHome = () => {
           ...values,
           // resultDate: moment(values.resultDate),
         };
-        const response = await axiosInstance.put('https://localhost:7032/api/StudyCenters', newData);
-        console.log('Put request successful:', response.data);
+        const response = await axiosInstance.put(
+          "https://localhost:7032/api/StudyCenters",
+          newData
+        );
+        console.log("Put request successful:", response.data);
         setStudyCenters(newData);
-        setEditingKey('');
+        setEditingKey("");
       }
     });
   };
 
   const cancelEditing = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
-
-
   const handleDelete = async (record) => {
-    console.log('delete', record)
+    console.log("delete", record);
     const postData = {
-      "centerId": record.CenterId,
-      "centerName": record.CenterName,
-      "regionalCenterName":record.RegionalCenterName,          
-      "region": record.Region,
-      "currentCenterThis": record.CurrentCenterThis,
-      "centerType": record.CenterType  
-     };
-     console.log('delete', postData)
-    const response = await axiosInstance.delete('https://localhost:7032/api/StudyCenters', postData);
-    console.log('Delete request successful:', response.data);
+      centerId: record.CenterId,
+      centerName: record.CenterName,
+      regionalCenterName: record.RegionalCenterName,
+      region: record.Region,
+      currentCenterThis: record.CurrentCenterThis,
+      centerType: record.CenterType,
+    };
+    console.log("delete", postData);
+    const response = await axiosInstance.delete(
+      "https://localhost:7032/api/StudyCenters",
+      postData
+    );
+    console.log("Delete request successful:", response.data);
 
     const newData = studyCenters.filter((item) => item.key !== record.key);
     setStudyCenters(newData);
   };
-
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
@@ -309,7 +328,6 @@ const RootHome = () => {
     setIsDeleteModalVisible(true);
   };
 
-
   const handleModalOk = () => {
     // Handle your logic to update the user data
     // For demonstration purposes, I'm updating the data in state
@@ -321,7 +339,7 @@ const RootHome = () => {
     setSelectedUser(null);
     setModifiedUserData({});
   };
-  
+
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setSelectedUser(null);
@@ -331,7 +349,9 @@ const RootHome = () => {
   const handleDeleteModalOk = () => {
     // Handle your logic to delete the user data
     // For demonstration purposes, I'm updating the data in state
-    const updatedData = employee.filter((user) => user.key !== selectedUser.key);
+    const updatedData = employee.filter(
+      (user) => user.key !== selectedUser.key
+    );
     setEmployee(updatedData);
     setIsDeleteModalVisible(false);
     setSelectedUser(null);
@@ -342,11 +362,8 @@ const RootHome = () => {
     setSelectedUser(null);
   };
   const onFinish = (values) => {
-    console.log('Received values:', values);
+    console.log("Received values:", values);
   };
-
-
-  
 
   const Dates = [
     {
@@ -470,17 +487,8 @@ const RootHome = () => {
   ];
 
   return (
-    <div
-      // style={{
-      //   display: "flex",
-      //   flexDirection: "column",
-      //   justifyContent: "center",
-      //   backgroundColor: "#FFF",
-      //   width: "100%",
-      // }}
-      className="  flex flex-col gap-12"
-    >
-      <p className="!font-jakarta text-left text-[#000000] text-[20px] font-bold align-middle  mb-2 ml-5">
+    <div className="mb-8 mt-4 flex flex-col gap-12 bg-white p-5 rounded-md">
+      <p className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
         Root Admin Dashboard
       </p>
       <div className=" ml-4">
@@ -526,14 +534,14 @@ const RootHome = () => {
                 color: "#98A2B3",
               },
             })}
-            className="!mr-2 !rounded-lg  !border-0 hover:!border-0 !text-[#667085]"
+            className="h-[50px] w-[200px] mr-4 bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
           />
           <Select
             defaultValue={Genders[2]}
             placeholder={Genders[2]}
             options={Genders}
             // onChange={handleFilterGender}
-
+            className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
             // components={{ Option: IconOption }}
             styles={{
               control: (base) => ({
@@ -569,7 +577,7 @@ const RootHome = () => {
                 neutral50: "#667085",
               },
             })}
-            className=" !rounded-lg ml-[-2px] !border-0 hover:!border-0  !border-[white]"
+            // className=" !rounded-lg ml-[-2px] !border-0 hover:!border-0  !border-[white]"
           />
         </div>
       </div>
@@ -579,34 +587,42 @@ const RootHome = () => {
           <Card bordered={false} className="w-[100%] mb-10">
             <div className="flex flex-row justify-start align-bottom items-center"></div>
             <div className="flex flex-row justify-start align-bottom items-center mt-1">
-            <h1 className="text-3xl text-[#344054] ">
-           Registered Users</h1>
-            <h4 className="text-base text-[#0B1354]">/ {attendStudents}   </h4>
-                <FontAwesomeIcon className="pr-2  mb-2 ml-5 text-[#0ceb20]" icon={faArrowUp} />
-                <h4 className="text-sm text-[#0ceb20]" style={{marginLeft:-4}}> 
-               20 %</h4>
-                </div>
-                <h4 className="text-base text-[#344054] font-normal mb-5">Students that has been registered for the past year</h4>
-            <div className="flex" >
-                  <ChartStudent title="" aspect={4 /1} datas = {datavalue} />
-                  </div>
-
+              <p className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0] mr-8">
+                Registered Users
+              </p>
+              <h4 className="text-base text-[#0B1354]">/ {attendStudents} </h4>
+              <FontAwesomeIcon
+                className="pr-2  mb-2 ml-5 text-[#0ceb20]"
+                icon={faArrowUp}
+              />
+              <h4 className="text-sm text-[#0ceb20]" style={{ marginLeft: -4 }}>
+                20 %
+              </h4>
+            </div>
+            <h4 className="text-base text-[#344054] font-normal mb-5">
+              Students that has been registered for the past year
+            </h4>
+            <div className="flex">
+              <ChartStudent title="" aspect={4 / 1} datas={datavalue} />
+            </div>
           </Card>
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <Card bordered={false} className="w-[100%] min-h-[419px]">
             <div className="flex flex-row justify-start align-bottom items-center">
               {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-              <h1 className="text-base text-[#344054] font-normal">
+              <h1 className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
                 {" "}
                 Users Registeration
               </h1>
             </div>
+            <hr className="mb-4  border-2 border-[#C2C2C2]" />
             <Table
               columns={columns}
               dataSource={employee}
               loading={loading}
               rowKey={(record) => record.empId}
+              className="custom-table"
               pagination={{ pageSize: 10 }}
             />
             ;
@@ -617,60 +633,71 @@ const RootHome = () => {
             <div>
               <div className="flex flex-row justify-start align-bottom items-center">
                 {/* <div style={{ flexDirection:'row' , flex:1 , justifyContent:'flex-start'}}> */}
-                <h1 className="text-base text-[#344054] font-normal">
+                <h1 className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
                   {" "}
                   Campus Registeration
                 </h1>
               </div>
+              <hr className="mb-4  border-2 border-[#C2C2C2]" />
+
               <Table
-      dataSource={studyCenters}
-      columns={columns1}
-      loading={loading}
-      rowKey={(record) => record.CenterId}
-      pagination={{ pageSize: 10 }}
-    />
-         </div>
-         </Card>
+                dataSource={studyCenters}
+                columns={columns1}
+                loading={loading}
+                rowKey={(record) => record.CenterId}
+                className="custom-table"
+                pagination={{ pageSize: 10 }}
+              />
+            </div>
+          </Card>
         </Grid>
       </Grid>
-      <Modal  
+      <Modal
         title="Edit User"
         visible={isModalVisible}
-        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
+        okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
         <label>Name:</label>
         <Input
           value={modifiedUserData.name}
-          onChange={(e) => setModifiedUserData({ ...modifiedUserData, name: e.target.value })}
+          onChange={(e) =>
+            setModifiedUserData({ ...modifiedUserData, name: e.target.value })
+          }
         />
         <label>Email:</label>
         <Input
           value={modifiedUserData.email}
-          onChange={(e) => setModifiedUserData({ ...modifiedUserData, email: e.target.value })}
+          onChange={(e) =>
+            setModifiedUserData({ ...modifiedUserData, email: e.target.value })
+          }
         />
         <label>Role:</label>
         <Input
           value={modifiedUserData.role}
-          onChange={(e) => setModifiedUserData({ ...modifiedUserData, role: e.target.value })}
+          onChange={(e) =>
+            setModifiedUserData({ ...modifiedUserData, role: e.target.value })
+          }
         />
-         {/* <label>Password:</label>
+        {/* <label>Password:</label>
         <Input
           value={modifiedUserData.password}
           onChange={(e) => setModifiedUserData({ ...modifiedUserData, password: e.target.value })}
         /> */}
-         <label>Center:</label>
+        <label>Center:</label>
         <Input
           value={modifiedUserData.center}
-          onChange={(e) => setModifiedUserData({ ...modifiedUserData, center: e.target.value })}
+          onChange={(e) =>
+            setModifiedUserData({ ...modifiedUserData, center: e.target.value })
+          }
         />
       </Modal>
 
       <Modal
         title="Delete User"
         visible={isDeleteModalVisible}
-        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
+        okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
       >
@@ -678,68 +705,71 @@ const RootHome = () => {
       </Modal>
 
       <Modal
-        title={editingKey ? 'Edit Record' : 'Create Record'}
+        title={editingKey ? "Edit Record" : "Create Record"}
         visible={isModalVisible1}
         onCancel={handleCancel}
         onOk={editingKey ? handleEdit : handleCancel}
-        okButtonProps={{ style: { backgroundColor: '#4279A6' } }} 
+        okButtonProps={{ style: { backgroundColor: "#4279A6" } }}
       >
         <Form form={form} onFinish={onFinish}>
-
-        {!editingKey && (
-      <> 
-          <Form.Item
-            label="Center ID"
-            name="CenterId"
-            rules={[{ required: true, message: 'Please input center ID!' }]}
-          >
-            <Input />
-          </Form.Item>
-          </>
-       )}
+          {!editingKey && (
+            <>
+              <Form.Item
+                label="Center ID"
+                name="CenterId"
+                rules={[{ required: true, message: "Please input center ID!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </>
+          )}
           <Form.Item
             label="Center Name"
             name="CenterName"
-            rules={[{ required: true, message: 'Please input center Name!' }]}
+            rules={[{ required: true, message: "Please input center Name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Regional Center Name"
             name="RegionalCenterName"
-            rules={[{ required: true, message: 'Please input regional center this!' }]}
+            rules={[
+              { required: true, message: "Please input regional center this!" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Region"
             name="Region"
-            rules={[{ required: true, message: 'Please select region!' }]}
+            rules={[{ required: true, message: "Please select region!" }]}
           >
-          <Input />
+            <Input />
           </Form.Item>
           <Form.Item
             label="Current Center This"
             name="CurrentCenterThis"
-            rules={[{ required: true, message: 'Please select current center This' }]}
-           >
-              <Select style={{ width: '100%' }}>
+            rules={[
+              { required: true, message: "Please select current center This" },
+            ]}
+          >
+            <Select style={{ width: "100%" }}>
               <Option value="Yes">yes</Option>
               <Option value="No">No</Option>
             </Select>
-           </Form.Item>
+          </Form.Item>
           <Form.Item
             label="Center Type"
             name="CenterType"
-            rules={[{ required: true, message: 'Please select center type!' }]}
+            rules={[{ required: true, message: "Please select center type!" }]}
           >
-            <Select style={{ width: '100%' }}>
+            <Select style={{ width: "100%" }}>
               <Option value="Regular">Regular</Option>
               <Option value="Extension">Extension</Option>
             </Select>
           </Form.Item>
         </Form>
-      </Modal>               
+      </Modal>
     </div>
   );
 };

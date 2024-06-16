@@ -110,16 +110,19 @@ const GradeApproval = () => {
   };
 
   return (
-    <div  className="mb-8 flex flex-col gap-12 bg-white p-5 rounded-md shadow-md">
+    <div  className="mb-8 mt-4 flex flex-col gap-12 bg-white p-5 rounded-md shadow-md min-h-screen">
     {/* <SiderGenerator navigate={navigate}/> */}
 
     <div className="list-sub mb-10 ml-[0%]">
-      <p className="text-center text-[#344054] text-[24px] font-bold align-middle mb-8 border-b-[#EAECF0]">
+    <p className="text-[#4d6a90] text-[20px] font-bold align-middle mb-8 border-b-[#EAECF0]">
         Grade Approval
       </p>
+      <hr className="mb-4 border-2 border-[#C2C2C2]" />
+
       <Table  dataSource={data} columns={columns}  bordered  loading={loading}
       rowKey={(record) => record.studId}
-      pagination={{ pageSize: 10 }} />
+      className="custom-table"
+          pagination={{ pageSize: 10 }}/>
 
       <Modal
         title="Approval Confirmation"

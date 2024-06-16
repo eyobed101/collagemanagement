@@ -65,7 +65,7 @@ function CampusForm({ onSubmit }) {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-start justify-center bg-white p-5 rounded-md relative">
+    <div className="w-full min-h-screen flex items-start justify-center bg-white p-5 rounded-md relative mt-4">
       <div className="w-[90%] md:w-[50%]  rounded-lg p-4 flex flex-col items-center justify-center gap-4">
           <motion.p
             initial={{ opacity: 0 }}

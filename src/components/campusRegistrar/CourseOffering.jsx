@@ -3,6 +3,7 @@ import { Select, Table, Button, message, notification } from "antd";
 import axios from "axios";
 import { api } from "../constants";
 import axiosInstance from "@/configs/axios";
+import "./common.css"
 
 const { Option } = Select;
 
@@ -214,10 +215,10 @@ const CourseOffering = () => {
 
   return (
     <div className="mb-8 flex flex-col gap-6 bg-white p-5 rounded-md shadow-md">
-      <div>
+      <div className="flex">
         <Select
           placeholder="Select Section"
-          style={{ width: 200, marginBottom: 16, height:"45px" }}
+          className="h-[50px] w-[200px] bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
           onChange={handleSectionChange}
         >
           {sections.map((section) => (
@@ -229,7 +230,7 @@ const CourseOffering = () => {
         {selectedSection && (
           <Select
             placeholder="Select Program"
-            style={{ width: 200, marginBottom: 16, marginLeft: 30 , height:"45px"}}
+            className="h-[50px] w-[200px] ml-10  bg-blue-gray-50 border-2 font-semibold border-[#9b9b9b] text-black block shadow-md sm:text-sm rounded-md"
             onChange={handleSectionProgramChange}
           >
             <Option value="TVET">TVET</Option>
@@ -269,6 +270,7 @@ const CourseOffering = () => {
           columns={columns}
           rowKey="courseNo"
           bordered
+          className="custom-table"
           pagination={false}
         />
       </div>
@@ -296,6 +298,7 @@ const CourseOffering = () => {
           columns={otherTableColumns}
           rowKey="courseNo"
           bordered
+          className="custom-table"
           pagination={false}
         />
       </div>
