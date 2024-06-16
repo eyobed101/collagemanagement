@@ -203,7 +203,7 @@ const GradeChangeSubmission = () => {
       })
       .catch((error) => {
         console.error("Error creating Grade Change", error);
-        message.error("Error creating Grade Change");
+        // message.error("Error creating Grade Change");
       });
 
     const extractedData = {
